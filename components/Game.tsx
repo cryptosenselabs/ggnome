@@ -100,10 +100,11 @@ export default function Game() {
   const playerRef = useRef({
     x: 200,
     y: FLOOR_Y,
+    targetY: FLOOR_Y,
     w: 100,
     h: 120,
     vy: 0,
-    state: "running" as "running" | "jumping" | "sliding",
+    state: "jumping" as "running" | "jumping" | "sliding",
     slideEndTime: 0,
   });
 
@@ -196,22 +197,6 @@ export default function Game() {
     });
   }, []);
 
-  const jump = () => {
-    const p = playerRef.current;
-    if (stateRef.current.state === "playing") {
-      p.state = "jumping";
-      p.slideEndTime = 0; // Cancel slide
-    }
-  };
-
-  const slide = () => {
-    const p = playerRef.current;
-    if (stateRef.current.state === "playing" && p.state !== "jumping" && p.state !== "sliding") {
-      p.state = "sliding";
-      p.slideEndTime = performance.now() + SLIDE_DURATION;
-    }
-  };
-
   const startGame = () => {
     setGameState("playing");
     setGameOverReason("");
@@ -231,10 +216,11 @@ export default function Game() {
     playerRef.current = {
       x: 200,
       y: FLOOR_Y,
+      targetY: FLOOR_Y,
       w: 100,
       h: 120,
       vy: 0,
-      state: "running",
+      state: "jumping",
       slideEndTime: 0,
     };
 
@@ -298,11 +284,7 @@ export default function Game() {
       keysRef.current[e.code] = true;
       if (e.code === "Space" || e.code === "ArrowUp") {
         e.preventDefault();
-        if (stateRef.current.state === "playing") jump();
-        else if (stateRef.current.state === "gameover" || stateRef.current.state === "menu") startGame();
-      } else if (e.code === "ArrowDown") {
-        e.preventDefault();
-        if (stateRef.current.state === "playing") slide();
+        if (stateRef.current.state === "gameover" || stateRef.current.state === "menu") startGame();
       }
     };
 
@@ -318,27 +300,30 @@ export default function Game() {
     };
   }, [highScore]);
 
-  // Touch Handling for Mobile
-  const touchStartY = useRef(0);
+  // Pointer Tracking for Mouse & Touch
+  const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (stateRef.current.state === "playing") {
+      if (e.pointerType === "touch" || e.buttons === 1) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const scaleY = CANVAS_H / rect.height;
+        let y = (e.clientY - rect.top) * scaleY;
+        
+        // Clamp to screen
+        if (y < GNOME_VISUAL_HEIGHT - 20) y = GNOME_VISUAL_HEIGHT - 20;
+        if (y > FLOOR_Y) y = FLOOR_Y;
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+        playerRef.current.targetY = y;
+      }
+    }
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLElement>) => {
     if (stateRef.current.state !== "playing") {
       startGame();
       return;
     }
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (stateRef.current.state !== "playing") return;
-    const touchEndY = e.changedTouches[0].clientY;
-    const diffY = touchEndY - touchStartY.current;
-
-    if (diffY > 30) {
-      slide();
-    } else {
-      jump();
-    }
+    // Update immediately on tap
+    handlePointerMove(e);
   };
 
   // Main Game Loop
@@ -454,63 +439,26 @@ export default function Game() {
     // Gnome Mode
     const isGnomeMode = time < s.gnomeModeTime;
 
-    // Player Physics & Animation
-    const isHoldingJump = keysRef.current["Space"] || keysRef.current["ArrowUp"] || keysRef.current["TouchJump"];
-    
-    if (isHoldingJump) {
-      p.state = "jumping";
-      p.slideEndTime = 0;
-      p.vy -= 1.0; // Constant rocket thrust
-      
-      // Rocket thrust particles
+    // Player Physics & Animation (Drag to Steer)
+    const diff = p.targetY - p.y;
+    p.y += diff * 0.15; // Smooth interpolation
+
+    // Boundaries
+    if (p.y < GNOME_VISUAL_HEIGHT - 20) p.y = GNOME_VISUAL_HEIGHT - 20;
+    if (p.y > FLOOR_Y) p.y = FLOOR_Y;
+
+    p.state = "jumping"; // Always flying
+
+    // Rocket thrust exhaust following vertical movement
+    if (Math.random() > 0.4) {
       particlesRef.current.push({
         x: p.x + 35, // booster nozzle
         y: p.y - 10,
         vx: -s.speed - Math.random() * 5,
-        vy: 5 + Math.random() * 10,
-        life: 0.8,
+        vy: diff * 0.1 + (Math.random() - 0.5) * 5,
+        life: 0.6,
         color: Math.random() > 0.5 ? "#fbbf24" : "#f97316", // fiery exhaust
       });
-    }
-    
-    // Always apply gravity
-    p.vy += GRAVITY * 0.8; // Slightly floatier gravity
-    p.y += p.vy;
-
-    // Terminal velocity & Screen boundaries
-    if (p.vy > 12) p.vy = 12; // Max fall speed
-    if (p.vy < -12) p.vy = -12; // Max fly speed
-    
-    // Ceiling (don't fly off screen)
-    if (p.y < GNOME_VISUAL_HEIGHT - 20) {
-      p.y = GNOME_VISUAL_HEIGHT - 20;
-      p.vy = 0;
-    }
-
-    // Floor
-    if (p.y >= FLOOR_Y) {
-      p.y = FLOOR_Y;
-      if (p.vy > 0) p.vy = 0;
-      
-      if (!isHoldingJump && p.state === "jumping") {
-        p.state = "running";
-      }
-    } else if (p.state === "sliding") {
-      if (time > p.slideEndTime) {
-        p.state = "running";
-      }
-    } else {
-      // Running - dust particles
-      if (stateRef.current.state === "playing" && Math.random() > 0.6) {
-        particlesRef.current.push({
-          x: p.x + 30, // behind feet
-          y: p.y - 10,
-          vx: -s.speed * 0.5 - Math.random() * 2,
-          vy: -Math.random() * 2,
-          life: 1.0,
-          color: "rgba(200, 200, 200, 0.5)", // dust color
-        });
-      }
     }
 
     if (isGnomeMode) {
@@ -959,8 +907,8 @@ export default function Game() {
   return (
     <main 
       className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-black font-sans"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
     >
       <canvas
         ref={canvasRef}
@@ -972,44 +920,6 @@ export default function Game() {
       {assetError && (
         <div className="absolute top-2 left-2 bg-red-900 text-white px-4 py-2 font-bold text-lg rounded shadow-lg border border-red-500 z-50">
           {assetError}
-        </div>
-      )}
-
-      {/* Mobile Controls Overlay */}
-      {gameState === "playing" && (
-        <div className="pointer-events-none fixed inset-0 z-30 md:hidden" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-          <button
-            onPointerDown={(e) => {
-              e.preventDefault();
-              slide();
-            }}
-            className="pointer-events-auto absolute bottom-6 left-6 h-20 w-20 rounded-full border border-orange-300/60 bg-orange-500/25 text-sm font-black text-orange-100 shadow-2xl backdrop-blur-md active:scale-95"
-          >
-            SLIDE
-          </button>
-
-          <button
-            onPointerDown={(e) => {
-              e.preventDefault();
-              keysRef.current["TouchJump"] = true;
-              jump();
-            }}
-            onPointerUp={(e) => {
-              e.preventDefault();
-              keysRef.current["TouchJump"] = false;
-            }}
-            onPointerLeave={(e) => {
-              e.preventDefault();
-              keysRef.current["TouchJump"] = false;
-            }}
-            onPointerCancel={(e) => {
-              e.preventDefault();
-              keysRef.current["TouchJump"] = false;
-            }}
-            className="pointer-events-auto absolute bottom-6 right-6 h-24 w-24 rounded-full border border-green-300/60 bg-green-500/25 text-base font-black text-green-100 shadow-2xl backdrop-blur-md active:scale-95"
-          >
-            JUMP
-          </button>
         </div>
       )}
 
@@ -1097,45 +1007,45 @@ export default function Game() {
 
       {/* Game Over Overlay */}
       {gameState === "gameover" && (
-        <div className="absolute inset-0 bg-red-950/80 flex flex-col items-center justify-center backdrop-blur-md z-50">
-          <h1 className="text-6xl font-black text-red-500 mb-2 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)] text-center px-4">
+        <div className="absolute inset-0 bg-red-950/80 flex flex-col items-center justify-center backdrop-blur-md z-50 py-2">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-red-500 mb-2 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)] text-center px-4 flex-shrink-0 leading-none mt-2">
             {gameOverReason}
           </h1>
           
-          <div className="flex flex-col md:flex-row gap-6 mt-6 mb-8 w-full max-w-4xl justify-center items-center px-4 pointer-events-auto">
+          <div className="flex flex-col sm:flex-row gap-4 w-full max-w-4xl justify-center items-center px-4 pointer-events-auto flex-1 min-h-0 my-2">
             {/* Stats Panel */}
-            <div className="bg-black/50 p-6 rounded-2xl border border-red-500/30 text-center w-full max-w-[350px]">
-              <p className="text-gray-300 text-lg mb-1">Final Market Cap</p>
-              <p className="text-5xl font-black text-green-400 mb-6">${score.toLocaleString()}</p>
+            <div className="bg-black/50 p-4 rounded-2xl border border-red-500/30 text-center w-full sm:w-[300px] flex-shrink-0">
+              <p className="text-gray-300 text-sm mb-1">Final Market Cap</p>
+              <p className="text-4xl sm:text-5xl font-black text-green-400 mb-3">${score.toLocaleString()}</p>
               
-              <p className="text-gray-400 text-sm">Best Run</p>
-              <p className="text-2xl font-bold text-gray-200">${highScore.toLocaleString()}</p>
+              <p className="text-gray-400 text-xs">Best Run</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-200">${highScore.toLocaleString()}</p>
             </div>
 
             {/* Leaderboard Panel */}
-            <div className="bg-black/80 p-4 md:p-6 rounded-2xl border border-yellow-500/30 text-left w-full max-w-[350px] flex flex-col h-[200px] md:h-[260px]">
-              <h2 className="text-lg md:text-xl font-black text-yellow-400 mb-4 text-center border-b border-yellow-500/20 pb-2">GLOBAL TOP 100</h2>
+            <div className="bg-black/80 p-3 sm:p-4 rounded-2xl border border-yellow-500/30 text-left w-full sm:w-[350px] flex flex-col h-[180px] sm:h-[220px] flex-shrink-0">
+              <h2 className="text-base sm:text-lg font-black text-yellow-400 mb-2 text-center border-b border-yellow-500/20 pb-1">GLOBAL TOP 100</h2>
               <div className="flex flex-col gap-2 overflow-y-auto pr-2 custom-scrollbar flex-1">
                 {leaderboardData.length > 0 ? leaderboardData.map((entry, idx) => (
-                  <div key={idx} className="flex justify-between items-center text-sm border-b border-gray-800/50 pb-1">
-                    <span className="font-bold text-gray-300 truncate max-w-[160px] flex items-center gap-2">
-                      <span className="text-gray-500 w-6 text-right inline-block">{idx + 1}.</span> 
-                      <span className="text-base">{idx === 0 ? "👑" : idx < 3 ? "🔥" : "🍄"}</span>
+                  <div key={idx} className="flex justify-between items-center text-xs sm:text-sm border-b border-gray-800/50 pb-1">
+                    <span className="font-bold text-gray-300 truncate max-w-[140px] flex items-center gap-1 sm:gap-2">
+                      <span className="text-gray-500 w-5 text-right inline-block">{idx + 1}.</span> 
+                      <span className="text-sm">{idx === 0 ? "👑" : idx < 3 ? "🔥" : "🍄"}</span>
                       {entry.name}
                     </span>
                     <span className="font-black text-green-400">${entry.score.toLocaleString()}</span>
                   </div>
                 )) : (
-                  <div className="text-gray-500 text-center text-sm italic mt-4">Connecting to blockchain...</div>
+                  <div className="text-gray-500 text-center text-xs sm:text-sm italic mt-2">Connecting to blockchain...</div>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 pointer-events-auto px-4">
+          <div className="flex flex-row gap-4 pointer-events-auto px-4 flex-shrink-0 mb-2">
             <button 
               onClick={startGame}
-              className="px-8 py-4 bg-green-500 hover:bg-green-400 text-black font-black text-xl rounded-full transform hover:scale-105 transition-all w-full sm:w-auto"
+              className="px-6 py-2 sm:py-3 bg-green-500 hover:bg-green-400 text-black font-black text-sm sm:text-lg rounded-full transform hover:scale-105 transition-all"
             >
               TRY AGAIN
             </button>
@@ -1143,26 +1053,43 @@ export default function Game() {
               href={`https://x.com/intent/tweet?text=${shareText}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-8 py-4 bg-black border-2 border-white hover:bg-gray-900 text-white font-black text-xl rounded-full transform hover:scale-105 transition-all flex items-center justify-center gap-2 w-full sm:w-auto"
+              className="px-6 py-2 sm:py-3 bg-black border-2 border-white hover:bg-gray-900 text-white font-black text-sm sm:text-lg rounded-full transform hover:scale-105 transition-all flex items-center justify-center gap-2"
             >
               SHARE ON X
             </a>
           </div>
-          
-          <button className="mt-6 text-blue-400 hover:text-blue-300 font-bold underline underline-offset-4 pointer-events-auto">
-            RAID TELEGRAM
-          </button>
         </div>
       )}
       {/* Landscape Prompt Overlay */}
-      <div className="portrait:flex hidden fixed inset-0 z-[100] bg-black items-center justify-center flex-col pointer-events-auto px-6 text-center">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-green-400 mb-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-        <h2 className="text-3xl font-black text-white leading-tight mb-2">
-          PLEASE ROTATE YOUR DEVICE
-        </h2>
-        <p className="text-green-400 font-bold text-lg">Landscape mode required to play $GNOME Runner</p>
+      <div className="portrait:flex hidden fixed inset-0 z-[100] bg-black items-center justify-center flex-col pointer-events-auto px-6 text-center py-8">
+        <div className="flex-shrink-0 mb-6 flex flex-col items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-green-400 mb-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <h2 className="text-2xl font-black text-white leading-tight mb-2">
+            ROTATE TO PLAY
+          </h2>
+          <p className="text-green-400 font-bold text-sm">Landscape mode required to play $GNOME Runner</p>
+        </div>
+        
+        {/* Leaderboard Panel for Portrait */}
+        <div className="bg-black/60 p-4 rounded-2xl border border-yellow-500/30 text-left w-full max-w-[350px] flex flex-col h-[300px] flex-1">
+          <h2 className="text-lg font-black text-yellow-400 mb-4 text-center border-b border-yellow-500/20 pb-2">GLOBAL TOP 100</h2>
+          <div className="flex flex-col gap-2 overflow-y-auto pr-2 custom-scrollbar flex-1">
+            {leaderboardData.length > 0 ? leaderboardData.map((entry, idx) => (
+              <div key={idx} className="flex justify-between items-center text-sm border-b border-gray-800/50 pb-1">
+                <span className="font-bold text-gray-300 truncate max-w-[150px] flex items-center gap-2">
+                  <span className="text-gray-500 w-6 text-right inline-block">{idx + 1}.</span> 
+                  <span className="text-base">{idx === 0 ? "👑" : idx < 3 ? "🔥" : "🍄"}</span>
+                  {entry.name}
+                </span>
+                <span className="font-black text-green-400">${entry.score.toLocaleString()}</span>
+              </div>
+            )) : (
+              <div className="text-gray-500 text-center text-sm italic mt-4">Connecting to blockchain...</div>
+            )}
+          </div>
+        </div>
       </div>
     </main>
   );
