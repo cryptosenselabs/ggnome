@@ -198,6 +198,18 @@ export default function Game() {
   }, []);
 
   const startGame = () => {
+    // Attempt to enter fullscreen to hide mobile browser address bars
+    try {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(e => console.log(e));
+      } else if ((elem as any).webkitRequestFullscreen) {
+        (elem as any).webkitRequestFullscreen();
+      }
+    } catch (e) {
+      console.log("Fullscreen request failed", e);
+    }
+
     setGameState("playing");
     setGameOverReason("");
     setScore(0);

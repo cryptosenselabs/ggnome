@@ -37,6 +37,12 @@ export const metadata: Metadata = {
     description: "Dodge Bears. Survive Rugs. Stack $GNOME.",
     images: ["https://chaosgnome.xyz/assets/gnome-rocket.png"],
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "$GNOME Runner",
+  },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
