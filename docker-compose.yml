@@ -1,0 +1,24 @@
+services:
+  app:
+    build:
+      context: .
+      # We target the 'deps' stage from your Dockerfile to install dependencies
+      # inside the Linux container, rather than using the full production build.
+      target: deps
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount the local source code to /app in the container
+      - .:/app
+      # Create an anonymous volume for node_modules so that the container's 
+      # Linux-compiled modules are used instead of your host's modules.
+      - /app/node_modules
+      # Create an anonymous volume for the Next.js build cache to avoid 
+      # permission issues and prevent it from syncing back to your host.
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      # Often required for hot module replacement (HMR) to work properly 
+      # when mounting files from Windows into a Docker container.
+      - WATCHPACK_POLLING=true
+    command: npm run dev
