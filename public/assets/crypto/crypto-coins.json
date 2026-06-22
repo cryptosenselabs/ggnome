@@ -1,0 +1,72 @@
+[
+  {
+    "id": "bitcoin",
+    "symbol": "BTC",
+    "name": "Bitcoin",
+    "priceUsd": 65000,
+    "rank": 1,
+    "change24h": 1.2,
+    "logo": "/assets/crypto/logos/bitcoin.png",
+    "scoreValue": 481
+  },
+  {
+    "id": "ethereum",
+    "symbol": "ETH",
+    "name": "Ethereum",
+    "priceUsd": 3500,
+    "rank": 2,
+    "change24h": -0.5,
+    "logo": "/assets/crypto/logos/ethereum.png",
+    "scoreValue": 354
+  },
+  {
+    "id": "solana",
+    "symbol": "SOL",
+    "name": "Solana",
+    "priceUsd": 150,
+    "rank": 5,
+    "change24h": 5.4,
+    "logo": "/assets/crypto/logos/solana.png",
+    "scoreValue": 217
+  },
+  {
+    "id": "dogecoin",
+    "symbol": "DOGE",
+    "name": "Dogecoin",
+    "priceUsd": 0.12,
+    "rank": 8,
+    "change24h": 2.1,
+    "logo": "/assets/crypto/logos/dogecoin.png",
+    "scoreValue": 105
+  },
+  {
+    "id": "pepe",
+    "symbol": "PEPE",
+    "name": "Pepe",
+    "priceUsd": 0.000012,
+    "rank": 20,
+    "change24h": -2.3,
+    "logo": "/assets/crypto/logos/pepe.png",
+    "scoreValue": 10
+  },
+  {
+    "id": "bonk",
+    "symbol": "BONK",
+    "name": "Bonk",
+    "priceUsd": 0.000025,
+    "rank": 55,
+    "change24h": 15.0,
+    "logo": "/assets/crypto/logos/bonk.png",
+    "scoreValue": 10
+  },
+  {
+    "id": "dogwifhat",
+    "symbol": "WIF",
+    "name": "dogwifhat",
+    "priceUsd": 2.8,
+    "rank": 35,
+    "change24h": -1.1,
+    "logo": "/assets/crypto/logos/wif.png",
+    "scoreValue": 58
+  }
+]
