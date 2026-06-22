@@ -13,8 +13,30 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "$GNOME",
+  title: "$GNOME Runner",
   description: "Dodge Bears. Survive Rugs. Stack $GNOME.",
+  openGraph: {
+    title: "$GNOME Runner",
+    description: "Dodge Bears. Survive Rugs. Stack $GNOME.",
+    url: "https://chaosgnome.xyz",
+    siteName: "Gnome Runner",
+    images: [
+      {
+        url: "https://chaosgnome.xyz/assets/gnome-rocket.png",
+        width: 1200,
+        height: 630,
+        alt: "Gnome Rocket Meme",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "$GNOME Runner",
+    description: "Dodge Bears. Survive Rugs. Stack $GNOME.",
+    images: ["https://chaosgnome.xyz/assets/gnome-rocket.png"],
+  },
 };
 
 export default function RootLayout({
