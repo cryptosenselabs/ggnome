@@ -5,13 +5,13 @@ import React, { useEffect, useRef, useState } from "react";
 // Game Constants
 const CANVAS_W = 1280;
 const CANVAS_H = 720;
-const FLOOR_Y = 600;
+const FLOOR_Y = 520; // Hover altitude (roughly 72% down the screen)
 
 const GRAVITY = 0.8;
 const JUMP_VELOCITY = -22;
 const SLIDE_DURATION = 450;
-const INITIAL_SPEED = 8;
-const SPEED_INCREMENT = 0.001;
+const INITIAL_SPEED = 12;
+const SPEED_INCREMENT = 0.002;
 
 // Visual Sizes
 const GNOME_VISUAL_WIDTH = 170;
@@ -93,6 +93,8 @@ export default function Game() {
   const [gnomeModeActive, setGnomeModeActive] = useState(false);
   const [bearBlasterActive, setBearBlasterActive] = useState(false);
   const [assetError, setAssetError] = useState("");
+  const [playerName, setPlayerName] = useState("");
+  const [leaderboardData, setLeaderboardData] = useState<{name: string, score: number}[]>([]);
 
   // Refs for game loop state
   const stateRef = useRef({
@@ -138,6 +140,17 @@ export default function Game() {
   const lastGrabRef = useRef("");
 
   useEffect(() => {
+    if (gameState === "menu" || gameState === "gameover") {
+      fetch("/api/leaderboard")
+        .then(res => res.json())
+        .then(data => {
+          if (data.leaderboard) setLeaderboardData(data.leaderboard);
+        })
+        .catch(e => console.error("Leaderboard fetch error:", e));
+    }
+  }, [gameState]);
+
+  useEffect(() => {
     // Load high score
     const stored = localStorage.getItem("gnome_runner_highscore");
     if (stored) setHighScore(parseInt(stored));
@@ -166,11 +179,7 @@ export default function Game() {
     const imagePaths: Record<string, string> = {
       "coin-gnome": "/assets/coin-gnome.png",
       "gnome-rocket": "/assets/gnome-rocket.png",
-      "gnomeJump": "/assets/gnome-jump.png",
-      "gnomeFall": "/assets/gnome-fall.png",
-      "gnomeSlide": "/assets/gnome-slide.png",
       "gnomeHit": "/assets/gnome-hit.png",
-      "gnomeMode": "/assets/gnome-mode.png",
       "powerup-bear-blaster": "/assets/powerup-bear-blaster.png",
     };
 
@@ -189,7 +198,7 @@ export default function Game() {
       img.onerror = () => {
         if (key.startsWith("bg-")) {
            setAssetError("Missing background assets. Please check /public/assets/background.");
-        } else if (["gnome-rocket", "coin-gnome", "gnomeHit", "gnomeMode"].includes(key)) {
+        } else if (["gnome-rocket", "coin-gnome", "gnomeHit"].includes(key)) {
            setAssetError(`Missing game asset: ${key}. Please check public/assets.`);
         }
       };
@@ -296,6 +305,13 @@ export default function Game() {
       setHighScore(finalScore);
       localStorage.setItem("gnome_runner_highscore", finalScore.toString());
     }
+
+    const submitName = playerName.trim() || "Anonymous Degen";
+    fetch("/api/leaderboard", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: submitName, score: finalScore })
+    }).catch(e => console.error("Score submit error:", e));
   };
 
   // Input Handling
@@ -715,65 +731,47 @@ export default function Game() {
       const bgImg = assetsRef.current[bgKey];
       
       if (bgImg) {
-        const bgScale = FLOOR_Y / bgImg.height;
+        const bgScale = CANVAS_H / bgImg.height;
         const drawW = bgImg.width * bgScale;
         
-        // Draw to fill the scenic environment up to FLOOR_Y
-        ctx.drawImage(bgImg, currentDrawX, 0, drawW, FLOOR_Y);
+        // Draw to fill the entire canvas (scenery at bottom, sky at top)
+        ctx.drawImage(bgImg, currentDrawX, 0, drawW, CANVAS_H);
         
         currentDrawX += drawW;
         bgRenderIndex = (bgRenderIndex + 1) % 11;
       } else {
         // Fallback
         ctx.fillStyle = "#87CEEB";
-        ctx.fillRect(currentDrawX, 0, CANVAS_W, FLOOR_Y);
+        ctx.fillRect(currentDrawX, 0, CANVAS_W, CANVAS_H);
         break;
       }
-    }
-
-    // Floor (Foreground separate gameplay lane)
-    ctx.fillStyle = "#2d3748"; // Dark pavement
-    ctx.fillRect(0, FLOOR_Y, CANVAS_W, CANVAS_H - FLOOR_Y);
-    
-    // Add some simple floor speed lines to make the ground feel fast
-    ctx.fillStyle = "#1a202c";
-    const speed = stateRef.current.speed;
-    const offset = (time * speed) % 100;
-    for (let i = 0; i < CANVAS_W + 100; i += 100) {
-       ctx.fillRect(i - offset, FLOOR_Y + 10, 50, 4);
-       ctx.fillRect(i - offset + 20, FLOOR_Y + 40, 60, 4);
-       ctx.fillRect(i - offset - 10, FLOOR_Y + 80, 80, 4);
     }
 
     // Draw Entities
     entitiesRef.current.forEach((ent) => {
       if (ent.type === "liquidationLaser") {
-        const pulse = 0.75 + Math.sin(time * 0.01) * 0.25;
+        const pulse = Math.abs(Math.sin(time * 0.005));
+        const stripeHeight = 2 + pulse * 3; // slight pulsing inner stripe width
 
         ctx.save();
-        ctx.globalCompositeOperation = "screen";
+        ctx.globalCompositeOperation = "source-over"; // No soft neon glow
 
-        // outer glow
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = "rgba(255, 20, 20, 0.9)";
-        
-        // main beam
-        ctx.fillStyle = `rgba(255, 30, 30, ${0.8 * pulse})`;
-        ctx.fillRect(ent.x, ent.y, ent.w, ent.h);
-
-        // white hot core
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = "rgba(255, 255, 255, 0.9)";
-        ctx.fillStyle = "rgba(255, 200, 200, 0.95)";
-        ctx.fillRect(ent.x + 10, ent.y + ent.h/2 - 1, ent.w - 20, 2);
-        
-        // Warning end caps
-        ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+        // 1. Dark outline rounded rect
+        ctx.fillStyle = "#7A1C00";
         ctx.beginPath();
-        ctx.arc(ent.x, ent.y + ent.h/2, ent.h, 0, Math.PI * 2);
+        ctx.roundRect(ent.x - 3, ent.y - 3, ent.w + 6, ent.h + 6, 6);
         ctx.fill();
+
+        // 2. Main solid color rounded rect
+        ctx.fillStyle = "#FF5A36";
         ctx.beginPath();
-        ctx.arc(ent.x + ent.w, ent.y + ent.h/2, ent.h, 0, Math.PI * 2);
+        ctx.roundRect(ent.x, ent.y, ent.w, ent.h, 4);
+        ctx.fill();
+
+        // 3. Thin white/cream center stripe
+        ctx.fillStyle = "#FFF4E8";
+        ctx.beginPath();
+        ctx.roundRect(ent.x + 4, ent.y + (ent.h - stripeHeight) / 2, ent.w - 8, stripeHeight, 2);
         ctx.fill();
 
         ctx.restore();
@@ -785,32 +783,29 @@ export default function Game() {
         ctx.save();
         ctx.globalCompositeOperation = "source-over";
 
-        // glow
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = "rgba(255, 30, 30, 0.6)";
-
-        // wick
-        ctx.strokeStyle = "rgba(255, 100, 100, 0.9)";
-        ctx.lineWidth = 4;
+        // 1. Wick line
+        ctx.strokeStyle = "#4A0D0D";
+        ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.moveTo(wickX, wickTop);
         ctx.lineTo(wickX, wickBottom);
         ctx.stroke();
 
-        // candle body gradient
-        const grad = ctx.createLinearGradient(ent.x, ent.y, ent.x + ent.w, ent.y);
-        grad.addColorStop(0, "rgba(200, 20, 20, 0.9)");
-        grad.addColorStop(0.3, "rgba(255, 60, 60, 0.95)");
-        grad.addColorStop(0.7, "rgba(255, 40, 40, 0.9)");
-        grad.addColorStop(1, "rgba(180, 10, 10, 0.8)");
-        
-        ctx.fillStyle = grad;
-        ctx.fillRect(ent.x, ent.y, ent.w, ent.h);
+        // 2. Dark outline body
+        ctx.fillStyle = "#5D0000";
+        ctx.beginPath();
+        ctx.roundRect(ent.x - 3, ent.y - 3, ent.w + 6, ent.h + 6, 4);
+        ctx.fill();
 
-        // top/bottom borders of body
-        ctx.fillStyle = "rgba(255, 200, 200, 0.6)";
-        ctx.fillRect(ent.x, ent.y, ent.w, 3);
-        ctx.fillRect(ent.x, ent.y + ent.h - 3, ent.w, 3);
+        // 3. Main solid body fill
+        ctx.fillStyle = "#E53935";
+        ctx.beginPath();
+        ctx.roundRect(ent.x, ent.y, ent.w, ent.h, 2);
+        ctx.fill();
+
+        // 4. Inner highlight stripe
+        ctx.fillStyle = "#FF8A80";
+        ctx.fillRect(ent.x + 6, ent.y + 6, 6, ent.h - 12);
 
         ctx.restore();
       } else if (ent.type === "cryptoCoin") {
@@ -906,9 +901,7 @@ export default function Game() {
     pImg = assetsRef.current["gnome-rocket"];
 
     if (stateRef.current.state === "gameover") {
-      pImg = assetsRef.current["gnomeHit"];
-    } else if (isGnomeMode) {
-      pImg = assetsRef.current["gnomeMode"] || pImg;
+      pImg = assetsRef.current["gnomeHit"] || pImg;
     }
 
     if (isBearBlaster && !isGnomeMode) {
@@ -1190,7 +1183,17 @@ export default function Game() {
       {gameState === "menu" && (
         <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center backdrop-blur-sm z-50">
           <h1 className="text-7xl font-black text-white mb-4 drop-shadow-2xl text-center">GNOME RUNNER</h1>
-          <p className="text-green-400 text-xl font-bold mb-8 text-center px-4">Dodge Bears. Survive Rugs. Stack $GNOME.</p>
+          <p className="text-green-400 text-xl font-bold mb-6 text-center px-4">Dodge Bears. Survive Rugs. Stack $GNOME.</p>
+          <div className="mb-8 flex flex-col items-center pointer-events-auto">
+             <input 
+               type="text" 
+               maxLength={15}
+               placeholder="Enter Name..." 
+               value={playerName}
+               onChange={(e) => setPlayerName(e.target.value)}
+               className="bg-black/50 border-2 border-green-500/50 text-white text-center text-xl font-bold py-3 px-6 rounded-xl outline-none focus:border-green-400 focus:shadow-[0_0_15px_rgba(74,222,128,0.5)] transition-all placeholder:text-gray-500"
+             />
+          </div>
           <button 
             onClick={startGame}
             className="px-10 py-4 bg-green-500 hover:bg-green-400 text-black font-black text-2xl rounded-full transform hover:scale-105 transition-all shadow-[0_0_20px_rgba(74,222,128,0.6)] pointer-events-auto"
@@ -1211,12 +1214,32 @@ export default function Game() {
             {gameOverReason}
           </h1>
           
-          <div className="bg-black/50 p-8 rounded-2xl border border-red-500/30 mt-6 mb-8 text-center min-w-[300px] sm:min-w-[400px]">
-            <p className="text-gray-300 text-lg mb-1">Final Market Cap</p>
-            <p className="text-5xl font-black text-green-400 mb-6">${score.toLocaleString()}</p>
-            
-            <p className="text-gray-400 text-sm">Best Run</p>
-            <p className="text-2xl font-bold text-gray-200">${highScore.toLocaleString()}</p>
+          <div className="flex flex-col md:flex-row gap-6 mt-6 mb-8 w-full max-w-4xl justify-center items-center px-4 pointer-events-auto">
+            {/* Stats Panel */}
+            <div className="bg-black/50 p-6 rounded-2xl border border-red-500/30 text-center w-full max-w-[350px]">
+              <p className="text-gray-300 text-lg mb-1">Final Market Cap</p>
+              <p className="text-5xl font-black text-green-400 mb-6">${score.toLocaleString()}</p>
+              
+              <p className="text-gray-400 text-sm">Best Run</p>
+              <p className="text-2xl font-bold text-gray-200">${highScore.toLocaleString()}</p>
+            </div>
+
+            {/* Leaderboard Panel */}
+            <div className="bg-black/80 p-6 rounded-2xl border border-yellow-500/30 text-left w-full max-w-[350px] min-h-[220px]">
+              <h2 className="text-xl font-black text-yellow-400 mb-4 text-center border-b border-yellow-500/20 pb-2">GLOBAL TOP HOLDERS</h2>
+              <div className="flex flex-col gap-2 max-h-[160px] overflow-y-auto pr-2 custom-scrollbar">
+                {leaderboardData.length > 0 ? leaderboardData.slice(0, 5).map((entry, idx) => (
+                  <div key={idx} className="flex justify-between items-center text-sm">
+                    <span className="font-bold text-gray-300 truncate max-w-[150px]">
+                      <span className="text-gray-500 w-4 inline-block">{idx + 1}.</span> {entry.name}
+                    </span>
+                    <span className="font-black text-green-400">${entry.score.toLocaleString()}</span>
+                  </div>
+                )) : (
+                  <div className="text-gray-500 text-center text-sm italic mt-4">Connecting to blockchain...</div>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 pointer-events-auto px-4">
@@ -1241,6 +1264,16 @@ export default function Game() {
           </button>
         </div>
       )}
+      {/* Landscape Prompt Overlay */}
+      <div className="portrait:flex hidden fixed inset-0 z-[100] bg-black items-center justify-center flex-col pointer-events-auto px-6 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-green-400 mb-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <h2 className="text-3xl font-black text-white leading-tight mb-2">
+          PLEASE ROTATE YOUR DEVICE
+        </h2>
+        <p className="text-green-400 font-bold text-lg">Landscape mode required to play $GNOME Runner</p>
+      </div>
     </main>
   );
 }
