@@ -137,6 +137,7 @@ export default function Game() {
     multiplier: 1.0,
     gnomeModeTime: 0,
     levelIndex: 0,
+    loopOffset: 0,
   });
 
   const playerRef = useRef({
@@ -300,6 +301,7 @@ export default function Game() {
       multiplier: 1.0,
       gnomeModeTime: 0,
       levelIndex: 0,
+      loopOffset: 0,
     };
 
     playerRef.current = {
@@ -557,20 +559,40 @@ export default function Game() {
 
     // Check Level Up
     const nextLevelIndex = s.levelIndex + 1;
-    if (nextLevelIndex < CAMPAIGN_LEVELS.length && s.score >= CAMPAIGN_LEVELS[nextLevelIndex].scoreThreshold) {
-      const nextLevelData = CAMPAIGN_LEVELS[nextLevelIndex];
-      s.levelIndex = nextLevelIndex;
-      s.speed = INITIAL_SPEED * nextLevelData.speedMultiplier;
-      setCurrentLevel(nextLevelIndex);
-      setLevelBanner({ chapter: nextLevelData.chapter, name: nextLevelData.name });
-      setTimeout(() => setLevelBanner(null), 4000);
-      
-      floatingTextsRef.current.push({
-        x: CANVAS_W / 2 - 200,
-        y: CANVAS_H / 2,
-        text: `LEVEL UP!\n${nextLevelData.name}`,
-        life: 2.0,
-      });
+    const effectiveScore = s.score - s.loopOffset;
+    
+    if (nextLevelIndex < CAMPAIGN_LEVELS.length) {
+      if (effectiveScore >= CAMPAIGN_LEVELS[nextLevelIndex].scoreThreshold) {
+        const nextLevelData = CAMPAIGN_LEVELS[nextLevelIndex];
+        s.levelIndex = nextLevelIndex;
+        s.speed = INITIAL_SPEED * nextLevelData.speedMultiplier;
+        setCurrentLevel(nextLevelIndex);
+        setLevelBanner({ chapter: nextLevelData.chapter, name: nextLevelData.name });
+        setTimeout(() => setLevelBanner(null), 4000);
+        
+        floatingTextsRef.current.push({
+          x: CANVAS_W / 2 - 200,
+          y: CANVAS_H / 2,
+          text: `LEVEL UP!\n${nextLevelData.name}`,
+          life: 2.0,
+        });
+      }
+    } else {
+      if (effectiveScore >= 1250000) {
+        s.levelIndex = 0;
+        s.loopOffset = s.score;
+        s.speed = INITIAL_SPEED * CAMPAIGN_LEVELS[0].speedMultiplier;
+        setCurrentLevel(0);
+        setLevelBanner({ chapter: "CYCLE REPEATS", name: "The Bear Trap" });
+        setTimeout(() => setLevelBanner(null), 4000);
+        
+        floatingTextsRef.current.push({
+          x: CANVAS_W / 2 - 200,
+          y: CANVAS_H / 2,
+          text: `NEW CYCLE!\nSURVIVE`,
+          life: 2.0,
+        });
+      }
     }
 
     // Gnome Mode
@@ -1073,7 +1095,7 @@ export default function Game() {
     }
   };
 
-  const shareText = encodeURIComponent(`I reached $${score} MCAP in Gnome Runner before getting ${gameOverReason}. Dodge bears. Survive rugs. Harvest $GNOME. https://chaosgnome.xyz`);
+  const shareText = encodeURIComponent(`I reached $${score.toLocaleString()} MCAP on Level ${currentLevel + 1} in Gnome Runner before getting ${gameOverReason}. Dodge bears. Survive rugs. Harvest $GNOME. https://chaosgnome.xyz`);
 
   return (
     <main 
