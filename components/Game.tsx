@@ -86,6 +86,63 @@ export default function Game() {
   const [highScore, setHighScore] = useState(0);
   const [gameOverReason, setGameOverReason] = useState("");
   const [isMobileLandscape, setIsMobileLandscape] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  // --- Audio Synthesizer ---
+  const initAudio = () => {
+    if (!audioCtxRef.current) {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioContextClass) {
+        audioCtxRef.current = new AudioContextClass();
+      }
+    }
+    if (audioCtxRef.current?.state === 'suspended') {
+      audioCtxRef.current.resume();
+    }
+  };
+
+  const playSound = (type: "coin" | "crash" | "levelup") => {
+    if (isMuted || !audioCtxRef.current) return;
+    const ctx = audioCtxRef.current;
+    
+    const osc = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    osc.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    const now = ctx.currentTime;
+    
+    if (type === "coin") {
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(800, now);
+      osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(0.1, now + 0.05);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+      osc.start(now);
+      osc.stop(now + 0.2);
+    } else if (type === "crash") {
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(150, now);
+      osc.frequency.exponentialRampToValueAtTime(10, now + 0.5);
+      gainNode.gain.setValueAtTime(0.3, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+      osc.start(now);
+      osc.stop(now + 0.5);
+    } else if (type === "levelup") {
+      osc.type = "square";
+      osc.frequency.setValueAtTime(400, now);
+      osc.frequency.setValueAtTime(600, now + 0.1);
+      osc.frequency.setValueAtTime(800, now + 0.2);
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(0.1, now + 0.1);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+      osc.start(now);
+      osc.stop(now + 0.6);
+    }
+  };
 
   // --- Mutable Game Engine State (Does not trigger React re-renders) ---
   const engineRef = useRef({
@@ -104,7 +161,9 @@ export default function Game() {
     r2: 224, g2: 246, b2: 255,
     starAlpha: 0,
     levelUpText: "",
-    levelUpTime: 0
+    levelUpTime: 0,
+    combo: 0,
+    comboTimer: 0
   });
 
   const playerRef = useRef({
@@ -123,7 +182,7 @@ export default function Game() {
     x: Math.random() * 2000,
     y: Math.random() * 2000,
     size: Math.random() * 2 + 0.5,
-    speed: Math.random() * 3 + 1
+    layer: Math.random() // 0 to 1 for parallax depth
   })));
 
   const windRef = useRef(Array.from({ length: 20 }).map(() => ({
@@ -226,6 +285,7 @@ export default function Game() {
 
   // --- Game Loop Methods ---
   const startGame = () => {
+    initAudio();
     if (!playerName.trim()) return alert("Please enter your name!");
     localStorage.setItem("gnome_runner_name", playerName);
 
@@ -253,6 +313,7 @@ export default function Game() {
   };
 
   const triggerGameOver = (reason: string) => {
+    playSound("crash");
     engineRef.current.state = "gameover";
     setGameState("gameover");
     setGameOverReason(reason);
@@ -328,6 +389,7 @@ export default function Game() {
     }
     
     if (nextLevelIdx !== engine.levelIndex) {
+      playSound("levelup");
       engine.levelIndex = nextLevelIdx;
       engine.levelUpText = CAMPAIGN_LEVELS[nextLevelIdx].name;
       engine.levelUpTime = time + 4000;
@@ -361,16 +423,22 @@ export default function Game() {
     p.x += (p.targetX - p.x) * 0.15;
     p.y = engine.canvasH * 0.85 + Math.sin(time * 0.005) * 10;
 
-    // Thruster Particles
-    if (Math.random() > 0.4) {
+    // Curving Engine Smoke Trails
+    if (Math.random() > 0.2) {
+      const isSmoke = Math.random() > 0.6;
       particlesRef.current.push({
-        x: p.x + (Math.random() - 0.5) * 20,
-        y: p.y + p.h / 2,
-        vx: (Math.random() - 0.5) * 4,
-        vy: engine.speed + Math.random() * 5,
-        life: 0.6,
-        color: isGnomeMode ? "#fbbf24" : "#f97316"
+        x: p.x + p.w / 2 + (Math.random() - 0.5) * 15,
+        y: p.y + p.h,
+        vx: (p.targetX - p.x) * -0.05 + (Math.random() - 0.5) * 2, // Trails curve opposite to steering direction
+        vy: 5 + Math.random() * 5,
+        life: isSmoke ? 2.0 : 0.8,
+        color: isSmoke ? "rgba(150, 150, 150, 0.4)" : (Math.random() > 0.5 ? "#f97316" : "#eab308")
       });
+    }
+
+    // Combo Timer Drop
+    if (time > engine.comboTimer && engine.combo > 0) {
+      engine.combo = 0;
     }
 
     // Spawning
@@ -429,10 +497,34 @@ export default function Game() {
           return;
         } else if (ent.type === "cryptoCoin" && ent.coin) {
           ent.collected = true;
-          engine.score += ent.coin.scoreValue * (isGnomeMode ? 2 : 1);
-          engine.coins++;
+          engine.coins += 1;
+          playSound("coin");
           
-          floatingTextsRef.current.push({ x: ent.x, y: ent.y, text: `+${ent.coin.symbol}`, life: 1.0 });
+          // Combo Logic
+          engine.combo += 1;
+          engine.comboTimer = time + 3000;
+          const multiplier = Math.min(5, 1 + Math.floor(engine.combo / 3));
+          engine.score += ent.coin.scoreValue * multiplier;
+          
+          // Coin Shatter Particle Explosion
+          for (let i = 0; i < 15; i++) {
+            particlesRef.current.push({
+              x: ent.x + ent.w/2,
+              y: ent.y + ent.h/2,
+              vx: (Math.random() - 0.5) * 15,
+              vy: (Math.random() - 0.5) * 15 - 5, // Explode upwards
+              life: 1.2,
+              color: "#fbbf24"
+            });
+          }
+
+          floatingTextsRef.current.push({
+            id: time,
+            text: `+$${(ent.coin.scoreValue * multiplier).toLocaleString()} ${multiplier > 1 ? `(x${multiplier} COMBO!)` : ''}`,
+            x: ent.x,
+            y: ent.y,
+            life: 1.0
+          });
           
           // Trigger Gnome Mode randomly on pickup
           if (Math.random() > 0.95 && !isGnomeMode) {
@@ -486,12 +578,18 @@ export default function Game() {
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
-    // 2. Stars
+    // 2. Parallax Stars
     if (engine.starAlpha > 0.01) {
       ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, engine.starAlpha)})`;
       starsRef.current.forEach(s => {
+        // Parallax depth calculation
+        s.y += (1 + s.layer * 3) * engine.speed;
+        if (s.y > CANVAS_H) s.y = 0;
+        
+        ctx.globalAlpha = 0.2 + s.layer * 0.8;
         ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
       });
+      ctx.globalAlpha = 1.0;
     }
 
     // 2.5 Speed/Wind Streaks
@@ -597,14 +695,24 @@ export default function Game() {
     ctx.globalAlpha = 1.0;
 
     // 6. Floating Text
-    ctx.font = "bold 24px sans-serif";
     ctx.textAlign = "center";
     floatingTextsRef.current.forEach(ft => {
       ctx.globalAlpha = Math.max(0, ft.life);
+      
+      const isCombo = ft.text.includes("COMBO");
+      ctx.font = isCombo ? "900 32px sans-serif" : "bold 24px sans-serif";
+      
+      if (isCombo) {
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#fbbf24";
+      }
+      
       ctx.strokeStyle = "black"; ctx.lineWidth = 4;
       ctx.strokeText(ft.text, ft.x, ft.y);
-      ctx.fillStyle = "#4ade80";
+      ctx.fillStyle = isCombo ? "#fbbf24" : "#4ade80";
       ctx.fillText(ft.text, ft.x, ft.y);
+      
+      ctx.shadowBlur = 0;
     });
     ctx.globalAlpha = 1.0;
     
@@ -673,7 +781,7 @@ export default function Game() {
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm z-20 p-4">
           <div className="max-w-md w-full max-h-[95dvh] overflow-y-auto bg-slate-900 border-2 border-slate-700 rounded-2xl p-6 sm:p-8 shadow-2xl text-center flex flex-col items-center gap-4 sm:gap-6">
             <h1 className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-green-400 to-emerald-600 mb-2 filter drop-shadow-[0_0_15px_rgba(74,222,128,0.5)]">
-              GNOME MOON RUN
+              $GNOME MOON RUN
             </h1>
             <p className="text-slate-300 text-lg">Ascend to the moon. Harvest crypto. Dodge red candles.</p>
 
@@ -741,13 +849,26 @@ export default function Game() {
         </div>
       )}
 
+      {/* Global Mute Toggle (Bottom Right) */}
+      <div className="absolute bottom-4 right-4 z-50">
+        <button 
+          onClick={() => {
+            if (!audioCtxRef.current) initAudio();
+            setIsMuted(!isMuted);
+          }}
+          className="bg-slate-900/80 backdrop-blur-md text-white p-3 rounded-full border-2 border-slate-700 shadow-xl hover:bg-slate-800 transition-colors"
+        >
+          {isMuted ? "🔇 Muted" : "🔊 Sound On"}
+        </button>
+      </div>
+
       {/* Mobile Landscape Blocker */}
       {isMobileLandscape && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 z-[100] p-8 text-center border-4 border-red-500">
           <div className="text-8xl mb-6 animate-pulse">📱</div>
           <h2 className="text-4xl font-black text-red-500 mb-4">ROTATE YOUR DEVICE</h2>
           <p className="text-xl text-slate-300 font-bold max-w-sm">
-            GNOME MOON RUN is a vertical climber! Please rotate your phone to portrait mode to continue playing.
+            $GNOME MOON RUN is a vertical climber! Please rotate your phone to portrait mode to continue playing.
           </p>
         </div>
       )}
