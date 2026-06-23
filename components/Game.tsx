@@ -283,7 +283,7 @@ export default function Game() {
     if (storedScore) setHighScore(parseInt(storedScore));
 
     // Fetch Leaderboard
-    fetch("/api/leaderboard").then(res => res.json()).then(data => {
+    fetch(`/api/leaderboard?t=${Date.now()}`).then(res => res.json()).then(data => {
       if (data.leaderboard) setLeaderboardData(data.leaderboard);
     }).catch(e => console.error("Leaderboard error:", e));
 
@@ -466,7 +466,7 @@ export default function Game() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: playerName, score: finalScore })
-    }).then(() => fetch("/api/leaderboard"))
+    }).then(() => fetch(`/api/leaderboard?t=${Date.now()}`))
       .then(res => res.json())
       .then(data => { if (data.leaderboard) setLeaderboardData(data.leaderboard); });
 
