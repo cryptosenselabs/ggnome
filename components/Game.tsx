@@ -985,7 +985,7 @@ export default function Game() {
       {/* Main Menu */}
       {gameState === "menu" && !isMobileLandscape && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm z-20 p-4">
-          <div className="max-w-md w-full max-h-[95dvh] overflow-y-auto bg-slate-900 border-2 border-slate-700 rounded-2xl p-6 sm:p-8 shadow-2xl text-center flex flex-col items-center gap-4 sm:gap-6">
+          <div className="max-w-md w-full max-h-[95dvh] overflow-y-auto custom-scrollbar bg-slate-900 border-2 border-slate-700 rounded-2xl p-6 sm:p-8 shadow-2xl text-center flex flex-col items-center gap-4 sm:gap-6">
             <h1 className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-green-400 to-emerald-600 mb-2 filter drop-shadow-[0_0_15px_rgba(74,222,128,0.5)]">
               $GNOME MOON RUN
             </h1>
@@ -1036,7 +1036,7 @@ export default function Game() {
       {/* Game Over Screen */}
       {gameState === "gameover" && !isMobileLandscape && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-red-950/80 backdrop-blur-sm z-30 p-4">
-          <div className="max-w-md w-full max-h-[95dvh] overflow-y-auto bg-slate-900 border-2 border-red-900 rounded-2xl p-6 sm:p-8 shadow-2xl text-center flex flex-col items-center gap-4 sm:gap-6">
+          <div className="max-w-md w-full max-h-[95dvh] overflow-y-auto custom-scrollbar bg-slate-900 border-2 border-red-900 rounded-2xl p-6 sm:p-8 shadow-2xl text-center flex flex-col items-center gap-4 sm:gap-6">
             <h2 className="text-4xl sm:text-5xl font-black text-red-500">REKT!</h2>
             <p className="text-xl text-slate-300">You {gameOverReason}.</p>
 
