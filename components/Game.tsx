@@ -341,6 +341,10 @@ export default function Game() {
     rocketImg.onload = () => { assetsRef.current["rocket"] = rocketImg; };
     rocketImg.onerror = () => setAssetError("Failed to load /assets/gnome-rocket.png");
 
+    const whaleImg = new Image();
+    whaleImg.src = "/assets/whale.png";
+    whaleImg.onload = () => { assetsRef.current["enemyWhale"] = whaleImg; };
+
   }, []);
 
   // --- Responsive Canvas Setup ---
@@ -584,11 +588,12 @@ export default function Game() {
       let type = "redCandle";
       const rand = Math.random();
       
-      if (rand > 0.92 && engine.levelIndex >= 1) type = "liquidationLaser"; // 8% chance
-      else if (rand > 0.80 && engine.levelIndex >= 2) type = "bearTrap";    // 12% chance
-      else if (rand > 0.70 && engine.levelIndex >= 4) type = "rugPull";     // 10% chance
-      else if (rand > 0.60 && engine.levelIndex >= 6) type = "fudCloud";    // 10% chance
-      else type = "redCandle"; // 60% chance
+      if (rand > 0.95 && engine.levelIndex >= 4) type = "whaleBlackHole";   // 5% chance
+      else if (rand > 0.88 && engine.levelIndex >= 1) type = "liquidationLaser"; // 7% chance
+      else if (rand > 0.78 && engine.levelIndex >= 2) type = "bearTrap";    // 10% chance
+      else if (rand > 0.68 && engine.levelIndex >= 4) type = "rugPull";     // 10% chance
+      else if (rand > 0.58 && engine.levelIndex >= 6) type = "fudCloud";    // 10% chance
+      else type = "redCandle"; // 58% chance
 
       let w = 40, h = 100;
       let x = 0;
@@ -599,6 +604,9 @@ export default function Game() {
       } else if (type === "liquidationLaser") {
         w = Math.min(CANVAS_W * 0.5, 50 + Math.random() * (CANVAS_W * 0.4));
         h = engine.canvasH + 200;
+        x = Math.random() * (CANVAS_W - w);
+      } else if (type === "whaleBlackHole") {
+        w = 150; h = 150;
         x = Math.random() * (CANVAS_W - w);
       } else if (type === "bearTrap") {
         w = 60; h = 60;
@@ -655,7 +663,7 @@ export default function Game() {
         pBox.y < ent.y + ent.h &&
         pBox.y + pBox.h > ent.y) {
 
-        if (["redCandle", "liquidationLaser", "bearTrap", "rugPull"].includes(ent.type)) {
+        if (["redCandle", "liquidationLaser", "bearTrap", "rugPull", "whaleBlackHole"].includes(ent.type)) {
           const reason = ent.type.replace(/([A-Z])/g, ' $1').trim().toLowerCase();
           triggerGameOver(`hit a ${reason}`);
           return;
@@ -834,38 +842,47 @@ export default function Game() {
         ctx.save();
         const pulse = Math.sin(time * 0.02 + ent.id);
         
-        ctx.shadowBlur = 20 + pulse * 10;
-        ctx.shadowColor = "rgba(236, 72, 153, 0.8)"; // Pink/Purple glow
+        ctx.shadowBlur = 30 + pulse * 15;
+        ctx.shadowColor = "rgba(236, 72, 153, 0.9)"; // Intense Pink/Purple glow
 
         // Core laser beam
         const gradient = ctx.createLinearGradient(ent.x, 0, ent.x + ent.w, 0);
-        gradient.addColorStop(0, "rgba(236, 72, 153, 0.3)");
-        gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.9)"); // White hot center
-        gradient.addColorStop(1, "rgba(236, 72, 153, 0.3)");
+        gradient.addColorStop(0, "rgba(236, 72, 153, 0.1)");
+        gradient.addColorStop(0.3, "rgba(236, 72, 153, 0.7)");
+        gradient.addColorStop(0.5, "rgba(255, 255, 255, 1)"); // White hot center
+        gradient.addColorStop(0.7, "rgba(236, 72, 153, 0.7)");
+        gradient.addColorStop(1, "rgba(236, 72, 153, 0.1)");
 
         ctx.fillStyle = gradient;
         ctx.fillRect(ent.x, ent.y, ent.w, ent.h);
 
-        // Warning lines on the edges
-        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-        ctx.fillRect(ent.x, ent.y, 4, ent.h);
-        ctx.fillRect(ent.x + ent.w - 4, ent.y, 4, ent.h);
-
-        // Danger Text
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = `rgba(255, 255, 255, ${0.5 + pulse * 0.5})`;
-        ctx.font = "900 24px sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        
-        // Draw text multiple times down the length of the laser
-        for(let ty = ent.y + 100; ty < ent.y + ent.h; ty += 200) {
-           if (ty > 0 && ty < engine.canvasH) { // Only draw if visible on screen
-             ctx.fillText("LIQUIDATION", ent.x + ent.w/2, ty);
-           }
+        // Chaotic inner lightning arcs
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+        ctx.lineWidth = 2 + Math.random() * 2;
+        ctx.beginPath();
+        let lx = ent.x + ent.w/2;
+        ctx.moveTo(lx, ent.y);
+        for(let ly = ent.y; ly < ent.y + ent.h; ly += 40) {
+            lx = ent.x + ent.w/2 + (Math.random() - 0.5) * (ent.w * 0.4);
+            ctx.lineTo(lx, ly);
         }
+        ctx.stroke();
 
         ctx.restore();
+      } else if (ent.type === "whaleBlackHole") {
+        const whaleImg = assetsRef.current.enemyWhale;
+        if (whaleImg && whaleImg.naturalWidth > 0) {
+           ctx.drawImage(whaleImg, ent.x - 20, ent.y - 20, ent.w + 40, ent.h + 40);
+        } else {
+           // Fallback Black Hole
+           ctx.fillStyle = "#000";
+           ctx.shadowBlur = 50;
+           ctx.shadowColor = "#3b82f6";
+           ctx.beginPath();
+           ctx.arc(ent.x + ent.w/2, ent.y + ent.h/2, ent.w/2, 0, Math.PI * 2);
+           ctx.fill();
+           ctx.shadowBlur = 0;
+        }
       } else if (ent.type === "bearTrap") {
         const trapImg = assetsRef.current.enemyBear;
         if (trapImg && trapImg.naturalWidth > 0) {
