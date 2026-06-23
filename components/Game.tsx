@@ -61,24 +61,24 @@ interface LevelData {
 
 const CAMPAIGN_LEVELS: LevelData[] = [
   // Chapter 1: The Garden Awakens
-  { chapter: "Chapter 1: The Garden Awakens", name: "Gnome Meadow", scoreThreshold: 0, bgFolder: "level1", backgroundTint: "rgba(0, 0, 0, 0)", speedMultiplier: 1.0, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 2000, coinSpawnRate: 800 },
-  { chapter: "Chapter 1: The Garden Awakens", name: "Seedling Valley", scoreThreshold: 5000, bgFolder: "level2", backgroundTint: "rgba(255, 165, 0, 0.15)", speedMultiplier: 1.2, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1800, coinSpawnRate: 700 },
+  { chapter: "Chapter 1: The Garden Awakens", name: "Gnome Meadow", scoreThreshold: 0, bgFolder: "level1", backgroundTint: "rgba(0, 0, 0, 0)", speedMultiplier: 1.0, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 1000, coinSpawnRate: 400 },
+  { chapter: "Chapter 1: The Garden Awakens", name: "Seedling Valley", scoreThreshold: 5000, bgFolder: "level2", backgroundTint: "rgba(255, 165, 0, 0.15)", speedMultiplier: 1.2, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 900, coinSpawnRate: 350 },
 
   // Chapter 2: The Gnome Homeland
-  { chapter: "Chapter 2: The Gnome Homeland", name: "Mushroom Fields", scoreThreshold: 15000, bgFolder: "level3", backgroundTint: "rgba(128, 0, 128, 0.2)", speedMultiplier: 1.4, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 1500, coinSpawnRate: 600 },
-  { chapter: "Chapter 2: The Gnome Homeland", name: "Alpine Wind Run", scoreThreshold: 30000, bgFolder: "level4", backgroundTint: "rgba(0, 191, 255, 0.2)", speedMultiplier: 1.6, hazards: { candles: false, lasers: false, wind: true }, obstacleSpawnRate: 1300, coinSpawnRate: 500 },
+  { chapter: "Chapter 2: The Gnome Homeland", name: "Mushroom Fields", scoreThreshold: 15000, bgFolder: "level3", backgroundTint: "rgba(128, 0, 128, 0.2)", speedMultiplier: 1.4, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 750, coinSpawnRate: 300 },
+  { chapter: "Chapter 2: The Gnome Homeland", name: "Alpine Wind Run", scoreThreshold: 30000, bgFolder: "level4", backgroundTint: "rgba(0, 191, 255, 0.2)", speedMultiplier: 1.6, hazards: { candles: false, lasers: false, wind: true }, obstacleSpawnRate: 650, coinSpawnRate: 250 },
 
   // Chapter 3: Market Chaos
-  { chapter: "Chapter 3: Market Chaos", name: "Red Candle Pass", scoreThreshold: 50000, bgFolder: "level5", backgroundTint: "rgba(255, 0, 0, 0.2)", speedMultiplier: 1.8, hazards: { candles: true, lasers: false, wind: true }, obstacleSpawnRate: 1100, coinSpawnRate: 500 },
-  { chapter: "Chapter 3: Market Chaos", name: "Liquidation Ridge", scoreThreshold: 75000, bgFolder: "level6", backgroundTint: "rgba(255, 0, 0, 0.4)", speedMultiplier: 2.1, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 900, coinSpawnRate: 600 },
+  { chapter: "Chapter 3: Market Chaos", name: "Red Candle Pass", scoreThreshold: 50000, bgFolder: "level5", backgroundTint: "rgba(255, 0, 0, 0.2)", speedMultiplier: 1.8, hazards: { candles: true, lasers: false, wind: true }, obstacleSpawnRate: 550, coinSpawnRate: 250 },
+  { chapter: "Chapter 3: Market Chaos", name: "Liquidation Ridge", scoreThreshold: 75000, bgFolder: "level6", backgroundTint: "rgba(255, 0, 0, 0.4)", speedMultiplier: 2.1, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 450, coinSpawnRate: 300 },
 
   // Chapter 4: The Gnomad Cult
-  { chapter: "Chapter 4: The Gnomad Cult", name: "The Gnomad Village", scoreThreshold: 125000, bgFolder: "level7", backgroundTint: "rgba(0, 100, 0, 0.3)", speedMultiplier: 2.5, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 800, coinSpawnRate: 400 },
-  { chapter: "Chapter 4: The Gnomad Cult", name: "Full Moon Raid", scoreThreshold: 200000, bgFolder: "level8", backgroundTint: "rgba(0, 0, 139, 0.6)", speedMultiplier: 3.0, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 700, coinSpawnRate: 300 },
+  { chapter: "Chapter 4: The Gnomad Cult", name: "The Gnomad Village", scoreThreshold: 125000, bgFolder: "level7", backgroundTint: "rgba(0, 100, 0, 0.3)", speedMultiplier: 2.5, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 400, coinSpawnRate: 200 },
+  { chapter: "Chapter 4: The Gnomad Cult", name: "Full Moon Raid", scoreThreshold: 200000, bgFolder: "level8", backgroundTint: "rgba(0, 0, 139, 0.6)", speedMultiplier: 3.0, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 350, coinSpawnRate: 150 },
 
   // Chapter 5: The Moon Pump
-  { chapter: "Chapter 5: The Moon Pump", name: "Bear Market Storm", scoreThreshold: 350000, bgFolder: "level9", backgroundTint: "rgba(50, 50, 50, 0.8)", speedMultiplier: 3.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 600, coinSpawnRate: 400 },
-  { chapter: "Chapter 5: The Moon Pump", name: "Moon Pump Summit", scoreThreshold: 750000, bgFolder: "level10", backgroundTint: "rgba(255, 215, 0, 0.5)", speedMultiplier: 4.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 400, coinSpawnRate: 200 },
+  { chapter: "Chapter 5: The Moon Pump", name: "Bear Market Storm", scoreThreshold: 350000, bgFolder: "level9", backgroundTint: "rgba(50, 50, 50, 0.8)", speedMultiplier: 3.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 300, coinSpawnRate: 200 },
+  { chapter: "Chapter 5: The Moon Pump", name: "Moon Pump Summit", scoreThreshold: 750000, bgFolder: "level10", backgroundTint: "rgba(255, 215, 0, 0.5)", speedMultiplier: 4.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 200, coinSpawnRate: 100 },
 ];
 
 // Interfaces
@@ -1265,6 +1265,7 @@ export default function Game() {
           <div className="flex flex-col md:flex-row landscape:flex-row gap-4 md:gap-8 w-full max-w-5xl justify-center items-center px-4 h-full">
             {/* Left: Title and Input */}
             <div className="flex flex-col items-center flex-1">
+              <img src="/assets/gnome-rocket.png" alt="Gnome Character" className="w-24 h-24 md:w-32 md:h-32 object-contain drop-shadow-[0_0_15px_rgba(74,222,128,0.5)] animate-bounce mb-2" />
               <h1 className="text-4xl md:text-7xl landscape:text-5xl font-black text-white mb-2 md:mb-4 drop-shadow-2xl text-center">GNOME RUNNER</h1>
               <p className="text-green-400 text-sm md:text-xl font-bold mb-4 md:mb-6 text-center px-4 hidden md:block portrait:block">Dodge Bears. Survive Rugs. Stack $GNOME.</p>
               <div className="mb-4 md:mb-6 flex flex-col items-center pointer-events-auto">
@@ -1372,6 +1373,7 @@ export default function Game() {
       {/* Landscape Prompt Overlay */}
       <div className="portrait:flex hidden fixed inset-0 z-[100] bg-black items-center justify-center flex-col pointer-events-auto px-6 text-center py-8">
         <div className="flex-shrink-0 mb-6 flex flex-col items-center">
+          <img src="/assets/gnome-rocket.png" alt="Gnome Character" className="w-24 h-24 object-contain drop-shadow-[0_0_15px_rgba(74,222,128,0.5)] mb-4" />
           <h1 className="text-5xl font-black text-white mb-2 drop-shadow-2xl text-center">GNOME RUNNER</h1>
           <p className="text-green-400 text-sm font-bold mb-8 text-center px-4">Dodge Bears. Survive Rugs. Stack $GNOME.</p>
           
