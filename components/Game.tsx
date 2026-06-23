@@ -42,10 +42,54 @@ function formatPrice(price: number) {
   return "$" + price.toExponential(2);
 }
 
+// Level Progression Configuration
+interface LevelData {
+  chapter: string;
+  name: string;
+  scoreThreshold: number;
+  bgFolder: string;
+  backgroundTint: string;
+  speedMultiplier: number;
+  hazards: {
+    candles: boolean;
+    lasers: boolean;
+    wind: boolean;
+  };
+  obstacleSpawnRate: number; // Smaller = faster spawns
+  coinSpawnRate: number;     // Smaller = faster spawns
+}
+
+const CAMPAIGN_LEVELS: LevelData[] = [
+  // Chapter 1: The Garden Awakens
+  { chapter: "Chapter 1: The Garden Awakens", name: "Gnome Meadow", scoreThreshold: 0, bgFolder: "level1", backgroundTint: "rgba(0, 0, 0, 0)", speedMultiplier: 1.0, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 2000, coinSpawnRate: 800 },
+  { chapter: "Chapter 1: The Garden Awakens", name: "Seedling Valley", scoreThreshold: 2000, bgFolder: "level1", backgroundTint: "rgba(255, 165, 0, 0.15)", speedMultiplier: 1.1, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1800, coinSpawnRate: 800 },
+  { chapter: "Chapter 1: The Garden Awakens", name: "Village Edge", scoreThreshold: 5000, bgFolder: "level2", backgroundTint: "rgba(255, 140, 0, 0.25)", speedMultiplier: 1.2, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1600, coinSpawnRate: 700 },
+
+  // Chapter 2: The Gnome Homeland
+  { chapter: "Chapter 2: The Gnome Homeland", name: "Mushroom Fields", scoreThreshold: 10000, bgFolder: "level3", backgroundTint: "rgba(128, 0, 128, 0.2)", speedMultiplier: 1.3, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 1500, coinSpawnRate: 600 },
+  { chapter: "Chapter 2: The Gnome Homeland", name: "Gnome Garden Gate", scoreThreshold: 20000, bgFolder: "level4", backgroundTint: "rgba(128, 0, 128, 0.35)", speedMultiplier: 1.4, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1400, coinSpawnRate: 600 },
+  { chapter: "Chapter 2: The Gnome Homeland", name: "Alpine Wind Run", scoreThreshold: 35000, bgFolder: "level5", backgroundTint: "rgba(0, 191, 255, 0.2)", speedMultiplier: 1.6, hazards: { candles: false, lasers: false, wind: true }, obstacleSpawnRate: 1200, coinSpawnRate: 500 },
+
+  // Chapter 3: Market Chaos
+  { chapter: "Chapter 3: Market Chaos", name: "Red Candle Pass", scoreThreshold: 50000, bgFolder: "level6", backgroundTint: "rgba(255, 0, 0, 0.2)", speedMultiplier: 1.8, hazards: { candles: true, lasers: false, wind: true }, obstacleSpawnRate: 1000, coinSpawnRate: 500 },
+  { chapter: "Chapter 3: Market Chaos", name: "Liquidation Ridge", scoreThreshold: 75000, bgFolder: "level7", backgroundTint: "rgba(255, 0, 0, 0.4)", speedMultiplier: 2.0, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 900, coinSpawnRate: 600 },
+  { chapter: "Chapter 3: Market Chaos", name: "Coin Harvest Plains", scoreThreshold: 100000, bgFolder: "level8", backgroundTint: "rgba(255, 215, 0, 0.2)", speedMultiplier: 2.2, hazards: { candles: false, lasers: false, wind: false }, obstacleSpawnRate: 2000, coinSpawnRate: 300 },
+
+  // Chapter 4: The Gnomad Cult
+  { chapter: "Chapter 4: The Gnomad Cult", name: "The Gnomad Village", scoreThreshold: 150000, bgFolder: "level9", backgroundTint: "rgba(0, 100, 0, 0.3)", speedMultiplier: 2.4, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1000, coinSpawnRate: 400 },
+  { chapter: "Chapter 4: The Gnomad Cult", name: "Moonlit Meadow", scoreThreshold: 200000, bgFolder: "level10", backgroundTint: "rgba(0, 0, 139, 0.5)", speedMultiplier: 2.6, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 900, coinSpawnRate: 400 },
+  { chapter: "Chapter 4: The Gnomad Cult", name: "Full Moon Raid", scoreThreshold: 250000, bgFolder: "level10", backgroundTint: "rgba(0, 0, 139, 0.7)", speedMultiplier: 2.8, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 700, coinSpawnRate: 300 },
+
+  // Chapter 5: The Moon Pump
+  { chapter: "Chapter 5: The Moon Pump", name: "Bear Market Storm", scoreThreshold: 350000, bgFolder: "level10", backgroundTint: "rgba(50, 50, 50, 0.8)", speedMultiplier: 3.0, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 600, coinSpawnRate: 400 },
+  { chapter: "Chapter 5: The Moon Pump", name: "The Wreckage Garden", scoreThreshold: 500000, bgFolder: "level10", backgroundTint: "rgba(139, 0, 0, 0.6)", speedMultiplier: 3.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 500, coinSpawnRate: 300 },
+  { chapter: "Chapter 5: The Moon Pump", name: "Moon Pump Summit", scoreThreshold: 1000000, bgFolder: "level10", backgroundTint: "rgba(255, 215, 0, 0.5)", speedMultiplier: 4.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 400, coinSpawnRate: 200 },
+];
+
 // Interfaces
 interface Entity {
   id: number;
-  type: "redCandle" | "cryptoCoin";
+  type: "redCandle" | "cryptoCoin" | "liquidationLaser" | "windStreak";
   x: number;
   y: number;
   w: number;
@@ -86,6 +130,8 @@ export default function Game() {
   const [assetError, setAssetError] = useState("");
   const [playerName, setPlayerName] = useState("");
   const [leaderboardData, setLeaderboardData] = useState<{name: string, score: number}[]>([]);
+  const [currentLevel, setCurrentLevel] = useState(0);
+  const [levelBanner, setLevelBanner] = useState<{ chapter: string; name: string } | null>(null);
 
   // Refs for game loop state
   const stateRef = useRef({
@@ -95,6 +141,7 @@ export default function Game() {
     speed: INITIAL_SPEED,
     multiplier: 1.0,
     gnomeModeTime: 0,
+    levelIndex: 0,
   });
 
   const playerRef = useRef({
@@ -175,12 +222,6 @@ export default function Game() {
       "gnome-rocket": "/assets/gnome-rocket.png",
     };
 
-    // Add 10 background images
-    for (let i = 1; i <= 10; i++) {
-      const idx = String(i).padStart(2, '0');
-      imagePaths[`bg-${idx}`] = `/assets/background/bg-${idx}.png`;
-    }
-
     Object.entries(imagePaths).forEach(([key, src]) => {
       const img = new Image();
       img.src = src;
@@ -188,14 +229,35 @@ export default function Game() {
         assetsRef.current[key] = img;
       };
       img.onerror = () => {
-        if (key.startsWith("bg-")) {
-           setAssetError("Missing background assets. Please check /public/assets/background.");
-        } else if (["gnome-rocket", "coin-gnome"].includes(key)) {
+        if (["gnome-rocket", "coin-gnome"].includes(key)) {
            setAssetError(`Missing game asset: ${key}. Please check public/assets.`);
         }
       };
     });
   }, []);
+
+  // Dynamic Background Loader
+  useEffect(() => {
+    const levelData = CAMPAIGN_LEVELS[currentLevel];
+    if (!levelData) return;
+    
+    setAssetError("");
+
+    for (let i = 1; i <= 5; i++) {
+      const idx = String(i).padStart(2, '0');
+      const key = `bg-${idx}`;
+      const src = `/assets/background/${levelData.bgFolder}/bg-${idx}.png`;
+      
+      const img = new Image();
+      img.src = src;
+      img.onload = () => {
+        assetsRef.current[key] = img;
+      };
+      img.onerror = () => {
+         console.warn(`Missing background: ${src}`);
+      };
+    }
+  }, [currentLevel]);
 
   const startGame = () => {
     // Attempt to enter fullscreen to hide mobile browser address bars
@@ -223,6 +285,7 @@ export default function Game() {
       speed: INITIAL_SPEED,
       multiplier: 1.0,
       gnomeModeTime: 0,
+      levelIndex: 0,
     };
 
     playerRef.current = {
@@ -330,6 +393,18 @@ export default function Game() {
   };
 
   const handlePointerDown = (e: React.PointerEvent<HTMLElement>) => {
+    // Do not hijack clicks on buttons, links, or inputs
+    const target = e.target as HTMLElement;
+    if (
+      target.tagName === "BUTTON" || 
+      target.tagName === "A" || 
+      target.tagName === "INPUT" || 
+      target.closest("button") || 
+      target.closest("a")
+    ) {
+      return;
+    }
+
     if (stateRef.current.state !== "playing") {
       startGame();
       return;
@@ -393,33 +468,51 @@ export default function Game() {
     }
   }
 
-  const spawnObstacle = (time: number) => {
-    const isTopCandle = Math.random() > 0.5; // 50% chance ceiling candle
-    const width = 45 + Math.random() * 25; // 45 to 70 width
-    const height = 100 + Math.random() * 200; // 100 to 300 height
-    
-    if (isTopCandle) {
-       // Hanging from ceiling
-       entitiesRef.current.push({
-         id: time,
-         type: "redCandle",
-         x: CANVAS_W + 100,
-         y: 0,
-         w: width,
-         h: height,
-         vy: 0,
-       });
-    } else {
-       // Ground candle
-       entitiesRef.current.push({
-         id: time,
-         type: "redCandle",
-         x: CANVAS_W + 100,
-         y: FLOOR_Y - height,
-         w: width,
-         h: height,
-         vy: 0,
-       });
+  const spawnObstacle = (time: number, levelData: LevelData) => {
+    // Determine which hazards are allowed
+    const choices = [];
+    if (levelData.hazards.candles) choices.push("redCandle");
+    if (levelData.hazards.lasers) choices.push("liquidationLaser");
+    if (levelData.hazards.wind) choices.push("windStreak");
+
+    if (choices.length === 0) return; // No hazards for this level
+
+    const chosenType = choices[Math.floor(Math.random() * choices.length)];
+
+    if (chosenType === "redCandle") {
+      const isTopCandle = Math.random() > 0.5;
+      const width = 45 + Math.random() * 25;
+      const height = 100 + Math.random() * 200;
+      
+      entitiesRef.current.push({
+        id: time,
+        type: "redCandle",
+        x: CANVAS_W + 100,
+        y: isTopCandle ? 0 : FLOOR_Y - height,
+        w: width,
+        h: height,
+        vy: 0,
+      });
+    } else if (chosenType === "liquidationLaser") {
+      entitiesRef.current.push({
+        id: time,
+        type: "liquidationLaser",
+        x: CANVAS_W + 100,
+        y: 100 + Math.random() * (FLOOR_Y - 200), // Random altitude
+        w: 150 + Math.random() * 300, // Long horizontal beam
+        h: 20, // Thin laser
+        vy: 0,
+      });
+    } else if (chosenType === "windStreak") {
+      entitiesRef.current.push({
+        id: time,
+        type: "windStreak",
+        x: CANVAS_W + 100,
+        y: Math.random() * FLOOR_Y,
+        w: 300 + Math.random() * 400,
+        h: 5,
+        vy: 0,
+      });
     }
   };
 
@@ -447,6 +540,24 @@ export default function Game() {
     // Increase score & speed
     s.score += (s.speed * s.multiplier) / 10;
     s.speed += SPEED_INCREMENT;
+
+    // Check Level Up
+    const nextLevelIndex = s.levelIndex + 1;
+    if (nextLevelIndex < CAMPAIGN_LEVELS.length && s.score >= CAMPAIGN_LEVELS[nextLevelIndex].scoreThreshold) {
+      const nextLevelData = CAMPAIGN_LEVELS[nextLevelIndex];
+      s.levelIndex = nextLevelIndex;
+      s.speed = INITIAL_SPEED * nextLevelData.speedMultiplier;
+      setCurrentLevel(nextLevelIndex);
+      setLevelBanner({ chapter: nextLevelData.chapter, name: nextLevelData.name });
+      setTimeout(() => setLevelBanner(null), 4000);
+      
+      floatingTextsRef.current.push({
+        x: CANVAS_W / 2 - 200,
+        y: CANVAS_H / 2,
+        text: `LEVEL UP!\n${nextLevelData.name}`,
+        life: 2.0,
+      });
+    }
 
     // Gnome Mode
     const isGnomeMode = time < s.gnomeModeTime;
@@ -496,13 +607,14 @@ export default function Game() {
     };
 
     // Spawning
+    const currentLevelData = CAMPAIGN_LEVELS[s.levelIndex];
     if (time > nextSpawnRef.current) {
-      spawnObstacle(time);
-      nextSpawnRef.current = time + 1200; // Faster spawns for testing
+      spawnObstacle(time, currentLevelData);
+      nextSpawnRef.current = time + currentLevelData.obstacleSpawnRate + Math.random() * 500;
     }
     if (time > nextCoinSpawnRef.current) {
       spawnCoin(time);
-      nextCoinSpawnRef.current = time + Math.random() * 800 + 500;
+      nextCoinSpawnRef.current = time + currentLevelData.coinSpawnRate + Math.random() * 400;
     }
     // Entities Logic
     for (let i = entitiesRef.current.length - 1; i >= 0; i--) {
@@ -525,16 +637,21 @@ export default function Game() {
       // Collision Detection AABB
       const eBox = { x: ent.x + 10, y: ent.y + 10, w: ent.w - 20, h: ent.h - 20 };
 
-      if (
-        pBox.x < eBox.x + eBox.w &&
-        pBox.x + pBox.w > eBox.x &&
-        pBox.y < eBox.y + eBox.h &&
-        pBox.y + pBox.h > eBox.y
-      ) {
-        if (ent.type === "redCandle") {
-          gameOver("REKT BY THE RED CANDLE!");
-          return;
-        } else if (ent.type === "cryptoCoin" && !ent.collected) {
+      // Wind streaks have no hitbox
+      if (ent.type !== "windStreak") {
+        if (
+          pBox.x < eBox.x + eBox.w &&
+          pBox.x + pBox.w > eBox.x &&
+          pBox.y < eBox.y + eBox.h &&
+          pBox.y + pBox.h > eBox.y
+        ) {
+          if (ent.type === "redCandle") {
+            gameOver("REKT BY THE RED CANDLE!");
+            return;
+          } else if (ent.type === "liquidationLaser") {
+            gameOver("LIQUIDATED BY A LASER!");
+            return;
+          } else if (ent.type === "cryptoCoin" && !ent.collected) {
           ent.collected = true;
           const coinVal = ent.coin ? ent.coin.scoreValue : 100;
           const multiplier = isGnomeMode ? 2 : 1;
@@ -598,7 +715,7 @@ export default function Game() {
       // If the current background has completely scrolled offscreen to the left
       if (bg.x <= -drawW) {
         bg.x += drawW;
-        bg.currentIndex = (bg.currentIndex + 1) % 10;
+        bg.currentIndex = (bg.currentIndex + 1) % 5;
       }
     }
 
@@ -637,13 +754,23 @@ export default function Game() {
         ctx.drawImage(bgImg, currentDrawX, 0, drawW, CANVAS_H);
         
         currentDrawX += drawW;
-        bgRenderIndex = (bgRenderIndex + 1) % 10;
+        bgRenderIndex = (bgRenderIndex + 1) % 5;
       } else {
         // Fallback
         ctx.fillStyle = "#87CEEB";
         ctx.fillRect(currentDrawX, 0, CANVAS_W, CANVAS_H);
         break;
       }
+    }
+
+    // Apply Background Tint for Level Atmosphere
+    const currentLevelData = CAMPAIGN_LEVELS[stateRef.current.levelIndex];
+    if (currentLevelData && currentLevelData.backgroundTint !== "rgba(0, 0, 0, 0)") {
+      ctx.save();
+      ctx.fillStyle = currentLevelData.backgroundTint;
+      ctx.globalCompositeOperation = "source-over"; 
+      ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+      ctx.restore();
     }
 
     // Draw Entities
@@ -730,6 +857,24 @@ export default function Game() {
            ctx.fillText(formatPrice(ent.coin.priceUsd), ent.x + ent.w/2, floatY + ent.h + 12);
         }
         
+        ctx.restore();
+      } else if (ent.type === "liquidationLaser") {
+        ctx.save();
+        ctx.fillStyle = "rgba(239, 68, 68, 0.4)"; // red core
+        ctx.fillRect(ent.x, ent.y - 10, ent.w, ent.h + 20); // aura
+        ctx.fillStyle = "#ef4444";
+        ctx.fillRect(ent.x, ent.y, ent.w, ent.h); // beam
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "#ef4444";
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(ent.x, ent.y + ent.h/2 - 2, ent.w, 4); // hot core
+        ctx.restore();
+      } else if (ent.type === "windStreak") {
+        ctx.save();
+        ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+        ctx.beginPath();
+        ctx.roundRect(ent.x, ent.y, ent.w, ent.h, 2);
+        ctx.fill();
         ctx.restore();
       }
     });
@@ -935,8 +1080,30 @@ export default function Game() {
         </div>
       )}
 
+      {/* Level Banner Animation */}
+      {levelBanner && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-40">
+          <div className="animate-in fade-in zoom-in duration-500 text-center drop-shadow-[0_0_20px_rgba(255,255,255,0.8)]">
+            <h1 className="text-4xl md:text-6xl font-black text-yellow-400 tracking-widest uppercase mb-4">
+              {levelBanner.chapter}
+            </h1>
+            <h2 className="text-6xl md:text-8xl font-black text-white">
+              {levelBanner.name}
+            </h2>
+          </div>
+        </div>
+      )}
+
       {/* HUD overlay */}
-      <div className="absolute top-4 right-6 flex flex-col items-end gap-2 pointer-events-none">
+      <div className="absolute top-4 left-6 pointer-events-none z-30">
+        <div className="bg-black/80 backdrop-blur-md px-6 py-3 rounded-xl border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+          <h2 className="text-xl md:text-2xl font-black text-blue-400 drop-shadow-lg">
+            [CH {Math.floor(currentLevel/3) + 1}] {CAMPAIGN_LEVELS[currentLevel]?.name}
+          </h2>
+        </div>
+      </div>
+
+      <div className="absolute top-4 right-6 flex flex-col items-end gap-2 pointer-events-none z-30">
         <div className="bg-black/60 backdrop-blur-md px-6 py-3 rounded-xl border border-green-500/30">
           <h2 className="text-4xl font-black text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.8)] tracking-tighter">
             MCAP: ${score.toLocaleString()}
