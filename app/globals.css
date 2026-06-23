@@ -40,3 +40,49 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(234, 179, 8, 0.8);
 }
+
+/* Mobile Portrait Layout Patch */
+.mobileAmbientBg {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(24px) brightness(0.65) saturate(1.25);
+  transform: scale(1.12);
+  z-index: 0;
+}
+
+.mobileAmbientOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.22);
+  z-index: 1;
+}
+
+.gameShell {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+}
+
+.gameCanvasWrapper {
+  width: min(100vw, calc(100vh * 16 / 9));
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+}
+
+@media (orientation: portrait) {
+  .gameCanvasWrapper {
+    width: 100vw;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    margin-top: max(12px, env(safe-area-inset-top));
+  }
+}
+
+.gameCanvasWrapper canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}

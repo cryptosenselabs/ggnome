@@ -215,6 +215,9 @@ export default function Game() {
   const particlesRef = useRef<Particle[]>([]);
   const floatingTextsRef = useRef<FloatingText[]>([]);
   const keysRef = useRef<Record<string, boolean>>({});
+  
+  // Mobile Controls
+  const inputRef = useRef({ boost: false, dip: false });
 
   const frameRef = useRef(0);
   const nextSpawnRef = useRef(0);
@@ -714,10 +717,19 @@ export default function Game() {
     // Safe initialization for hot-reloads
     if (typeof (p as any).baseX === "undefined") (p as any).baseX = 200;
 
-    // Player Physics & Animation (Drag to Steer)
-    if (!(p as any).isDragging) {
+    // Player Physics & Animation (Drag to Steer or Buttons)
+    if (inputRef.current.boost) {
+      p.targetY -= 20; // Rise fast
+    } else if (inputRef.current.dip) {
+      p.targetY += 20; // Fall fast
+    } else if (!(p as any).isDragging) {
       p.targetY = FLOOR_Y; // Gravity pulls back to the ground when released
     }
+    
+    // Clamp targetY so they don't fly off screen
+    if (p.targetY < GNOME_VISUAL_HEIGHT - 20) p.targetY = GNOME_VISUAL_HEIGHT - 20;
+    if (p.targetY > FLOOR_Y) p.targetY = FLOOR_Y;
+
     const diffY = p.targetY - p.y;
     p.y += diffY * 0.05; // Smooth interpolation Y (heavy steering)
 
@@ -1252,27 +1264,30 @@ export default function Game() {
 
   return (
     <main
-      className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-black font-sans relative"
+      className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-black font-sans touch-none select-none pb-[env(safe-area-inset-bottom)]"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
       onPointerCancel={handlePointerUp}
     >
-      {/* Ambient Blurred Background */}
-      <div 
-        className="absolute inset-0 blur-[60px] scale-125 opacity-70 z-0 transition-all duration-1000" 
-        style={ambientStyle} 
-      />
-      
-      {/* Game Canvas container */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-        <canvas
-          ref={canvasRef}
-          width={CANVAS_W}
-          height={CANVAS_H}
-          className="block w-full h-full touch-none select-none object-contain pointer-events-auto"
-        />
+      <div className="mobileAmbientBg transition-all duration-1000" style={ambientStyle} />
+      <div className="mobileAmbientOverlay" />
+
+      <div className="gameShell pointer-events-none flex flex-col justify-center portrait:justify-start">
+        {/* Rotate Hint */}
+        <div className="portrait:block hidden absolute top-[calc(env(safe-area-inset-top)+4px)] left-0 right-0 text-center pointer-events-none z-50 opacity-60">
+          <p className="text-white text-xs font-bold tracking-widest uppercase drop-shadow-md">Rotate for cinematic mode</p>
+        </div>
+
+        {/* Game Canvas Wrapper */}
+        <div className="gameCanvasWrapper pointer-events-auto relative shadow-2xl">
+          <canvas
+            ref={canvasRef}
+            width={CANVAS_W}
+            height={CANVAS_H}
+          />
+        </div>
       </div>
 
       {assetError && (
@@ -1296,8 +1311,8 @@ export default function Game() {
       )}
 
       {/* HUD overlay (Level) */}
-      <div className="absolute bottom-4 md:bottom-auto md:top-4 left-4 md:left-6 pointer-events-none z-30">
-        <div className="bg-black/80 backdrop-blur-md px-3 py-2 md:px-6 md:py-3 rounded-xl border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+      <div className="absolute top-[calc(env(safe-area-inset-top)+32px)] left-4 md:top-4 md:left-6 pointer-events-none z-30">
+        <div className="bg-black/55 backdrop-blur-[8px] px-3 py-2 md:px-6 md:py-3 rounded-xl border border-white/15 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
           <h2 className="text-sm md:text-2xl font-black text-blue-400 drop-shadow-lg">
             [CH {Math.floor(currentLevel / 3) + 1}] {CAMPAIGN_LEVELS[currentLevel]?.name}
           </h2>
@@ -1305,8 +1320,8 @@ export default function Game() {
       </div>
 
       {/* HUD overlay (Score & Status) */}
-      <div className="absolute bottom-4 md:bottom-auto md:top-4 right-4 md:right-6 flex flex-col items-end gap-2 pointer-events-none z-30">
-        <div className="bg-black/60 backdrop-blur-md px-3 py-2 md:px-6 md:py-3 rounded-xl border border-green-500/30">
+      <div className="absolute top-[calc(env(safe-area-inset-top)+32px)] right-4 md:top-4 md:right-6 flex flex-col items-end gap-2 pointer-events-none z-30">
+        <div className="bg-black/55 backdrop-blur-[8px] px-3 py-2 md:px-6 md:py-3 rounded-xl border border-white/15 shadow-lg">
           <h2 className="text-xl md:text-4xl font-black text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.8)] tracking-tighter">
             MCAP: ${score.toLocaleString()}
           </h2>
@@ -1431,6 +1446,29 @@ export default function Game() {
               SHARE ON X
             </a>
           </div>
+        </div>
+      )}
+      {/* Mobile Touch Controls */}
+      {gameState === "playing" && (
+        <div className="portrait:flex hidden absolute bottom-8 left-0 right-0 px-6 gap-6 justify-between pointer-events-auto z-50">
+          <button 
+            className="flex-1 bg-red-500/40 backdrop-blur-md active:bg-red-500/70 text-white/80 active:text-white font-black text-3xl py-8 rounded-[2rem] border-2 border-red-400/30 active:border-red-400 shadow-[0_0_20px_rgba(239,68,68,0.2)] active:shadow-[0_0_30px_rgba(239,68,68,0.8)] select-none touch-none transition-all"
+            onPointerDown={(e) => { e.stopPropagation(); inputRef.current.dip = true; }}
+            onPointerUp={(e) => { e.stopPropagation(); inputRef.current.dip = false; }}
+            onPointerCancel={(e) => { e.stopPropagation(); inputRef.current.dip = false; }}
+            onPointerLeave={(e) => { e.stopPropagation(); inputRef.current.dip = false; }}
+          >
+            DIP
+          </button>
+          <button 
+            className="flex-1 bg-green-500/40 backdrop-blur-md active:bg-green-500/70 text-white/80 active:text-white font-black text-3xl py-8 rounded-[2rem] border-2 border-green-400/30 active:border-green-400 shadow-[0_0_20px_rgba(74,222,128,0.2)] active:shadow-[0_0_30px_rgba(74,222,128,0.8)] select-none touch-none transition-all"
+            onPointerDown={(e) => { e.stopPropagation(); inputRef.current.boost = true; }}
+            onPointerUp={(e) => { e.stopPropagation(); inputRef.current.boost = false; }}
+            onPointerCancel={(e) => { e.stopPropagation(); inputRef.current.boost = false; }}
+            onPointerLeave={(e) => { e.stopPropagation(); inputRef.current.boost = false; }}
+          >
+            BOOST
+          </button>
         </div>
       )}
     </main>

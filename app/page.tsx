@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-
-const Game = dynamic(() => import('../components/Game'), { ssr: false });
+import Game from '../components/Game';
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
