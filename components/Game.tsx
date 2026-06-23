@@ -366,12 +366,13 @@ export default function Game() {
 
     playerRef.current = {
       x: 200,
+      baseX: 200,
       y: FLOOR_Y,
       targetY: FLOOR_Y,
       w: 100,
       h: 120,
       vy: 0,
-      state: "jumping",
+      state: "jumping" as "running" | "jumping" | "sliding",
       slideEndTime: 0,
     };
 
@@ -1221,6 +1222,25 @@ export default function Game() {
     }
   };
 
+  const getDisplayLeaderboard = () => {
+    let board = [...leaderboardData];
+    const localScore = highScore;
+    const localName = (playerName || "Anonymous").trim();
+    
+    // Filter out our own exact DB entry if it's there to avoid duplicates
+    board = board.filter(e => !(e.name === localName && e.score === localScore));
+    
+    board.push({ name: `${localName} (You)`, score: localScore });
+    board.sort((a, b) => b.score - a.score);
+    
+    const myIndex = board.findIndex(e => e.name === `${localName} (You)`);
+    if (myIndex >= 100 && board.length > 100) {
+       board[99] = board[myIndex]; // Force it into the bottom slot if not in top 100
+    }
+    
+    return board.slice(0, 100);
+  };
+
   return (
     <main
       className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-black font-sans"
@@ -1322,7 +1342,7 @@ export default function Game() {
             <div className="bg-black/60 p-4 md:p-6 rounded-2xl border border-yellow-500/30 text-left w-full max-w-[350px] flex-shrink-0 flex flex-col h-[220px] md:h-[400px] pointer-events-auto">
               <h2 className="text-lg md:text-xl font-black text-yellow-400 mb-4 text-center border-b border-yellow-500/20 pb-2">GLOBAL TOP 100</h2>
               <div className="flex flex-col gap-2 overflow-y-auto pr-2 custom-scrollbar flex-1">
-                {leaderboardData.length > 0 ? leaderboardData.map((entry, idx) => (
+                {getDisplayLeaderboard().length > 0 ? getDisplayLeaderboard().map((entry, idx) => (
                   <div key={idx} className="flex justify-between items-center text-sm border-b border-gray-800/50 pb-1">
                     <span className="font-bold text-gray-300 truncate max-w-[160px] flex items-center gap-2">
                       <span className="text-gray-500 w-6 text-right inline-block">{idx + 1}.</span>
@@ -1361,7 +1381,7 @@ export default function Game() {
             <div className="bg-black/80 p-3 sm:p-4 rounded-2xl border border-yellow-500/30 text-left w-full sm:w-[350px] flex flex-col h-[180px] sm:h-[220px] flex-shrink-0">
               <h2 className="text-base sm:text-lg font-black text-yellow-400 mb-2 text-center border-b border-yellow-500/20 pb-1">GLOBAL TOP 100</h2>
               <div className="flex flex-col gap-2 overflow-y-auto pr-2 custom-scrollbar flex-1">
-                {leaderboardData.length > 0 ? leaderboardData.map((entry, idx) => (
+                {getDisplayLeaderboard().length > 0 ? getDisplayLeaderboard().map((entry, idx) => (
                   <div key={idx} className="flex justify-between items-center text-xs sm:text-sm border-b border-gray-800/50 pb-1">
                     <span className="font-bold text-gray-300 truncate max-w-[140px] flex items-center gap-1 sm:gap-2">
                       <span className="text-gray-500 w-5 text-right inline-block">{idx + 1}.</span>
@@ -1415,7 +1435,7 @@ export default function Game() {
         <div className="bg-black/60 p-4 rounded-2xl border border-yellow-500/30 text-left w-full max-w-[350px] flex flex-col h-[300px] flex-1">
           <h2 className="text-lg font-black text-yellow-400 mb-4 text-center border-b border-yellow-500/20 pb-2">GLOBAL TOP 100</h2>
           <div className="flex flex-col gap-2 overflow-y-auto pr-2 custom-scrollbar flex-1">
-            {leaderboardData.length > 0 ? leaderboardData.map((entry, idx) => (
+            {getDisplayLeaderboard().length > 0 ? getDisplayLeaderboard().map((entry, idx) => (
               <div key={idx} className="flex justify-between items-center text-sm border-b border-gray-800/50 pb-1">
                 <span className="font-bold text-gray-300 truncate max-w-[150px] flex items-center gap-2">
                   <span className="text-gray-500 w-6 text-right inline-block">{idx + 1}.</span>
