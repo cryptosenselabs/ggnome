@@ -849,6 +849,20 @@ export default function Game() {
         ctx.fillRect(ent.x, ent.y, 4, ent.h);
         ctx.fillRect(ent.x + ent.w - 4, ent.y, 4, ent.h);
 
+        // Danger Text
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.5 + pulse * 0.5})`;
+        ctx.font = "900 24px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        
+        // Draw text multiple times down the length of the laser
+        for(let ty = ent.y + 100; ty < ent.y + ent.h; ty += 200) {
+           if (ty > 0 && ty < engine.canvasH) { // Only draw if visible on screen
+             ctx.fillText("LIQUIDATION", ent.x + ent.w/2, ty);
+           }
+        }
+
         ctx.restore();
       } else if (ent.type === "bearTrap") {
         const trapImg = assetsRef.current.enemyBear;
@@ -1082,6 +1096,26 @@ export default function Game() {
             >
               Share on X
             </a>
+
+            {leaderboardData.length > 0 && (
+              <div className="w-full mt-2 text-left border-t border-slate-700 pt-4">
+                <div className="flex justify-between items-end mb-2">
+                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Top Degens</h3>
+                  <span className="text-xs font-bold text-slate-500 uppercase">Global Top 100</span>
+                </div>
+                <div className="space-y-1 max-h-[120px] overflow-y-auto pr-2 custom-scrollbar">
+                  {leaderboardData.slice(0, 100).map((l, i) => (
+                    <div key={i} className="flex justify-between text-sm py-0.5 border-b border-white/5 last:border-0">
+                      <span className={`font-bold ${l.name === playerName ? "text-green-400" : "text-slate-300"}`}>
+                        {i + 1}. {l.name}
+                        {l.name === playerName && " (YOU)"}
+                      </span>
+                      <span className="text-green-400 font-mono">${l.score.toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
