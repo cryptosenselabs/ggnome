@@ -465,10 +465,27 @@ export default function Game() {
     if (stateRef.current.state === "playing" && canvasRef.current) {
       if (e.pointerType === "touch" || e.buttons === 1) {
         const rect = canvasRef.current.getBoundingClientRect();
-        const scaleX = CANVAS_W / rect.width;
-        const scaleY = CANVAS_H / rect.height;
-        let y = (e.clientY - rect.top) * scaleY;
-        let x = (e.clientX - rect.left) * scaleX;
+        
+        // Calculate the actual drawn area within the object-contain element
+        const canvasAspect = CANVAS_W / CANVAS_H;
+        const rectAspect = rect.width / rect.height;
+        
+        let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+        if (rectAspect > canvasAspect) {
+          drawHeight = rect.height;
+          drawWidth = drawHeight * canvasAspect;
+          offsetX = (rect.width - drawWidth) / 2;
+        } else {
+          drawWidth = rect.width;
+          drawHeight = drawWidth / canvasAspect;
+          offsetY = (rect.height - drawHeight) / 2;
+        }
+
+        const scaleX = CANVAS_W / drawWidth;
+        const scaleY = CANVAS_H / drawHeight;
+        
+        let y = (e.clientY - rect.top - offsetY) * scaleY;
+        let x = (e.clientX - rect.left - offsetX) * scaleX;
 
         // Clamp to screen
         if (y < GNOME_VISUAL_HEIGHT - 20) y = GNOME_VISUAL_HEIGHT - 20;
@@ -691,7 +708,13 @@ export default function Game() {
     // Gnome Mode
     const isGnomeMode = time < s.gnomeModeTime;
 
+    // Safe initialization for hot-reloads
+    if (typeof (p as any).baseX === "undefined") (p as any).baseX = 200;
+
     // Player Physics & Animation (Drag to Steer)
+    if (!(p as any).isDragging) {
+      p.targetY = FLOOR_Y; // Gravity pulls back to the ground when released
+    }
     const diffY = p.targetY - p.y;
     p.y += diffY * 0.15; // Smooth interpolation Y
 
@@ -1199,7 +1222,7 @@ export default function Game() {
 
   return (
     <main
-      className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-[#0a0a0a] font-sans flex items-center justify-center"
+      className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-black font-sans"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -1210,8 +1233,7 @@ export default function Game() {
         ref={canvasRef}
         width={CANVAS_W}
         height={CANVAS_H}
-        className="max-w-full max-h-full touch-none select-none shadow-[0_0_50px_rgba(0,0,0,1)] bg-black"
-        style={{ aspectRatio: "1280/720" }}
+        className="block w-full h-full touch-none select-none object-contain"
       />
 
       {assetError && (
