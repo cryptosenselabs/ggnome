@@ -828,6 +828,28 @@ export default function Game() {
         ctx.stroke();
 
         ctx.restore();
+      } else if (ent.type === "liquidationLaser") {
+        ctx.save();
+        const pulse = Math.sin(time * 0.02 + ent.id);
+        
+        ctx.shadowBlur = 20 + pulse * 10;
+        ctx.shadowColor = "rgba(236, 72, 153, 0.8)"; // Pink/Purple glow
+
+        // Core laser beam
+        const gradient = ctx.createLinearGradient(ent.x, 0, ent.x + ent.w, 0);
+        gradient.addColorStop(0, "rgba(236, 72, 153, 0.3)");
+        gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.9)"); // White hot center
+        gradient.addColorStop(1, "rgba(236, 72, 153, 0.3)");
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(ent.x, ent.y, ent.w, ent.h);
+
+        // Warning lines on the edges
+        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.fillRect(ent.x, ent.y, 4, ent.h);
+        ctx.fillRect(ent.x + ent.w - 4, ent.y, 4, ent.h);
+
+        ctx.restore();
       } else if (ent.type === "bearTrap") {
         const trapImg = assetsRef.current.enemyBear;
         if (trapImg && trapImg.naturalWidth > 0) {
