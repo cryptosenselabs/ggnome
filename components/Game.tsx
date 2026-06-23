@@ -178,7 +178,7 @@ export default function Game() {
   const [gnomeModeActive, setGnomeModeActive] = useState(false);
   const [assetError, setAssetError] = useState("");
   const [playerName, setPlayerName] = useState("");
-  const [leaderboardData, setLeaderboardData] = useState<{name: string, score: number}[]>([]);
+  const [leaderboardData, setLeaderboardData] = useState<{ name: string, score: number }[]>([]);
   const [currentLevel, setCurrentLevel] = useState(0);
   const [levelBanner, setLevelBanner] = useState<{ chapter: string; name: string } | null>(null);
 
@@ -215,7 +215,7 @@ export default function Game() {
   const particlesRef = useRef<Particle[]>([]);
   const floatingTextsRef = useRef<FloatingText[]>([]);
   const keysRef = useRef<Record<string, boolean>>({});
-  
+
   const frameRef = useRef(0);
   const nextSpawnRef = useRef(0);
   const nextCoinSpawnRef = useRef(0);
@@ -251,20 +251,20 @@ export default function Game() {
     fetch("/assets/crypto/crypto-coins.json")
       .then(res => res.json())
       .then((data: CryptoCoin[]) => {
-         const subset = data.sort(() => 0.5 - Math.random()).slice(0, 20);
-         cryptoCoinsRef.current = subset;
-         subset.forEach(c => {
-           const img = new Image();
-           img.src = c.logo;
-           img.onload = () => { cryptoLogosRef.current[c.symbol] = img; };
-         });
+        const subset = data.sort(() => 0.5 - Math.random()).slice(0, 20);
+        cryptoCoinsRef.current = subset;
+        subset.forEach(c => {
+          const img = new Image();
+          img.src = c.logo;
+          img.onload = () => { cryptoLogosRef.current[c.symbol] = img; };
+        });
       }).catch(err => {
-         console.warn("Using fallback crypto list", err);
-         cryptoCoinsRef.current = [
-           { id: "bitcoin", symbol: "BTC", name: "Bitcoin", priceUsd: 65000, rank: 1, change24h: 1.2, logo: "/assets/crypto/logos/bitcoin.png", scoreValue: calculateCoinScore(65000) },
-           { id: "ethereum", symbol: "ETH", name: "Ethereum", priceUsd: 3500, rank: 2, change24h: -0.5, logo: "/assets/crypto/logos/ethereum.png", scoreValue: calculateCoinScore(3500) },
-           { id: "solana", symbol: "SOL", name: "Solana", priceUsd: 150, rank: 5, change24h: 5.4, logo: "/assets/crypto/logos/solana.png", scoreValue: calculateCoinScore(150) }
-         ];
+        console.warn("Using fallback crypto list", err);
+        cryptoCoinsRef.current = [
+          { id: "bitcoin", symbol: "BTC", name: "Bitcoin", priceUsd: 65000, rank: 1, change24h: 1.2, logo: "/assets/crypto/logos/bitcoin.png", scoreValue: calculateCoinScore(65000) },
+          { id: "ethereum", symbol: "ETH", name: "Ethereum", priceUsd: 3500, rank: 2, change24h: -0.5, logo: "/assets/crypto/logos/ethereum.png", scoreValue: calculateCoinScore(3500) },
+          { id: "solana", symbol: "SOL", name: "Solana", priceUsd: 150, rank: 5, change24h: 5.4, logo: "/assets/crypto/logos/solana.png", scoreValue: calculateCoinScore(150) }
+        ];
       });
 
     // Preload Images
@@ -281,7 +281,7 @@ export default function Game() {
       };
       img.onerror = () => {
         if (["gnome-rocket", "coin-gnome"].includes(key)) {
-           setAssetError(`Missing game asset: ${key}. Please check public/assets.`);
+          setAssetError(`Missing game asset: ${key}. Please check public/assets.`);
         }
       };
     });
@@ -291,21 +291,21 @@ export default function Game() {
   useEffect(() => {
     const levelData = CAMPAIGN_LEVELS[currentLevel];
     if (!levelData) return;
-    
+
     setAssetError("");
 
     for (let i = 1; i <= 5; i++) {
       const idx = String(i).padStart(2, '0');
       const key = `bg-${idx}`;
       const src = `/assets/background/${levelData.bgFolder}/bg-${idx}.png`;
-      
+
       const img = new Image();
       img.src = src;
       img.onload = () => {
         assetsRef.current[key] = img;
       };
       img.onerror = () => {
-         console.warn(`Missing background: ${src}`);
+        console.warn(`Missing background: ${src}`);
       };
     }
   }, [currentLevel]);
@@ -383,7 +383,7 @@ export default function Game() {
     entitiesRef.current = [];
     particlesRef.current = [];
     floatingTextsRef.current = [];
-    
+
     harvestedCountRef.current = 0;
     lastGrabRef.current = "";
 
@@ -401,9 +401,9 @@ export default function Game() {
     const levelStr = (stateRef.current.levelIndex + 1).toString();
     const randomMsg = SHARE_MESSAGES[Math.floor(Math.random() * SHARE_MESSAGES.length)];
     const finalMsg = randomMsg
-        .replace("{mcap}", mcapString)
-        .replace("{level}", levelStr)
-        .replace("{reason}", reason);
+      .replace("{mcap}", mcapString)
+      .replace("{level}", levelStr)
+      .replace("{reason}", reason);
     setShareMessage(encodeURIComponent(finalMsg));
 
     // Screen flash and hit particles
@@ -430,11 +430,11 @@ export default function Game() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: submitName, score: finalScore })
     }).then(() => {
-       fetch("/api/leaderboard")
-         .then(res => res.json())
-         .then(data => {
-           if (data.leaderboard) setLeaderboardData(data.leaderboard);
-         });
+      fetch("/api/leaderboard")
+        .then(res => res.json())
+        .then(data => {
+          if (data.leaderboard) setLeaderboardData(data.leaderboard);
+        });
     }).catch(e => console.error("Score submit error:", e));
   };
 
@@ -462,13 +462,14 @@ export default function Game() {
 
   // Pointer Tracking for Mouse & Touch
   const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
-    if (stateRef.current.state === "playing") {
+    if (stateRef.current.state === "playing" && canvasRef.current) {
       if (e.pointerType === "touch" || e.buttons === 1) {
-        const rect = e.currentTarget.getBoundingClientRect();
+        const rect = canvasRef.current.getBoundingClientRect();
         const scaleX = CANVAS_W / rect.width;
+        const scaleY = CANVAS_H / rect.height;
         let y = (e.clientY - rect.top) * scaleY;
         let x = (e.clientX - rect.left) * scaleX;
-        
+
         // Clamp to screen
         if (y < GNOME_VISUAL_HEIGHT - 20) y = GNOME_VISUAL_HEIGHT - 20;
         if (y > FLOOR_Y) y = FLOOR_Y;
@@ -490,10 +491,10 @@ export default function Game() {
     // Do not hijack clicks on buttons, links, or inputs
     const target = e.target as HTMLElement;
     if (
-      target.tagName === "BUTTON" || 
-      target.tagName === "A" || 
-      target.tagName === "INPUT" || 
-      target.closest("button") || 
+      target.tagName === "BUTTON" ||
+      target.tagName === "A" ||
+      target.tagName === "INPUT" ||
+      target.closest("button") ||
       target.closest("a")
     ) {
       return;
@@ -503,7 +504,7 @@ export default function Game() {
       startGame();
       return;
     }
-    
+
     // Do not auto-start if in menu (must click START RUN button to validate name)
     if (stateRef.current.state === "menu") {
       return;
@@ -585,7 +586,7 @@ export default function Game() {
       const isTopCandle = Math.random() > 0.5;
       const width = 45 + Math.random() * 25;
       const height = 100 + Math.random() * 200;
-      
+
       entitiesRef.current.push({
         id: time,
         type: "redCandle",
@@ -652,7 +653,7 @@ export default function Game() {
     // Check Level Up
     const nextLevelIndex = s.levelIndex + 1;
     const effectiveScore = s.score - s.loopOffset;
-    
+
     if (nextLevelIndex < CAMPAIGN_LEVELS.length) {
       if (effectiveScore >= CAMPAIGN_LEVELS[nextLevelIndex].scoreThreshold) {
         const nextLevelData = CAMPAIGN_LEVELS[nextLevelIndex];
@@ -661,7 +662,7 @@ export default function Game() {
         setCurrentLevel(nextLevelIndex);
         setLevelBanner({ chapter: nextLevelData.chapter, name: nextLevelData.name });
         setTimeout(() => setLevelBanner(null), 4000);
-        
+
         floatingTextsRef.current.push({
           x: CANVAS_W / 2 - 200,
           y: CANVAS_H / 2,
@@ -677,7 +678,7 @@ export default function Game() {
         setCurrentLevel(0);
         setLevelBanner({ chapter: "CYCLE REPEATS", name: "The Bear Trap" });
         setTimeout(() => setLevelBanner(null), 4000);
-        
+
         floatingTextsRef.current.push({
           x: CANVAS_W / 2 - 200,
           y: CANVAS_H / 2,
@@ -693,7 +694,7 @@ export default function Game() {
     // Player Physics & Animation (Drag to Steer)
     const diffY = p.targetY - p.y;
     p.y += diffY * 0.15; // Smooth interpolation Y
-    
+
     // Elastic forward pull (X-axis)
     let desiredX = (p as any).baseX;
     if ((p as any).isDragging && (p as any).targetX > (p as any).baseX) {
@@ -788,49 +789,49 @@ export default function Game() {
             gameOver("LIQUIDATED BY A LASER!");
             return;
           } else if (ent.type === "cryptoCoin" && !ent.collected) {
-          ent.collected = true;
-          const coinVal = ent.coin ? ent.coin.scoreValue : 100;
-          const multiplier = isGnomeMode ? 2 : 1;
-          const finalScore = coinVal * multiplier;
-          
-          s.coins += 1;
-          s.score += finalScore;
-          s.multiplier += 0.01;
-          
-          harvestedCountRef.current += 1;
-          lastGrabRef.current = `${ent.coin ? ent.coin.symbol : 'COIN'} +${finalScore}`;
+            ent.collected = true;
+            const coinVal = ent.coin ? ent.coin.scoreValue : 100;
+            const multiplier = isGnomeMode ? 2 : 1;
+            const finalScore = coinVal * multiplier;
 
-          // Float text
-          floatingTextsRef.current.push({
-            x: ent.x,
-            y: ent.y,
-            text: `+${finalScore} MCAP\n${ent.coin ? ent.coin.symbol : ''}`,
-            life: 1.0,
-          });
+            s.coins += 1;
+            s.score += finalScore;
+            s.multiplier += 0.01;
 
-          // Sparkles
-          for (let j = 0; j < 6; j++) {
-            particlesRef.current.push({
-              x: ent.x + ent.w / 2,
-              y: ent.y + ent.h / 2,
-              vx: (Math.random() - 0.5) * 12,
-              vy: (Math.random() - 0.5) * 12,
-              life: 1.0,
-              color: "#fbbf24", // gold
-            });
-          }
+            harvestedCountRef.current += 1;
+            lastGrabRef.current = `${ent.coin ? ent.coin.symbol : 'COIN'} +${finalScore}`;
 
-          // Very rare chance to trigger Gnome Mode
-          if (Math.random() > 0.95 && !isGnomeMode) {
-            s.gnomeModeTime = time + 6000; // 6 seconds
+            // Float text
             floatingTextsRef.current.push({
-              x: p.x,
-              y: p.y - 150,
-              text: "GNOME MODE: 2X HARVEST",
-              life: 2.0,
+              x: ent.x,
+              y: ent.y,
+              text: `+${finalScore} MCAP\n${ent.coin ? ent.coin.symbol : ''}`,
+              life: 1.0,
             });
+
+            // Sparkles
+            for (let j = 0; j < 6; j++) {
+              particlesRef.current.push({
+                x: ent.x + ent.w / 2,
+                y: ent.y + ent.h / 2,
+                vx: (Math.random() - 0.5) * 12,
+                vy: (Math.random() - 0.5) * 12,
+                life: 1.0,
+                color: "#fbbf24", // gold
+              });
+            }
+
+            // Very rare chance to trigger Gnome Mode
+            if (Math.random() > 0.95 && !isGnomeMode) {
+              s.gnomeModeTime = time + 6000; // 6 seconds
+              floatingTextsRef.current.push({
+                x: p.x,
+                y: p.y - 150,
+                text: "GNOME MODE: 2X HARVEST",
+                life: 2.0,
+              });
+            }
           }
-        }
         }
       }
 
@@ -848,7 +849,7 @@ export default function Game() {
     if (currentBgImg) {
       const bgScale = FLOOR_Y / currentBgImg.height;
       const drawW = currentBgImg.width * bgScale;
-      
+
       // If the current background has completely scrolled offscreen to the left
       if (bg.x <= -drawW) {
         bg.x += drawW;
@@ -864,7 +865,7 @@ export default function Game() {
 
     // Apply camera shake if game over
     if (stateRef.current.state === "gameover") {
-      const shakeAmt = Math.max(0, 5 - (performance.now() - stateRef.current.gnomeModeTime)*0.01); 
+      const shakeAmt = Math.max(0, 5 - (performance.now() - stateRef.current.gnomeModeTime) * 0.01);
       ctx.save();
       ctx.translate((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10);
     } else {
@@ -882,14 +883,14 @@ export default function Game() {
       safeLoopBreak++;
       const bgKey = `bg-${String(bgRenderIndex + 1).padStart(2, '0')}`;
       const bgImg = assetsRef.current[bgKey];
-      
+
       if (bgImg) {
         const bgScale = CANVAS_H / bgImg.height;
         const drawW = bgImg.width * bgScale;
-        
+
         // Draw to fill the entire canvas (scenery at bottom, sky at top)
         ctx.drawImage(bgImg, currentDrawX, 0, drawW, CANVAS_H);
-        
+
         currentDrawX += drawW;
         bgRenderIndex = (bgRenderIndex + 1) % 5;
       } else {
@@ -905,7 +906,7 @@ export default function Game() {
     if (currentLevelData && currentLevelData.backgroundTint !== "rgba(0, 0, 0, 0)") {
       ctx.save();
       ctx.fillStyle = currentLevelData.backgroundTint;
-      ctx.globalCompositeOperation = "source-over"; 
+      ctx.globalCompositeOperation = "source-over";
       ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
       ctx.restore();
     }
@@ -947,7 +948,7 @@ export default function Game() {
         ctx.restore();
       } else if (ent.type === "cryptoCoin") {
         const floatY = ent.y + Math.sin(time * 0.005 + ent.id) * 10;
-        
+
         ctx.save();
         // glowing circular frame
         ctx.shadowBlur = 15;
@@ -956,44 +957,44 @@ export default function Game() {
         ctx.strokeStyle = "rgba(250, 204, 21, 0.8)";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(ent.x + ent.w/2, floatY + ent.h/2, ent.w/2, 0, Math.PI * 2);
+        ctx.arc(ent.x + ent.w / 2, floatY + ent.h / 2, ent.w / 2, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
 
         ctx.shadowBlur = 0;
-        
+
         // draw logo or fallback text
         let drawnLogo = false;
         if (ent.coin && cryptoLogosRef.current[ent.coin.symbol]) {
-           const img = cryptoLogosRef.current[ent.coin.symbol];
-           if (img.complete && img.naturalWidth !== 0) {
-             ctx.drawImage(img, ent.x + 4, floatY + 4, ent.w - 8, ent.h - 8);
-             drawnLogo = true;
-           }
+          const img = cryptoLogosRef.current[ent.coin.symbol];
+          if (img.complete && img.naturalWidth !== 0) {
+            ctx.drawImage(img, ent.x + 4, floatY + 4, ent.w - 8, ent.h - 8);
+            drawnLogo = true;
+          }
         }
-        
+
         if (!drawnLogo && ent.coin) {
-           ctx.fillStyle = "#fbbf24";
-           ctx.font = "bold 14px sans-serif";
-           ctx.textAlign = "center";
-           ctx.textBaseline = "middle";
-           ctx.fillText(ent.coin.symbol.slice(0, 3), ent.x + ent.w/2, floatY + ent.h/2);
+          ctx.fillStyle = "#fbbf24";
+          ctx.font = "bold 14px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(ent.coin.symbol.slice(0, 3), ent.x + ent.w / 2, floatY + ent.h / 2);
         }
 
         // draw ticker and price
         if (ent.coin) {
-           ctx.fillStyle = "#ffffff";
-           ctx.font = "bold 12px sans-serif";
-           ctx.textAlign = "center";
-           ctx.shadowBlur = 5;
-           ctx.shadowColor = "#000000";
-           ctx.fillText(ent.coin.symbol, ent.x + ent.w/2, floatY - 6);
-           
-           ctx.fillStyle = "#4ade80"; // green
-           ctx.font = "bold 10px sans-serif";
-           ctx.fillText(formatPrice(ent.coin.priceUsd), ent.x + ent.w/2, floatY + ent.h + 12);
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 12px sans-serif";
+          ctx.textAlign = "center";
+          ctx.shadowBlur = 5;
+          ctx.shadowColor = "#000000";
+          ctx.fillText(ent.coin.symbol, ent.x + ent.w / 2, floatY - 6);
+
+          ctx.fillStyle = "#4ade80"; // green
+          ctx.font = "bold 10px sans-serif";
+          ctx.fillText(formatPrice(ent.coin.priceUsd), ent.x + ent.w / 2, floatY + ent.h + 12);
         }
-        
+
         ctx.restore();
       } else if (ent.type === "liquidationLaser") {
         ctx.save();
@@ -1004,7 +1005,7 @@ export default function Game() {
         ctx.shadowBlur = 20;
         ctx.shadowColor = "#ef4444";
         ctx.fillStyle = "#ffffff";
-        ctx.fillRect(ent.x, ent.y + ent.h/2 - 2, ent.w, 4); // hot core
+        ctx.fillRect(ent.x, ent.y + ent.h / 2 - 2, ent.w, 4); // hot core
         ctx.restore();
       } else if (ent.type === "windStreak") {
         ctx.save();
@@ -1022,7 +1023,7 @@ export default function Game() {
     let drawW = GNOME_VISUAL_WIDTH;
     let drawH = GNOME_VISUAL_HEIGHT;
     let drawY = p.y - GNOME_VISUAL_HEIGHT;
-    
+
     const isGnomeMode = stateRef.current.gnomeModeTime > time;
 
     pImg = assetsRef.current["gnome-rocket"];
@@ -1035,55 +1036,55 @@ export default function Game() {
       if (stateRef.current.state !== "gameover") {
         // Rocket Procedural Animation
         const pulse = time * 0.01;
-        
+
         let bobY = Math.sin(pulse) * 4;
         let tilt = Math.sin(pulse) * 0.015;
         const scaleX = 1 + Math.sin(pulse) * 0.01;
         const scaleY = 1 - Math.sin(pulse) * 0.01;
-        
+
         // Jump/Slide state overrides
         if (p.state === "jumping") {
-           tilt = -0.15; // Nose up
-           bobY = 0;
+          tilt = -0.15; // Nose up
+          bobY = 0;
         } else if (p.state === "sliding") {
-           // Duck / crouch
-           drawY += 20; 
-           tilt = 0.05; // slight nose down
+          // Duck / crouch
+          drawY += 20;
+          tilt = 0.05; // slight nose down
         }
         // Power Aura Implementation
         if (!isGnomeMode) {
-           let auraColor = "";
-           let auraRadius = 0;
-           if (stateRef.current.score > 30000) { auraColor = "rgba(250, 204, 21, 0.4)"; auraRadius = 90; } // Gold
-           else if (stateRef.current.score > 15000) { auraColor = "rgba(74, 222, 128, 0.4)"; auraRadius = 70; } // Green
-           else if (stateRef.current.score > 5000) { auraColor = "rgba(34, 211, 238, 0.4)"; auraRadius = 50; } // Cyan
-           
-           if (auraColor) {
-             ctx.save();
-             ctx.globalCompositeOperation = "screen";
-             ctx.fillStyle = auraColor;
-             ctx.shadowBlur = 30;
-             ctx.shadowColor = auraColor;
-             ctx.beginPath();
-             // Pulsing radius based on time
-             const pulseRad = auraRadius + Math.sin(time * 0.005) * 10;
-             ctx.arc(p.x + drawW/2, drawY + drawH/2 + bobY, pulseRad, 0, Math.PI * 2);
-             ctx.fill();
-             ctx.restore();
-           }
+          let auraColor = "";
+          let auraRadius = 0;
+          if (stateRef.current.score > 30000) { auraColor = "rgba(250, 204, 21, 0.4)"; auraRadius = 90; } // Gold
+          else if (stateRef.current.score > 15000) { auraColor = "rgba(74, 222, 128, 0.4)"; auraRadius = 70; } // Green
+          else if (stateRef.current.score > 5000) { auraColor = "rgba(34, 211, 238, 0.4)"; auraRadius = 50; } // Cyan
+
+          if (auraColor) {
+            ctx.save();
+            ctx.globalCompositeOperation = "screen";
+            ctx.fillStyle = auraColor;
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = auraColor;
+            ctx.beginPath();
+            // Pulsing radius based on time
+            const pulseRad = auraRadius + Math.sin(time * 0.005) * 10;
+            ctx.arc(p.x + drawW / 2, drawY + drawH / 2 + bobY, pulseRad, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
         }
 
         // Draw Canvas Rocket Flame
         if (pImg === assetsRef.current["gnome-rocket"] || pImg === assetsRef.current["gnomeMode"]) {
-          const flameOriginX = p.x + drawW * 0.08; 
+          const flameOriginX = p.x + drawW * 0.08;
           const flameOriginY = drawY + drawH * 0.66 + bobY;
-          
+
           ctx.save();
           ctx.globalCompositeOperation = "lighter";
-          
+
           const baseSpeed = stateRef.current.speed;
           const flameLength = 45 + Math.sin(time * 0.04) * 12 + baseSpeed * 2 + (p.state === "jumping" ? 20 : 0);
-          
+
           ctx.shadowBlur = 25;
           ctx.shadowColor = "rgba(255, 120, 0, 0.9)";
 
@@ -1124,33 +1125,33 @@ export default function Game() {
           ctx.closePath();
           ctx.fillStyle = isGnomeMode ? "rgba(255, 200, 0, 0.9)" : "rgba(255, 230, 80, 0.9)";
           ctx.fill();
-          
+
           // Smoke/spark particles spawning from rocket
           if (Math.random() > 0.5) {
-             particlesRef.current.push({
-               x: flameOriginX - 10,
-               y: flameOriginY,
-               vx: -baseSpeed - Math.random()*5,
-               vy: (Math.random()-0.5)*2,
-               life: 1.0,
-               color: isGnomeMode ? "#fbbf24" : "rgba(150, 150, 150, 0.5)"
-             });
+            particlesRef.current.push({
+              x: flameOriginX - 10,
+              y: flameOriginY,
+              vx: -baseSpeed - Math.random() * 5,
+              vy: (Math.random() - 0.5) * 2,
+              life: 1.0,
+              color: isGnomeMode ? "#fbbf24" : "rgba(150, 150, 150, 0.5)"
+            });
           }
-          
+
           ctx.restore();
         }
 
         // Dynamic Shadow
         ctx.fillStyle = "rgba(0,0,0,0.4)";
         ctx.beginPath();
-        ctx.ellipse(p.x + drawW/2, FLOOR_Y, 40 - bobY*2 - (p.state === "jumping" ? 20 : 0), 10 - bobY/2, 0, 0, Math.PI * 2);
+        ctx.ellipse(p.x + drawW / 2, FLOOR_Y, 40 - bobY * 2 - (p.state === "jumping" ? 20 : 0), 10 - bobY / 2, 0, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.save();
-        ctx.translate(p.x + drawW/2, drawY + drawH/2 + bobY);
+        ctx.translate(p.x + drawW / 2, drawY + drawH / 2 + bobY);
         ctx.rotate(tilt);
         ctx.scale(scaleX, scaleY);
-        ctx.drawImage(pImg, -drawW/2, -drawH/2, drawW, drawH);
+        ctx.drawImage(pImg, -drawW / 2, -drawH / 2, drawW, drawH);
         ctx.restore();
       } else {
         ctx.drawImage(pImg, p.x, drawY, drawW, drawH);
@@ -1159,8 +1160,8 @@ export default function Game() {
       ctx.fillStyle = "green";
       ctx.fillRect(p.x, drawY, drawW, drawH);
     }
-    
-    ctx.shadowBlur = 0; 
+
+    ctx.shadowBlur = 0;
 
     // Draw Particles
     particlesRef.current.forEach((part) => {
@@ -1181,8 +1182,8 @@ export default function Game() {
       ctx.lineWidth = 3;
       const lines = ft.text.split('\n');
       lines.forEach((line, index) => {
-         ctx.strokeText(line, ft.x, ft.y + index * 26);
-         ctx.fillText(line, ft.x, ft.y + index * 26);
+        ctx.strokeText(line, ft.x, ft.y + index * 26);
+        ctx.fillText(line, ft.x, ft.y + index * 26);
       });
       ctx.globalAlpha = 1.0;
     });
@@ -1191,14 +1192,14 @@ export default function Game() {
 
     // Red screen flash on game over
     if (stateRef.current.state === "gameover") {
-       ctx.fillStyle = "rgba(255, 0, 0, 0.2)";
-       ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+      ctx.fillStyle = "rgba(255, 0, 0, 0.2)";
+      ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
     }
   };
 
   return (
-    <main 
-      className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-black font-sans"
+    <main
+      className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-[#0a0a0a] font-sans flex items-center justify-center"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -1209,7 +1210,8 @@ export default function Game() {
         ref={canvasRef}
         width={CANVAS_W}
         height={CANVAS_H}
-        className="block h-full w-full touch-none select-none"
+        className="max-w-full max-h-full touch-none select-none shadow-[0_0_50px_rgba(0,0,0,1)] bg-black"
+        style={{ aspectRatio: "1280/720" }}
       />
 
       {assetError && (
@@ -1236,7 +1238,7 @@ export default function Game() {
       <div className="absolute bottom-4 md:bottom-auto md:top-4 left-4 md:left-6 pointer-events-none z-30">
         <div className="bg-black/80 backdrop-blur-md px-3 py-2 md:px-6 md:py-3 rounded-xl border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
           <h2 className="text-sm md:text-2xl font-black text-blue-400 drop-shadow-lg">
-            [CH {Math.floor(currentLevel/3) + 1}] {CAMPAIGN_LEVELS[currentLevel]?.name}
+            [CH {Math.floor(currentLevel / 3) + 1}] {CAMPAIGN_LEVELS[currentLevel]?.name}
           </h2>
         </div>
       </div>
@@ -1249,13 +1251,13 @@ export default function Game() {
           </h2>
         </div>
         <div className="flex gap-4">
-           {gnomeModeActive && (
-              <div className="bg-red-900/80 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-xl flex items-center border border-red-500 animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.6)]">
-                <span className="text-sm md:text-xl font-black text-white tracking-widest">
-                  GNOME MODE ACTIVE
-                </span>
-              </div>
-           )}
+          {gnomeModeActive && (
+            <div className="bg-red-900/80 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-xl flex items-center border border-red-500 animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.6)]">
+              <span className="text-sm md:text-xl font-black text-white tracking-widest">
+                GNOME MODE ACTIVE
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -1269,19 +1271,19 @@ export default function Game() {
               <h1 className="text-4xl md:text-7xl landscape:text-5xl font-black text-white mb-2 md:mb-4 drop-shadow-2xl text-center">GNOME RUNNER</h1>
               <p className="text-green-400 text-sm md:text-xl font-bold mb-4 md:mb-6 text-center px-4 hidden md:block portrait:block">Dodge Bears. Survive Rugs. Stack $GNOME.</p>
               <div className="mb-4 md:mb-6 flex flex-col items-center pointer-events-auto">
-                 <input 
-                   type="text" 
-                   maxLength={15}
-                   placeholder="Enter Name..." 
-                   value={playerName}
-                   onChange={(e) => {
-                     setPlayerName(e.target.value);
-                     localStorage.setItem("gnome_runner_name", e.target.value);
-                   }}
-                   className="bg-black/50 border-2 border-green-500/50 text-white text-center text-lg md:text-xl font-bold py-2 md:py-3 px-4 md:px-6 rounded-xl outline-none focus:border-green-400 focus:shadow-[0_0_15px_rgba(74,222,128,0.5)] transition-all placeholder:text-gray-500 w-[200px] md:w-[300px]"
-                 />
+                <input
+                  type="text"
+                  maxLength={15}
+                  placeholder="Enter Name..."
+                  value={playerName}
+                  onChange={(e) => {
+                    setPlayerName(e.target.value);
+                    localStorage.setItem("gnome_runner_name", e.target.value);
+                  }}
+                  className="bg-black/50 border-2 border-green-500/50 text-white text-center text-lg md:text-xl font-bold py-2 md:py-3 px-4 md:px-6 rounded-xl outline-none focus:border-green-400 focus:shadow-[0_0_15px_rgba(74,222,128,0.5)] transition-all placeholder:text-gray-500 w-[200px] md:w-[300px]"
+                />
               </div>
-              <button 
+              <button
                 onClick={startGame}
                 className="px-8 md:px-10 py-3 md:py-4 bg-green-500 hover:bg-green-400 text-black font-black text-xl md:text-2xl rounded-full transform hover:scale-105 transition-all shadow-[0_0_20px_rgba(74,222,128,0.6)] pointer-events-auto"
               >
@@ -1300,7 +1302,7 @@ export default function Game() {
                 {leaderboardData.length > 0 ? leaderboardData.map((entry, idx) => (
                   <div key={idx} className="flex justify-between items-center text-sm border-b border-gray-800/50 pb-1">
                     <span className="font-bold text-gray-300 truncate max-w-[160px] flex items-center gap-2">
-                      <span className="text-gray-500 w-6 text-right inline-block">{idx + 1}.</span> 
+                      <span className="text-gray-500 w-6 text-right inline-block">{idx + 1}.</span>
                       <span className="text-base">{idx === 0 ? "👑" : idx < 3 ? "🔥" : "🍄"}</span>
                       {entry.name}
                     </span>
@@ -1321,13 +1323,13 @@ export default function Game() {
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-red-500 mb-2 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)] text-center px-4 flex-shrink-0 leading-none mt-2">
             {gameOverReason}
           </h1>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 w-full max-w-4xl justify-center items-center px-4 pointer-events-auto flex-1 min-h-0 my-2">
             {/* Stats Panel */}
             <div className="bg-black/50 p-4 rounded-2xl border border-red-500/30 text-center w-full sm:w-[300px] flex-shrink-0">
               <p className="text-gray-300 text-sm mb-1">Final Market Cap</p>
               <p className="text-4xl sm:text-5xl font-black text-green-400 mb-3">${score.toLocaleString()}</p>
-              
+
               <p className="text-gray-400 text-xs">Best Run</p>
               <p className="text-xl sm:text-2xl font-bold text-gray-200">${highScore.toLocaleString()}</p>
             </div>
@@ -1339,7 +1341,7 @@ export default function Game() {
                 {leaderboardData.length > 0 ? leaderboardData.map((entry, idx) => (
                   <div key={idx} className="flex justify-between items-center text-xs sm:text-sm border-b border-gray-800/50 pb-1">
                     <span className="font-bold text-gray-300 truncate max-w-[140px] flex items-center gap-1 sm:gap-2">
-                      <span className="text-gray-500 w-5 text-right inline-block">{idx + 1}.</span> 
+                      <span className="text-gray-500 w-5 text-right inline-block">{idx + 1}.</span>
                       <span className="text-sm">{idx === 0 ? "👑" : idx < 3 ? "🔥" : "🍄"}</span>
                       {entry.name}
                     </span>
@@ -1353,13 +1355,13 @@ export default function Game() {
           </div>
 
           <div className="flex flex-row gap-4 pointer-events-auto px-4 flex-shrink-0 mb-2">
-            <button 
+            <button
               onClick={startGame}
               className="px-6 py-2 sm:py-3 bg-green-500 hover:bg-green-400 text-black font-black text-sm sm:text-lg rounded-full transform hover:scale-105 transition-all"
             >
               TRY AGAIN
             </button>
-            <a 
+            <a
               href={`https://x.com/intent/tweet?text=${shareMessage}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -1376,7 +1378,7 @@ export default function Game() {
           <img src="/assets/splash.png" alt="Gnome Character" className="w-24 h-24 object-contain drop-shadow-[0_0_15px_rgba(74,222,128,0.5)] mb-4" />
           <h1 className="text-5xl font-black text-white mb-2 drop-shadow-2xl text-center">GNOME RUNNER</h1>
           <p className="text-green-400 text-sm font-bold mb-8 text-center px-4">Dodge Bears. Survive Rugs. Stack $GNOME.</p>
-          
+
           <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-green-400 mb-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
@@ -1385,7 +1387,7 @@ export default function Game() {
           </h2>
           <p className="text-gray-400 font-bold text-sm">Landscape mode required</p>
         </div>
-        
+
         {/* Leaderboard Panel for Portrait */}
         <div className="bg-black/60 p-4 rounded-2xl border border-yellow-500/30 text-left w-full max-w-[350px] flex flex-col h-[300px] flex-1">
           <h2 className="text-lg font-black text-yellow-400 mb-4 text-center border-b border-yellow-500/20 pb-2">GLOBAL TOP 100</h2>
@@ -1393,7 +1395,7 @@ export default function Game() {
             {leaderboardData.length > 0 ? leaderboardData.map((entry, idx) => (
               <div key={idx} className="flex justify-between items-center text-sm border-b border-gray-800/50 pb-1">
                 <span className="font-bold text-gray-300 truncate max-w-[150px] flex items-center gap-2">
-                  <span className="text-gray-500 w-6 text-right inline-block">{idx + 1}.</span> 
+                  <span className="text-gray-500 w-6 text-right inline-block">{idx + 1}.</span>
                   <span className="text-base">{idx === 0 ? "👑" : idx < 3 ? "🔥" : "🍄"}</span>
                   {entry.name}
                 </span>
