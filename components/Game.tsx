@@ -62,28 +62,23 @@ interface LevelData {
 const CAMPAIGN_LEVELS: LevelData[] = [
   // Chapter 1: The Garden Awakens
   { chapter: "Chapter 1: The Garden Awakens", name: "Gnome Meadow", scoreThreshold: 0, bgFolder: "level1", backgroundTint: "rgba(0, 0, 0, 0)", speedMultiplier: 1.0, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 2000, coinSpawnRate: 800 },
-  { chapter: "Chapter 1: The Garden Awakens", name: "Seedling Valley", scoreThreshold: 2000, bgFolder: "level1", backgroundTint: "rgba(255, 165, 0, 0.15)", speedMultiplier: 1.1, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1800, coinSpawnRate: 800 },
-  { chapter: "Chapter 1: The Garden Awakens", name: "Village Edge", scoreThreshold: 5000, bgFolder: "level2", backgroundTint: "rgba(255, 140, 0, 0.25)", speedMultiplier: 1.2, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1600, coinSpawnRate: 700 },
+  { chapter: "Chapter 1: The Garden Awakens", name: "Seedling Valley", scoreThreshold: 5000, bgFolder: "level2", backgroundTint: "rgba(255, 165, 0, 0.15)", speedMultiplier: 1.2, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1800, coinSpawnRate: 700 },
 
   // Chapter 2: The Gnome Homeland
-  { chapter: "Chapter 2: The Gnome Homeland", name: "Mushroom Fields", scoreThreshold: 10000, bgFolder: "level3", backgroundTint: "rgba(128, 0, 128, 0.2)", speedMultiplier: 1.3, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 1500, coinSpawnRate: 600 },
-  { chapter: "Chapter 2: The Gnome Homeland", name: "Gnome Garden Gate", scoreThreshold: 20000, bgFolder: "level4", backgroundTint: "rgba(128, 0, 128, 0.35)", speedMultiplier: 1.4, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1400, coinSpawnRate: 600 },
-  { chapter: "Chapter 2: The Gnome Homeland", name: "Alpine Wind Run", scoreThreshold: 35000, bgFolder: "level5", backgroundTint: "rgba(0, 191, 255, 0.2)", speedMultiplier: 1.6, hazards: { candles: false, lasers: false, wind: true }, obstacleSpawnRate: 1200, coinSpawnRate: 500 },
+  { chapter: "Chapter 2: The Gnome Homeland", name: "Mushroom Fields", scoreThreshold: 15000, bgFolder: "level3", backgroundTint: "rgba(128, 0, 128, 0.2)", speedMultiplier: 1.4, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 1500, coinSpawnRate: 600 },
+  { chapter: "Chapter 2: The Gnome Homeland", name: "Alpine Wind Run", scoreThreshold: 30000, bgFolder: "level4", backgroundTint: "rgba(0, 191, 255, 0.2)", speedMultiplier: 1.6, hazards: { candles: false, lasers: false, wind: true }, obstacleSpawnRate: 1300, coinSpawnRate: 500 },
 
   // Chapter 3: Market Chaos
-  { chapter: "Chapter 3: Market Chaos", name: "Red Candle Pass", scoreThreshold: 50000, bgFolder: "level6", backgroundTint: "rgba(255, 0, 0, 0.2)", speedMultiplier: 1.8, hazards: { candles: true, lasers: false, wind: true }, obstacleSpawnRate: 1000, coinSpawnRate: 500 },
-  { chapter: "Chapter 3: Market Chaos", name: "Liquidation Ridge", scoreThreshold: 75000, bgFolder: "level7", backgroundTint: "rgba(255, 0, 0, 0.4)", speedMultiplier: 2.0, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 900, coinSpawnRate: 600 },
-  { chapter: "Chapter 3: Market Chaos", name: "Coin Harvest Plains", scoreThreshold: 100000, bgFolder: "level8", backgroundTint: "rgba(255, 215, 0, 0.2)", speedMultiplier: 2.2, hazards: { candles: false, lasers: false, wind: false }, obstacleSpawnRate: 2000, coinSpawnRate: 300 },
+  { chapter: "Chapter 3: Market Chaos", name: "Red Candle Pass", scoreThreshold: 50000, bgFolder: "level5", backgroundTint: "rgba(255, 0, 0, 0.2)", speedMultiplier: 1.8, hazards: { candles: true, lasers: false, wind: true }, obstacleSpawnRate: 1100, coinSpawnRate: 500 },
+  { chapter: "Chapter 3: Market Chaos", name: "Liquidation Ridge", scoreThreshold: 75000, bgFolder: "level6", backgroundTint: "rgba(255, 0, 0, 0.4)", speedMultiplier: 2.1, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 900, coinSpawnRate: 600 },
 
   // Chapter 4: The Gnomad Cult
-  { chapter: "Chapter 4: The Gnomad Cult", name: "The Gnomad Village", scoreThreshold: 150000, bgFolder: "level9", backgroundTint: "rgba(0, 100, 0, 0.3)", speedMultiplier: 2.4, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1000, coinSpawnRate: 400 },
-  { chapter: "Chapter 4: The Gnomad Cult", name: "Moonlit Meadow", scoreThreshold: 200000, bgFolder: "level10", backgroundTint: "rgba(0, 0, 139, 0.5)", speedMultiplier: 2.6, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 900, coinSpawnRate: 400 },
-  { chapter: "Chapter 4: The Gnomad Cult", name: "Full Moon Raid", scoreThreshold: 250000, bgFolder: "level10", backgroundTint: "rgba(0, 0, 139, 0.7)", speedMultiplier: 2.8, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 700, coinSpawnRate: 300 },
+  { chapter: "Chapter 4: The Gnomad Cult", name: "The Gnomad Village", scoreThreshold: 125000, bgFolder: "level7", backgroundTint: "rgba(0, 100, 0, 0.3)", speedMultiplier: 2.5, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 800, coinSpawnRate: 400 },
+  { chapter: "Chapter 4: The Gnomad Cult", name: "Full Moon Raid", scoreThreshold: 200000, bgFolder: "level8", backgroundTint: "rgba(0, 0, 139, 0.6)", speedMultiplier: 3.0, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 700, coinSpawnRate: 300 },
 
   // Chapter 5: The Moon Pump
-  { chapter: "Chapter 5: The Moon Pump", name: "Bear Market Storm", scoreThreshold: 350000, bgFolder: "level10", backgroundTint: "rgba(50, 50, 50, 0.8)", speedMultiplier: 3.0, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 600, coinSpawnRate: 400 },
-  { chapter: "Chapter 5: The Moon Pump", name: "The Wreckage Garden", scoreThreshold: 500000, bgFolder: "level10", backgroundTint: "rgba(139, 0, 0, 0.6)", speedMultiplier: 3.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 500, coinSpawnRate: 300 },
-  { chapter: "Chapter 5: The Moon Pump", name: "Moon Pump Summit", scoreThreshold: 1000000, bgFolder: "level10", backgroundTint: "rgba(255, 215, 0, 0.5)", speedMultiplier: 4.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 400, coinSpawnRate: 200 },
+  { chapter: "Chapter 5: The Moon Pump", name: "Bear Market Storm", scoreThreshold: 350000, bgFolder: "level9", backgroundTint: "rgba(50, 50, 50, 0.8)", speedMultiplier: 3.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 600, coinSpawnRate: 400 },
+  { chapter: "Chapter 5: The Moon Pump", name: "Moon Pump Summit", scoreThreshold: 750000, bgFolder: "level10", backgroundTint: "rgba(255, 215, 0, 0.5)", speedMultiplier: 4.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 400, coinSpawnRate: 200 },
 ];
 
 // Interfaces
@@ -258,6 +253,25 @@ export default function Game() {
       };
     }
   }, [currentLevel]);
+
+  useEffect(() => {
+    // Developer Cheat: Expose function to global window
+    (window as any).jumpToLevel = (levelNumber: number) => {
+      const idx = levelNumber - 1;
+      if (idx >= 0 && idx < CAMPAIGN_LEVELS.length) {
+        const targetLevel = CAMPAIGN_LEVELS[idx];
+        stateRef.current.levelIndex = idx;
+        stateRef.current.score = targetLevel.scoreThreshold;
+        stateRef.current.speed = INITIAL_SPEED * targetLevel.speedMultiplier;
+        setCurrentLevel(idx);
+        setLevelBanner({ chapter: targetLevel.chapter, name: targetLevel.name });
+        setTimeout(() => setLevelBanner(null), 4000);
+        console.log(`Jumped to level ${levelNumber}: ${targetLevel.name}`);
+      } else {
+        console.log("Invalid level number! Use 1 to 15.");
+      }
+    };
+  }, []);
 
   const startGame = () => {
     // Attempt to enter fullscreen to hide mobile browser address bars
