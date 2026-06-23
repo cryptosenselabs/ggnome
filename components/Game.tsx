@@ -14,8 +14,8 @@ const INITIAL_SPEED = 14; // Reduced base speed
 const SPEED_INCREMENT = 0.001; // Slower speed scaling
 
 // Visual Sizes
-const GNOME_VISUAL_WIDTH = 170;
-const GNOME_VISUAL_HEIGHT = 125;
+const GNOME_VISUAL_WIDTH = 190;
+const GNOME_VISUAL_HEIGHT = 140;
 const GNOME_SLIDE_WIDTH = 185;
 const GNOME_SLIDE_HEIGHT = 95;
 
@@ -199,8 +199,8 @@ export default function Game() {
     baseX: 200,
     y: FLOOR_Y,
     targetY: FLOOR_Y,
-    w: 100,
-    h: 120,
+    w: 110,
+    h: 130,
     vy: 0,
     state: "jumping" as "running" | "jumping" | "sliding",
     slideEndTime: 0,
@@ -369,8 +369,8 @@ export default function Game() {
       baseX: 200,
       y: FLOOR_Y,
       targetY: FLOOR_Y,
-      w: 100,
-      h: 120,
+      w: 110,
+      h: 130,
       vy: 0,
       state: "jumping" as "running" | "jumping" | "sliding",
       slideEndTime: 0,
@@ -651,8 +651,8 @@ export default function Game() {
       coin: coinData,
       x: CANVAS_W + 100,
       y: Math.random() * (FLOOR_Y - 100) + 50, // Any altitude from 50 to FLOOR_Y-50
-      w: 60,
-      h: 60,
+      w: 80,
+      h: 80,
     });
   };
 
@@ -1243,21 +1243,37 @@ export default function Game() {
     return board.slice(0, 100);
   };
 
+  const bgFolder = CAMPAIGN_LEVELS[currentLevel]?.bgFolder || "level1";
+  const ambientStyle = {
+    backgroundImage: `url('/assets/background/${bgFolder}/bg-01.png')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  };
+
   return (
     <main
-      className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-black font-sans"
+      className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-black font-sans relative"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
       onPointerCancel={handlePointerUp}
     >
-      <canvas
-        ref={canvasRef}
-        width={CANVAS_W}
-        height={CANVAS_H}
-        className="block w-full h-full touch-none select-none object-contain"
+      {/* Ambient Blurred Background */}
+      <div 
+        className="absolute inset-0 blur-[60px] scale-125 opacity-70 z-0 transition-all duration-1000" 
+        style={ambientStyle} 
       />
+      
+      {/* Game Canvas container */}
+      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+        <canvas
+          ref={canvasRef}
+          width={CANVAS_W}
+          height={CANVAS_H}
+          className="block w-full h-full touch-none select-none object-contain pointer-events-auto"
+        />
+      </div>
 
       {assetError && (
         <div className="absolute top-2 left-2 bg-red-900 text-white px-4 py-2 font-bold text-lg rounded shadow-lg border border-red-500 z-50">
