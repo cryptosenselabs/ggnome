@@ -188,17 +188,19 @@ export default function Game() {
     }
   };
 
-  const speakGnome = (text: string) => {
-    if (isMuted || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+  const playVoiceLine = (line: "moon" | "gnomemode" | "redcandle" | "levelup") => {
+    if (isMuted) return;
     
-    window.speechSynthesis.cancel(); // Stop current speech
+    // Stop all currently playing voice lines so they don't overlap
+    Object.values(audioRefs.current).forEach(audio => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
     
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.4; // Speak fast
-    utterance.pitch = 1.8; // High squeaky Gnome pitch
-    utterance.volume = 0.9;
-    
-    window.speechSynthesis.speak(utterance);
+    const audio = audioRefs.current[line];
+    if (audio) {
+      audio.play().catch(e => console.warn("Browser blocked audio play:", e));
+    }
   };
 
   // --- Mutable Game Engine State (Does not trigger React re-renders) ---
@@ -252,6 +254,7 @@ export default function Game() {
 
   // --- Assets ---
   const assetsRef = useRef<Record<string, HTMLImageElement>>({});
+  const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
   const cryptoCoinsRef = useRef<CryptoCoin[]>([]);
   const cryptoLogosRef = useRef<Record<string, HTMLImageElement>>({});
 
@@ -267,6 +270,33 @@ export default function Game() {
     fetch("/api/leaderboard").then(res => res.json()).then(data => {
       if (data.leaderboard) setLeaderboardData(data.leaderboard);
     }).catch(e => console.error("Leaderboard error:", e));
+
+    // Preload Images
+    const images = {
+      player: "/assets/characters/gnome-rocket.png",
+      enemyBear: "/assets/enemies/enemy_bear.png",
+      enemyRug: "/assets/enemies/enemy_rug.png",
+    };
+
+    Object.entries(images).forEach(([key, src]) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => { assetsRef.current[key] = img; };
+    });
+
+    // Preload Custom MP3 Voice Lines
+    const voiceFiles = {
+      moon: "/assets/audio/moon.mp3",
+      gnomemode: "/assets/audio/gnomemode.mp3",
+      redcandle: "/assets/audio/redcandle.mp3",
+      levelup: "/assets/audio/levelup.mp3"
+    };
+
+    Object.entries(voiceFiles).forEach(([key, src]) => {
+      const audio = new Audio(src);
+      audio.preload = "auto";
+      audioRefs.current[key] = audio;
+    });
 
     // Fetch Crypto Coins
     fetch("/assets/crypto/crypto-coins.json").then(res => res.json()).then((data: CryptoCoin[]) => {
@@ -347,7 +377,7 @@ export default function Game() {
     localStorage.setItem("gnome_runner_name", playerName);
     
     startEngineSound(isMuted);
-    speakGnome("Let's go to the moon!");
+    playVoiceLine("moon");
     
     // Reset Engine State
 
@@ -377,7 +407,7 @@ export default function Game() {
   const triggerGameOver = (reason: string) => {
     playSound("crash");
     stopEngineSound();
-    speakGnome(`Oh no! I ${reason}!`);
+    playVoiceLine("redcandle");
     engineRef.current.state = "gameover";
     setGameState("gameover");
     setGameOverReason(reason);
@@ -454,8 +484,7 @@ export default function Game() {
     
     if (nextLevelIdx !== engine.levelIndex) {
       playSound("levelup");
-      const levelName = CAMPAIGN_LEVELS[nextLevelIdx].name.split(":")[1] || CAMPAIGN_LEVELS[nextLevelIdx].name;
-      speakGnome(`Level up! Welcome to ${levelName}`);
+      playVoiceLine("levelup");
       engine.levelIndex = nextLevelIdx;
       engine.levelUpText = CAMPAIGN_LEVELS[nextLevelIdx].name;
       engine.levelUpTime = time + 4000;
@@ -595,7 +624,7 @@ export default function Game() {
           // Trigger Gnome Mode randomly on pickup
           if (Math.random() > 0.98 && !isGnomeMode) {
             engine.gnomeModeTime = time + 5000;
-            speakGnome("Gnome mode activated!");
+            playVoiceLine("gnomemode");
             floatingTextsRef.current.push({ id: time, x: p.x, y: p.y - 100, text: "GNOME MODE!", life: 2.0 });
           }
         }
