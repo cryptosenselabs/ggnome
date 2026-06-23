@@ -588,7 +588,7 @@ export default function Game() {
       let type = "redCandle";
       const rand = Math.random();
       
-      if (rand > 0.95 && engine.levelIndex >= 4) type = "whaleBlackHole";   // 5% chance
+      if (rand > 0.95 && engine.levelIndex >= 1) type = "whaleBlackHole";   // 5% chance
       else if (rand > 0.88 && engine.levelIndex >= 1) type = "liquidationLaser"; // 7% chance
       else if (rand > 0.78 && engine.levelIndex >= 2) type = "bearTrap";    // 10% chance
       else if (rand > 0.68 && engine.levelIndex >= 4) type = "rugPull";     // 10% chance
