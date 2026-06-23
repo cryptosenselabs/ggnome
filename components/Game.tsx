@@ -110,11 +110,65 @@ interface FloatingText {
   life: number;
 }
 
+const SHARE_MESSAGES = [
+  "I reached ${mcap} MCAP on Level {level} in Gnome Runner before getting {reason}. Dodge bears. Survive rugs. Harvest $GNOME. https://chaosgnome.xyz",
+  "My wife left me but at least I hit ${mcap} MCAP on Level {level} before {reason}. $GNOME is my family now. https://chaosgnome.xyz",
+  "Just got {reason} at ${mcap} MCAP (Level {level}). Still performing better than my actual crypto portfolio! $GNOME to the moon! 🍄 https://chaosgnome.xyz",
+  "Paper handed at ${mcap} MCAP on Level {level} because of {reason}. Don't fade $GNOME! 💎🙌 https://chaosgnome.xyz",
+  "They said it was a bull market, but I got {reason} at ${mcap} MCAP on Level {level}. Stacking $GNOME anyway! https://chaosgnome.xyz",
+  "Liquidated?! I got {reason} at ${mcap} MCAP on Level {level}. Selling my house to buy more $GNOME! 📉 https://chaosgnome.xyz",
+  "Surviving the bear market until {reason} took me out at ${mcap} MCAP on Level {level}. $GNOME never sleeps! 🌕 https://chaosgnome.xyz",
+  "I was farming $GNOME at ${mcap} MCAP (Level {level}) when suddenly: {reason}. Can you beat my score? https://chaosgnome.xyz",
+  "Secured ${mcap} MCAP by Level {level} until I suffered {reason}. Need more $GNOME! 🚀 https://chaosgnome.xyz",
+  "Level {level} boss? The chart! Got {reason} at ${mcap} MCAP. Apeing into more $GNOME. https://chaosgnome.xyz",
+  "Got {reason} at ${mcap} MCAP on Level {level}. I am emotionally damaged but financially $GNOME! https://chaosgnome.xyz",
+  "Lost my life savings on Level {level} to {reason} at ${mcap} MCAP. At least I still have my $GNOME bags. https://chaosgnome.xyz",
+  "I told my boss I quit, then got {reason} at ${mcap} MCAP on Level {level}. Guess I'll just farm $GNOME. https://chaosgnome.xyz",
+  "Ate glass, got {reason} at ${mcap} MCAP on Level {level}. Typical Tuesday in the $GNOME mines. https://chaosgnome.xyz",
+  "Nothing hurts more than {reason} at ${mcap} MCAP on Level {level}. Send $GNOME and prayers! 🙏 https://chaosgnome.xyz",
+  "Just experienced {reason} at ${mcap} MCAP on Level {level}. Time to touch grass... wait, $GNOME lives in the grass! https://chaosgnome.xyz",
+  "I was up bigly (${mcap} MCAP, Level {level}) until {reason}. Now I am just a poor $GNOME farmer. https://chaosgnome.xyz",
+  "Can someone explain why {reason} happens at ${mcap} MCAP on Level {level}? I'm just a simple $GNOME! https://chaosgnome.xyz",
+  "Got rekt by {reason} at ${mcap} MCAP (Level {level}). Re-mortgaging my gnome-home to buy more $GNOME! 🍄 https://chaosgnome.xyz",
+  "Level {level} was going great until {reason} at ${mcap} MCAP. Still holding my $GNOME with diamond hands! 💎 https://chaosgnome.xyz",
+  "Mom: 'Are you winning?' Me: 'I got {reason} at ${mcap} MCAP on Level {level}.' Mom: 'Get more $GNOME.' https://chaosgnome.xyz",
+  "My therapist said {reason} isn't real, but it killed me at ${mcap} MCAP on Level {level}! Only $GNOME can heal me. https://chaosgnome.xyz",
+  "I don't always get {reason}, but when I do, it's at ${mcap} MCAP on Level {level}. Stay thirsty, my $GNOME friends. https://chaosgnome.xyz",
+  "Just dropped my phone because of {reason} at ${mcap} MCAP (Level {level}). $GNOME is my only hope now. https://chaosgnome.xyz",
+  "I survived the FTX crash but couldn't survive {reason} at ${mcap} MCAP on Level {level}. $GNOME is SAFU! https://chaosgnome.xyz",
+  "Got {reason} at ${mcap} MCAP on Level {level}. Time to revenge-farm some $GNOME! 😡🍄 https://chaosgnome.xyz",
+  "To the guy who invented {reason}: I lost at ${mcap} MCAP on Level {level}. I will find you. And I will take your $GNOME. https://chaosgnome.xyz",
+  "Was calculating my lambo color at ${mcap} MCAP on Level {level} when {reason} happened. $GNOME is still the play! 🏎️ https://chaosgnome.xyz",
+  "Just told my date about {reason} at ${mcap} MCAP on Level {level}. She left. At least $GNOME stays. 💔 https://chaosgnome.xyz",
+  "I put my life savings into $GNOME and got {reason} at ${mcap} MCAP on Level {level}. No regrets! 🚀 https://chaosgnome.xyz",
+  "My dog ate my hardware wallet and then I got {reason} at ${mcap} MCAP on Level {level}. $GNOME is my spirit animal now. https://chaosgnome.xyz",
+  "Got {reason} at ${mcap} MCAP on Level {level}. If anyone needs me, I'll be crying into my $GNOME bags. 😭 https://chaosgnome.xyz",
+  "I was this close to retirement (${mcap} MCAP, Level {level}) until {reason}. Back to the $GNOME fiat mines! ⛏️ https://chaosgnome.xyz",
+  "Just got {reason} at ${mcap} MCAP on Level {level}. The simulation is glitching, but $GNOME is real! 🍄 https://chaosgnome.xyz",
+  "Got {reason} at ${mcap} MCAP on Level {level}. I'm starting to think this is a personal attack on my $GNOME. 🛑 https://chaosgnome.xyz",
+  "I thought I was a whale at ${mcap} MCAP on Level {level}, then {reason} turned me into plankton. $GNOME will save me! 🐋 https://chaosgnome.xyz",
+  "Just got {reason} at ${mcap} MCAP on Level {level}. My mom says I'm still her favorite $GNOME! 🥰 https://chaosgnome.xyz",
+  "I don't need sleep, I need answers! Why did {reason} happen at ${mcap} MCAP on Level {level}? $GNOME is the answer! 🍄 https://chaosgnome.xyz",
+  "Got {reason} at ${mcap} MCAP on Level {level}. I'm going to tell my kids this was the Great $GNOME Crash of '24. 📉 https://chaosgnome.xyz",
+  "I was feeling bullish at ${mcap} MCAP on Level {level} until {reason}. Now I'm just feeling $GNOME. 🍄 https://chaosgnome.xyz",
+  "Just got {reason} at ${mcap} MCAP on Level {level}. The only thing greener than my chart is my $GNOME! 🌿 https://chaosgnome.xyz",
+  "Got {reason} at ${mcap} MCAP on Level {level}. I'm not crying, I just got some $GNOME dust in my eye. 😢 https://chaosgnome.xyz",
+  "I was promised lambos, but all I got was {reason} at ${mcap} MCAP on Level {level}. At least I have $GNOME! 🏎️ https://chaosgnome.xyz",
+  "Just got {reason} at ${mcap} MCAP on Level {level}. My hands are weak, but my $GNOME bags are heavy! 💪 https://chaosgnome.xyz",
+  "Got {reason} at ${mcap} MCAP on Level {level}. I'm starting a support group for $GNOME victims. 🍄 https://chaosgnome.xyz",
+  "I was dodging rugs like Neo at ${mcap} MCAP on Level {level} until {reason}. $GNOME is the chosen one! 🕶️ https://chaosgnome.xyz",
+  "Just got {reason} at ${mcap} MCAP on Level {level}. My portfolio is rekt, but my $GNOME is thriving! 📈 https://chaosgnome.xyz",
+  "Got {reason} at ${mcap} MCAP on Level {level}. I'm going to go live in the woods with the actual $GNOME now. 🌲 https://chaosgnome.xyz",
+  "I was so close to financial freedom (${mcap} MCAP, Level {level}) until {reason}. $GNOME is my only path forward! 🍄 https://chaosgnome.xyz",
+  "Just got {reason} at ${mcap} MCAP on Level {level}. I'm not sure what hurts more, the loss or the lack of $GNOME. 🍄 https://chaosgnome.xyz"
+];
+
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // UI State
   const [gameState, setGameState] = useState<"menu" | "playing" | "gameover">("menu");
+  const [shareMessage, setShareMessage] = useState("");
   const [score, setScore] = useState(0);
   const [coins, setCoins] = useState(0);
   const [harvestedCount, setHarvestedCount] = useState(0);
@@ -336,6 +390,15 @@ export default function Game() {
     setGameState("gameover");
     setGameOverReason(reason);
     setGnomeModeActive(false);
+
+    const mcapString = Math.floor(stateRef.current.score).toLocaleString();
+    const levelStr = (stateRef.current.levelIndex + 1).toString();
+    const randomMsg = SHARE_MESSAGES[Math.floor(Math.random() * SHARE_MESSAGES.length)];
+    const finalMsg = randomMsg
+        .replace("{mcap}", mcapString)
+        .replace("{level}", levelStr)
+        .replace("{reason}", reason);
+    setShareMessage(encodeURIComponent(finalMsg));
 
     // Screen flash and hit particles
     for (let j = 0; j < 20; j++) {
@@ -1096,8 +1159,6 @@ export default function Game() {
     }
   };
 
-  const shareText = encodeURIComponent(`I reached $${score.toLocaleString()} MCAP on Level ${currentLevel + 1} in Gnome Runner before getting ${gameOverReason}. Dodge bears. Survive rugs. Harvest $GNOME. https://chaosgnome.xyz`);
-
   return (
     <main 
       className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-black font-sans"
@@ -1266,7 +1327,7 @@ export default function Game() {
               TRY AGAIN
             </button>
             <a 
-              href={`https://x.com/intent/tweet?text=${shareText}`}
+              href={`https://x.com/intent/tweet?text=${shareMessage}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-2 sm:py-3 bg-black border-2 border-white hover:bg-gray-900 text-white font-black text-sm sm:text-lg rounded-full transform hover:scale-105 transition-all flex items-center justify-center gap-2"
