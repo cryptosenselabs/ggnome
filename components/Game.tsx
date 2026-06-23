@@ -329,6 +329,11 @@ export default function Game() {
   }, []);
 
   const startGame = () => {
+    if (!playerName.trim()) {
+      alert("Please enter your name to play!");
+      return;
+    }
+
     // Attempt to enter fullscreen to hide mobile browser address bars
     try {
       const elem = document.documentElement;
@@ -484,11 +489,17 @@ export default function Game() {
       return;
     }
 
-    if (stateRef.current.state !== "playing") {
+    if (stateRef.current.state === "gameover") {
       startGame();
       return;
     }
-    // Update immediately on tap
+    
+    // Do not auto-start if in menu (must click START RUN button to validate name)
+    if (stateRef.current.state === "menu") {
+      return;
+    }
+
+    // Player Physics & Animation (Drag to Steer)
     handlePointerMove(e);
   };
 
@@ -1221,13 +1232,13 @@ export default function Game() {
 
       {/* Menu Overlay */}
       {gameState === "menu" && (
-        <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center backdrop-blur-md z-50 py-4">
-          <div className="flex flex-col md:flex-row gap-8 w-full max-w-5xl justify-center items-center px-4 h-full">
+        <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center backdrop-blur-md z-50 py-2">
+          <div className="flex flex-col md:flex-row landscape:flex-row gap-4 md:gap-8 w-full max-w-5xl justify-center items-center px-4 h-full">
             {/* Left: Title and Input */}
             <div className="flex flex-col items-center flex-1">
-              <h1 className="text-5xl md:text-7xl font-black text-white mb-4 drop-shadow-2xl text-center">GNOME RUNNER</h1>
-              <p className="text-green-400 text-lg md:text-xl font-bold mb-6 text-center px-4">Dodge Bears. Survive Rugs. Stack $GNOME.</p>
-              <div className="mb-6 flex flex-col items-center pointer-events-auto">
+              <h1 className="text-4xl md:text-7xl landscape:text-5xl font-black text-white mb-2 md:mb-4 drop-shadow-2xl text-center">GNOME RUNNER</h1>
+              <p className="text-green-400 text-sm md:text-xl font-bold mb-4 md:mb-6 text-center px-4 hidden md:block portrait:block">Dodge Bears. Survive Rugs. Stack $GNOME.</p>
+              <div className="mb-4 md:mb-6 flex flex-col items-center pointer-events-auto">
                  <input 
                    type="text" 
                    maxLength={15}
@@ -1237,16 +1248,16 @@ export default function Game() {
                      setPlayerName(e.target.value);
                      localStorage.setItem("gnome_runner_name", e.target.value);
                    }}
-                   className="bg-black/50 border-2 border-green-500/50 text-white text-center text-xl font-bold py-3 px-6 rounded-xl outline-none focus:border-green-400 focus:shadow-[0_0_15px_rgba(74,222,128,0.5)] transition-all placeholder:text-gray-500 w-[250px] md:w-[300px]"
+                   className="bg-black/50 border-2 border-green-500/50 text-white text-center text-lg md:text-xl font-bold py-2 md:py-3 px-4 md:px-6 rounded-xl outline-none focus:border-green-400 focus:shadow-[0_0_15px_rgba(74,222,128,0.5)] transition-all placeholder:text-gray-500 w-[200px] md:w-[300px]"
                  />
               </div>
               <button 
                 onClick={startGame}
-                className="px-10 py-4 bg-green-500 hover:bg-green-400 text-black font-black text-2xl rounded-full transform hover:scale-105 transition-all shadow-[0_0_20px_rgba(74,222,128,0.6)] pointer-events-auto"
+                className="px-8 md:px-10 py-3 md:py-4 bg-green-500 hover:bg-green-400 text-black font-black text-xl md:text-2xl rounded-full transform hover:scale-105 transition-all shadow-[0_0_20px_rgba(74,222,128,0.6)] pointer-events-auto"
               >
                 START RUN
               </button>
-              <div className="mt-6 text-green-300 text-sm md:text-base font-bold text-center px-6 bg-green-900/40 py-3 rounded-xl border border-green-500/30 pointer-events-auto">
+              <div className="mt-4 md:mt-6 text-green-300 text-xs md:text-base font-bold text-center px-4 py-2 md:px-6 bg-green-900/40 md:py-3 rounded-xl border border-green-500/30 pointer-events-auto">
                 <p className="mb-1">🖱️ Desktop: Click and drag Mouse to steer</p>
                 <p>📱 Mobile: Touch and drag Finger to steer</p>
               </div>
@@ -1332,13 +1343,16 @@ export default function Game() {
       {/* Landscape Prompt Overlay */}
       <div className="portrait:flex hidden fixed inset-0 z-[100] bg-black items-center justify-center flex-col pointer-events-auto px-6 text-center py-8">
         <div className="flex-shrink-0 mb-6 flex flex-col items-center">
+          <h1 className="text-5xl font-black text-white mb-2 drop-shadow-2xl text-center">GNOME RUNNER</h1>
+          <p className="text-green-400 text-sm font-bold mb-8 text-center px-4">Dodge Bears. Survive Rugs. Stack $GNOME.</p>
+          
           <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-green-400 mb-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
           <h2 className="text-2xl font-black text-white leading-tight mb-2">
             ROTATE TO PLAY
           </h2>
-          <p className="text-green-400 font-bold text-sm">Landscape mode required to play $GNOME Runner</p>
+          <p className="text-gray-400 font-bold text-sm">Landscape mode required</p>
         </div>
         
         {/* Leaderboard Panel for Portrait */}
