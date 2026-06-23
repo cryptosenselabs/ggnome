@@ -56,19 +56,34 @@ function formatPrice(price: number) {
 
 // Share Messages Pool
 const SHARE_MESSAGES = [
-  "I reached ${mcap} MCAP in Gnome Runner before getting {reason}. Dodge bears. Survive rugs. Harvest $GNOME. https://chaosgnome.xyz",
-  "Just got {reason} at ${mcap} MCAP. Still performing better than my actual crypto portfolio! $GNOME to the moon! 🍄 https://chaosgnome.xyz",
-  "Paper handed at ${mcap} MCAP because of {reason}. Don't fade $GNOME! 💎🙌 https://chaosgnome.xyz",
-  "Liquidated?! I got {reason} at ${mcap} MCAP. Selling my house to buy more $GNOME! 📉 https://chaosgnome.xyz",
-  "I was farming $GNOME at ${mcap} MCAP when suddenly: {reason}. Can you beat my score? https://chaosgnome.xyz",
+  "Play $GNOME Runner: https://chaosgnome.xyz\n\nI reached ${mcap} MCAP before getting {reason}. Dodge bears. Survive rugs. Harvest $GNOME.",
+  "Beat my score: https://chaosgnome.xyz\n\nJust got {reason} at ${mcap} MCAP. Still performing better than my actual crypto portfolio! 🍄",
+  "Join the Gnome Army: https://chaosgnome.xyz\n\nPaper handed at ${mcap} MCAP because of {reason}. Don't fade $GNOME! 💎🙌",
+  "Dodge the Red Candles: https://chaosgnome.xyz\n\nLiquidated?! I got {reason} at ${mcap} MCAP. Selling my house to buy more $GNOME! 📉",
+  "To the moon: https://chaosgnome.xyz\n\nI was farming $GNOME at ${mcap} MCAP when suddenly: {reason}. Can you beat my score?",
 ];
 
 const CAMPAIGN_LEVELS = [
-  { name: "1: The Garden", scoreThreshold: 0, r1: 135, g1: 206, b1: 235, r2: 224, g2: 246, b2: 255, stars: 0, obstacleRate: 2000 },
-  { name: "2: Sunset Drop", scoreThreshold: 50000, r1: 255, g1: 94, b1: 98, r2: 255, g2: 153, b2: 102, stars: 0, obstacleRate: 1500 },
-  { name: "3: Liquidation Ridge", scoreThreshold: 150000, r1: 139, g1: 0, b1: 0, r2: 20, g2: 0, b2: 0, stars: 20, obstacleRate: 1000 },
-  { name: "4: Deep Space", scoreThreshold: 350000, r1: 10, g1: 10, b1: 30, r2: 0, g2: 0, b2: 0, stars: 150, obstacleRate: 700 },
-  { name: "5: Moon Pump", scoreThreshold: 750000, r1: 45, g1: 35, b1: 5, r2: 0, g2: 0, b2: 0, stars: 150, obstacleRate: 400 }
+  { threshold: 0, name: "Level 1: The Accumulation Zone", bg: [[2, 6, 23], [15, 23, 42]], speedBase: 8, hazardRate: 0.01 },
+  { threshold: 5000, name: "Level 2: Bull Market Awakening", bg: [[15, 23, 42], [30, 58, 138]], speedBase: 10, hazardRate: 0.015 },
+  { threshold: 12000, name: "Level 3: Resistance Breakout", bg: [[30, 58, 138], [59, 130, 246]], speedBase: 12, hazardRate: 0.02 },
+  { threshold: 22000, name: "Level 4: FOMO Stratosphere", bg: [[59, 130, 246], [124, 58, 237]], speedBase: 14, hazardRate: 0.025 },
+  { threshold: 35000, name: "Level 5: Liquidation Exosphere", bg: [[124, 58, 237], [88, 28, 135]], speedBase: 16, hazardRate: 0.03 },
+  { threshold: 50000, name: "Level 6: The Memecoin Asteroid Belt", bg: [[88, 28, 135], [200, 40, 40]], speedBase: 18, hazardRate: 0.035 },
+  { threshold: 70000, name: "Level 7: Market Correction Gravity", bg: [[200, 40, 40], [153, 27, 27]], speedBase: 20, hazardRate: 0.04 },
+  { threshold: 95000, name: "Level 8: The Halving Event Horizon", bg: [[153, 27, 27], [0, 0, 0]], speedBase: 22, hazardRate: 0.045 },
+  { threshold: 125000, name: "Level 9: Institutional Void", bg: [[0, 0, 0], [20, 0, 20]], speedBase: 24, hazardRate: 0.05 },
+  { threshold: 160000, name: "Level 10: Diamond Hand Nebula", bg: [[20, 0, 20], [0, 40, 40]], speedBase: 26, hazardRate: 0.055 },
+  { threshold: 200000, name: "Level 11: Quantitative Easing Sector", bg: [[0, 40, 40], [40, 40, 0]], speedBase: 28, hazardRate: 0.06 },
+  { threshold: 250000, name: "Level 12: Flash Crash Wormhole", bg: [[40, 40, 0], [80, 0, 0]], speedBase: 30, hazardRate: 0.065 },
+  { threshold: 310000, name: "Level 13: Decentralized Abyss", bg: [[80, 0, 0], [60, 0, 80]], speedBase: 32, hazardRate: 0.07 },
+  { threshold: 380000, name: "Level 14: The 51% Attack", bg: [[60, 0, 80], [0, 80, 0]], speedBase: 34, hazardRate: 0.075 },
+  { threshold: 460000, name: "Level 15: Hashrate Singularity", bg: [[0, 80, 0], [0, 0, 100]], speedBase: 36, hazardRate: 0.08 },
+  { threshold: 550000, name: "Level 16: Hyperinflation Galaxy", bg: [[0, 0, 100], [100, 50, 0]], speedBase: 38, hazardRate: 0.085 },
+  { threshold: 650000, name: "Level 17: Quantum Ledger", bg: [[100, 50, 0], [150, 0, 150]], speedBase: 40, hazardRate: 0.09 },
+  { threshold: 760000, name: "Level 18: Genesis Block Sector", bg: [[150, 0, 150], [200, 200, 200]], speedBase: 42, hazardRate: 0.095 },
+  { threshold: 880000, name: "Level 19: Satoshi's Hidden Realm", bg: [[200, 200, 200], [255, 255, 0]], speedBase: 44, hazardRate: 0.1 },
+  { threshold: 1000000, name: "Level 20: THE MOON", bg: [[255, 255, 0], [255, 255, 255]], speedBase: 46, hazardRate: 0.12 },
 ];
 
 export default function Game() {
@@ -80,7 +95,7 @@ export default function Game() {
   const [leaderboardData, setLeaderboardData] = useState<{ name: string, score: number }[]>([]);
   const [assetError, setAssetError] = useState("");
   const [shareMessage, setShareMessage] = useState("");
-  
+
   // Game Stats (Synced selectively to avoid massive re-renders)
   const [displayScore, setDisplayScore] = useState(0);
   const [displayCoins, setDisplayCoins] = useState(0);
@@ -108,15 +123,15 @@ export default function Game() {
   const playSound = (type: "coin" | "crash" | "levelup") => {
     if (isMuted || !audioCtxRef.current) return;
     const ctx = audioCtxRef.current;
-    
+
     const osc = ctx.createOscillator();
     const gainNode = ctx.createGain();
-    
+
     osc.connect(gainNode);
     gainNode.connect(ctx.destination);
-    
+
     const now = ctx.currentTime;
-    
+
     if (type === "coin") {
       osc.type = "sine";
       osc.frequency.setValueAtTime(800, now);
@@ -150,31 +165,31 @@ export default function Game() {
   const startEngineSound = (muted = isMuted) => {
     if (muted || !audioCtxRef.current || engineAudioRef.current) return;
     const ctx = audioCtxRef.current;
-    
+
     // Deep, throbbing rocket rumble
     const osc1 = ctx.createOscillator();
     osc1.type = "sawtooth";
     osc1.frequency.value = 40;
-    
+
     const osc2 = ctx.createOscillator();
     osc2.type = "square";
     osc2.frequency.value = 42;
-    
+
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
     filter.frequency.value = 150; // Muffler to make it a deep rumble, not harsh
-    
+
     const gainNode = ctx.createGain();
     gainNode.gain.value = 0.15; // Quiet background noise
-    
+
     osc1.connect(filter);
     osc2.connect(filter);
     filter.connect(gainNode);
     gainNode.connect(ctx.destination);
-    
+
     osc1.start();
     osc2.start();
-    
+
     engineAudioRef.current = { osc1, osc2, gain: gainNode };
   };
 
@@ -191,13 +206,13 @@ export default function Game() {
 
   const playVoiceLine = (line: "moon" | "gnomemode" | "redcandle" | "levelup") => {
     if (isMuted) return;
-    
+
     // Stop all currently playing voice lines so they don't overlap
     Object.values(audioRefs.current).forEach(audio => {
       audio.pause();
       audio.currentTime = 0;
     });
-    
+
     const audio = audioRefs.current[line];
     if (audio) {
       audio.play().catch(e => console.warn("Browser blocked audio play:", e));
@@ -237,7 +252,7 @@ export default function Game() {
   const entitiesRef = useRef<Entity[]>([]);
   const particlesRef = useRef<Particle[]>([]);
   const floatingTextsRef = useRef<FloatingText[]>([]);
-  
+
   const starsRef = useRef(Array.from({ length: 150 }).map(() => ({
     x: Math.random() * 2000,
     y: Math.random() * 2000,
@@ -343,13 +358,13 @@ export default function Game() {
           canvasRef.current.height = rect.height * dpr;
           engineRef.current.canvasW = rect.width;
           engineRef.current.canvasH = rect.height;
-          
+
           const ctx = canvasRef.current.getContext("2d");
           if (ctx) ctx.scale(dpr, dpr);
-          
+
           // Lock player vertically near the bottom 20% and center horizontally
           playerRef.current.y = rect.height * 0.8;
-          
+
           // Only snap to center if we aren't currently dragging it during gameplay
           if (engineRef.current.state !== "playing") {
             playerRef.current.x = rect.width / 2;
@@ -368,11 +383,11 @@ export default function Game() {
     if (engineRef.current.state === "playing" && canvasRef.current) {
       const rect = canvasRef.current.getBoundingClientRect();
       let x = e.clientX - rect.left;
-      
+
       // Clamp to screen bounds
       if (x < 50) x = 50;
       if (x > engineRef.current.canvasW - 50) x = engineRef.current.canvasW - 50;
-      
+
       playerRef.current.targetX = x;
     }
   };
@@ -382,14 +397,26 @@ export default function Game() {
     initAudio();
     if (!playerName.trim()) return alert("Please enter your name!");
     localStorage.setItem("gnome_runner_name", playerName);
-    
+
     startEngineSound(isMuted);
     playVoiceLine("moon");
-    
+
     // Reset Engine State
+    const engine = engineRef.current;
+    engine.score = 0;
+    engine.coins = 0;
+    engine.speed = CAMPAIGN_LEVELS[0].speedBase;
+    engine.levelIndex = 0;
+    engine.levelUpTime = 0;
+    engine.combo = 0;
+    engine.comboTimer = 0;
+    entitiesRef.current = [];
+    particlesRef.current = [];
+    floatingTextsRef.current = [];
+    playerRef.current.x = window.innerWidth / 2 - 25;
 
     setGameState("playing");
-    engineRef.current.state = "playing";
+    engine.state = "playing";
     engineRef.current.score = 0;
     engineRef.current.coins = 0;
     engineRef.current.speed = 10;
@@ -473,7 +500,7 @@ export default function Game() {
     const engine = engineRef.current;
     const p = playerRef.current;
     const CANVAS_W = engine.canvasW;
-    
+
     const isGnomeMode = time < engine.gnomeModeTime;
 
     // Engine Progression
@@ -483,21 +510,24 @@ export default function Game() {
     // --- Level Progression ---
     let nextLevelIdx = engine.levelIndex;
     for (let i = CAMPAIGN_LEVELS.length - 1; i >= 0; i--) {
-      if (engine.score >= CAMPAIGN_LEVELS[i].scoreThreshold) {
+      if (engine.score >= CAMPAIGN_LEVELS[i].threshold) {
         nextLevelIdx = i;
         break;
       }
     }
-    
+
+    // Level Up Announcer (Only trigger if playing to avoid menu spam)
     if (nextLevelIdx !== engine.levelIndex) {
-      playSound("levelup");
-      playVoiceLine("levelup");
+      if (engine.state === "playing") {
+        playSound("levelup");
+        playVoiceLine("levelup");
+      }
       engine.levelIndex = nextLevelIdx;
       engine.levelUpText = CAMPAIGN_LEVELS[nextLevelIdx].name;
       engine.levelUpTime = time + 4000;
-      
+
       // Celebration particles
-      for (let i = 0; i < 40; i++) {
+      for (let i = 0; i < 50; i++) {
         particlesRef.current.push({
           x: p.x + (Math.random() - 0.5) * 150,
           y: p.y - 100 + (Math.random() - 0.5) * 150,
@@ -512,13 +542,13 @@ export default function Game() {
     const currentLvl = CAMPAIGN_LEVELS[engine.levelIndex];
 
     // Smooth Color Interpolation
-    engine.r1 += (currentLvl.r1 - engine.r1) * 0.01;
-    engine.g1 += (currentLvl.g1 - engine.g1) * 0.01;
-    engine.b1 += (currentLvl.b1 - engine.b1) * 0.01;
-    engine.r2 += (currentLvl.r2 - engine.r2) * 0.01;
-    engine.g2 += (currentLvl.g2 - engine.g2) * 0.01;
-    engine.b2 += (currentLvl.b2 - engine.b2) * 0.01;
-    engine.starAlpha += ((currentLvl.stars > 0 ? 1 : 0) - engine.starAlpha) * 0.01;
+    engine.r1 += (currentLvl.bg[0][0] - engine.r1) * 0.01;
+    engine.g1 += (currentLvl.bg[0][1] - engine.g1) * 0.01;
+    engine.b1 += (currentLvl.bg[0][2] - engine.b1) * 0.01;
+    engine.r2 += (currentLvl.bg[1][0] - engine.r2) * 0.01;
+    engine.g2 += (currentLvl.bg[1][1] - engine.g2) * 0.01;
+    engine.b2 += (currentLvl.bg[1][2] - engine.b2) * 0.01;
+    engine.starAlpha += 0.01;
     // --- End Level Progression ---
 
     // Player Movement (Smooth X follow and fixed Y lower on screen)
@@ -543,20 +573,43 @@ export default function Game() {
       engine.combo = 0;
     }
 
-    // Spawning
+    // Spawning Hazards & Obstacles
     if (time > engine.nextObstacleSpawn) {
-      const type = "redCandle";
-      
-      let w = 40 + Math.random() * 30;
-      let h = 100 + Math.random() * 200;
-      
+      let types = ["redCandle", "liquidationLaser"];
+      if (engine.levelIndex >= 2) types.push("bearTrap");
+      if (engine.levelIndex >= 4) types.push("rugPull");
+      if (engine.levelIndex >= 6) types.push("fudCloud");
+
+      const type = types[Math.floor(Math.random() * types.length)];
+
+      let w = 40, h = 100;
+      let x = 0;
+
+      if (type === "redCandle") {
+        w = 40; h = 100 + Math.random() * 150;
+        x = Math.random() * (CANVAS_W - w);
+      } else if (type === "liquidationLaser") {
+        w = Math.min(CANVAS_W * 0.5, 50 + Math.random() * (CANVAS_W * 0.4));
+        h = engine.canvasH + 200;
+        x = Math.random() * (CANVAS_W - w);
+      } else if (type === "bearTrap") {
+        w = 60; h = 60;
+        x = Math.random() * (CANVAS_W - w);
+      } else if (type === "rugPull") {
+        w = CANVAS_W * 0.85; h = 40; // Massive horizontal blocker
+        x = Math.random() > 0.5 ? 0 : CANVAS_W - w; // Attaches to left or right wall
+      } else if (type === "fudCloud") {
+        w = 150 + Math.random() * 100; h = 150;
+        x = Math.random() * (CANVAS_W - w);
+      }
+
       entitiesRef.current.push({
-        id: time, type,
-        x: Math.random() * (CANVAS_W - w),
-        y: -h - 100,
-        w, h
+        id: time, type: type as any,
+        x, y: -h - Math.random() * 200, w, h
       });
-      engine.nextObstacleSpawn = time + Math.max(250, currentLvl.obstacleRate - engine.speed * 10);
+
+      // Spawn rate gets faster as level increases
+      engine.nextObstacleSpawn = time + (1200 - Math.min(900, engine.levelIndex * 40));
     }
 
     if (time > engine.nextCoinSpawn && cryptoCoinsRef.current.length > 0) {
@@ -572,7 +625,7 @@ export default function Game() {
     }
 
     // Entity Updates
-    const pBox = { x: p.x - p.w/2 + 20, y: p.y - p.h/2 + 20, w: p.w - 40, h: p.h - 40 };
+    const pBox = { x: p.x - p.w / 2 + 20, y: p.y - p.h / 2 + 20, w: p.w - 40, h: p.h - 40 };
 
     for (let i = entitiesRef.current.length - 1; i >= 0; i--) {
       const ent = entitiesRef.current[i];
@@ -583,36 +636,45 @@ export default function Game() {
       if (isGnomeMode && ent.type === "cryptoCoin" && !ent.collected) {
         if (ent.y < p.y && ent.y > p.y - 600) {
           ent.y += 10;
-          ent.x += (p.x - (ent.x + ent.w/2)) * 0.1;
+          ent.x += (p.x - (ent.x + ent.w / 2)) * 0.1;
         }
       }
 
-      // Collision
-      if (!ent.collected &&
-          pBox.x < ent.x + ent.w &&
-          pBox.x + pBox.w > ent.x &&
-          pBox.y < ent.y + ent.h &&
-          pBox.y + pBox.h > ent.y) {
-        
-        if (ent.type === "redCandle") {
-          triggerGameOver("hit a Red Candle");
+      // Collision (Only when actually playing!)
+      if (engine.state === "playing" && !ent.collected &&
+        pBox.x < ent.x + ent.w &&
+        pBox.x + pBox.w > ent.x &&
+        pBox.y < ent.y + ent.h &&
+        pBox.y + pBox.h > ent.y) {
+
+        if (["redCandle", "liquidationLaser", "bearTrap", "rugPull"].includes(ent.type)) {
+          const reason = ent.type.replace(/([A-Z])/g, ' $1').trim().toLowerCase();
+          triggerGameOver(`hit a ${reason}`);
           return;
+        } else if (ent.type === "fudCloud") {
+          if (!ent.collected) {
+            ent.collected = true; // prevent multi-trigger
+            engine.combo = 0; // Drain combo
+            engine.score = Math.max(0, engine.score - 5000); // Drain score
+            playSound("crash");
+            floatingTextsRef.current.push({ id: time, x: p.x, y: p.y, text: "FUD! -5000", life: 1.5 });
+          }
         } else if (ent.type === "cryptoCoin" && ent.coin) {
           ent.collected = true;
           engine.coins += 1;
           playSound("coin");
-          
+
           // Combo Logic
           engine.combo += 1;
           engine.comboTimer = time + 3000;
           const multiplier = Math.min(5, 1 + Math.floor(engine.combo / 3));
           engine.score += ent.coin.scoreValue * multiplier;
-          
+
           // Coin Shatter Particle Explosion
           for (let i = 0; i < 15; i++) {
             particlesRef.current.push({
-              x: ent.x + ent.w/2,
-              y: ent.y + ent.h/2,
+              x: ent.x + ent.w / 2,
+              y: ent.y + ent.h / 2,
               vx: (Math.random() - 0.5) * 15,
               vy: (Math.random() - 0.5) * 15 - 5, // Explode upwards
               life: 1.2,
@@ -627,7 +689,7 @@ export default function Game() {
             y: ent.y,
             life: 1.0
           });
-          
+
           // Trigger Gnome Mode randomly on pickup
           if (Math.random() > 0.98 && !isGnomeMode) {
             engine.gnomeModeTime = time + 5000;
@@ -680,7 +742,7 @@ export default function Game() {
         // Parallax depth calculation
         s.y += (1 + s.layer * 3) * engine.speed;
         if (s.y > CANVAS_H) s.y = 0;
-        
+
         ctx.globalAlpha = 0.2 + s.layer * 0.8;
         ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
       });
@@ -690,7 +752,7 @@ export default function Game() {
     // 2.5 Speed/Wind Streaks
     windRef.current.forEach(w => {
       // Move streaks downwards relative to engine speed to simulate upward flight
-      w.y += w.speed + engine.speed * 2; 
+      w.y += w.speed + engine.speed * 2;
       if (w.y > CANVAS_H + w.length) {
         w.y = -w.length;
         w.x = Math.random() * CANVAS_W;
@@ -704,37 +766,37 @@ export default function Game() {
       if (ent.type === "redCandle") {
         ctx.save();
         const pulse = Math.sin(time * 0.01 + ent.id);
-        
+
         // Volatility Glow
         ctx.shadowBlur = 15 + pulse * 10;
         ctx.shadowColor = "rgba(255, 0, 0, 0.8)";
-        
+
         // Main Body
         ctx.fillStyle = "#E53935";
         ctx.fillRect(ent.x, ent.y, ent.w, ent.h);
-        
+
         // Wick
         ctx.fillStyle = "#FF8A80";
-        ctx.fillRect(ent.x + ent.w/2 - 2, ent.y - 20, 4, ent.h + 40);
-        
+        ctx.fillRect(ent.x + ent.w / 2 - 2, ent.y - 20, 4, ent.h + 40);
+
         // Speed trail lines (to emphasize falling)
         ctx.shadowBlur = 0;
         ctx.fillStyle = "rgba(255, 138, 128, 0.4)";
         ctx.fillRect(ent.x + 4, ent.y - 40 - (pulse * 10), 2, 20);
         ctx.fillRect(ent.x + ent.w - 6, ent.y - 30 + (pulse * 10), 2, 15);
         ctx.restore();
-        
+
       } else if (ent.type === "cryptoCoin" && ent.coin) {
         const floatY = ent.y + Math.sin(time * 0.005 + ent.id) * 10;
-        
+
         ctx.save();
-        
+
         // Background Coin Glow/Shadow
         ctx.shadowBlur = 10;
         ctx.shadowColor = "rgba(251, 191, 36, 0.5)";
         ctx.fillStyle = "rgba(0,0,0,0.8)";
-        ctx.beginPath(); 
-        ctx.arc(ent.x + ent.w/2, floatY + ent.h/2, ent.w/2, 0, Math.PI*2); 
+        ctx.beginPath();
+        ctx.arc(ent.x + ent.w / 2, floatY + ent.h / 2, ent.w / 2, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0; // reset shadow for inner drawing
 
@@ -742,24 +804,62 @@ export default function Game() {
         if (logo && logo.complete) {
           // Create circular clipping mask for the image
           ctx.beginPath();
-          ctx.arc(ent.x + ent.w/2, floatY + ent.h/2, ent.w/2 - 2, 0, Math.PI*2);
+          ctx.arc(ent.x + ent.w / 2, floatY + ent.h / 2, ent.w / 2 - 2, 0, Math.PI * 2);
           ctx.clip();
-          
+
           // Draw image (it will be cropped by the circle)
           ctx.drawImage(logo, ent.x + 2, floatY + 2, ent.w - 4, ent.h - 4);
         } else {
           ctx.fillStyle = "#fbbf24"; ctx.font = "bold 20px sans-serif"; ctx.textAlign = "center";
-          ctx.fillText(ent.coin.symbol, ent.x + ent.w/2, floatY + ent.h/2 + 6);
+          ctx.fillText(ent.coin.symbol, ent.x + ent.w / 2, floatY + ent.h / 2 + 6);
         }
-        
+
         // Add a nice metallic rim around the coin
         ctx.beginPath();
-        ctx.arc(ent.x + ent.w/2, floatY + ent.h/2, ent.w/2, 0, Math.PI*2);
+        ctx.arc(ent.x + ent.w / 2, floatY + ent.h / 2, ent.w / 2, 0, Math.PI * 2);
         ctx.lineWidth = 3;
         ctx.strokeStyle = "#fbbf24";
         ctx.stroke();
-        
+
         ctx.restore();
+      } else if (ent.type === "bearTrap") {
+        const trapImg = assetsRef.current.enemyBear;
+        if (trapImg && trapImg.naturalWidth > 0) {
+          ctx.drawImage(trapImg, ent.x, ent.y, ent.w, ent.h);
+        } else {
+          // Fallback Triangle Trap
+          ctx.fillStyle = "#475569";
+          ctx.beginPath();
+          ctx.moveTo(ent.x, ent.y + ent.h);
+          ctx.lineTo(ent.x + ent.w / 2, ent.y);
+          ctx.lineTo(ent.x + ent.w, ent.y + ent.h);
+          ctx.fill();
+        }
+      } else if (ent.type === "rugPull") {
+        const rugImg = assetsRef.current.enemyRug;
+        if (rugImg && rugImg.naturalWidth > 0) {
+          ctx.drawImage(rugImg, ent.x, ent.y, ent.w, ent.h);
+        } else {
+          // Fallback Red Carpet
+          ctx.fillStyle = "#7c2d12"; // Dark brown rug base
+          ctx.fillRect(ent.x, ent.y, ent.w, ent.h);
+          ctx.fillStyle = "#ef4444"; // Red carpet pattern
+          ctx.fillRect(ent.x + 5, ent.y + 5, ent.w - 10, ent.h - 10);
+        }
+      } else if (ent.type === "fudCloud") {
+        // Procedural FUD Cloud
+        ctx.fillStyle = `rgba(71, 85, 105, ${ent.collected ? 0.2 : 0.8})`; // Slate gray FUD
+        ctx.beginPath();
+        ctx.arc(ent.x + ent.w / 2, ent.y + ent.h / 2, ent.w / 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.arc(ent.x + ent.w * 0.2, ent.y + ent.h * 0.4, ent.w * 0.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.arc(ent.x + ent.w * 0.8, ent.y + ent.h * 0.6, ent.w * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = `rgba(255, 255, 255, ${ent.collected ? 0.1 : 0.6})`;
+        ctx.font = "bold 24px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("FUD", ent.x + ent.w / 2, ent.y + ent.h / 2 + 8);
       }
     });
 
@@ -767,17 +867,17 @@ export default function Game() {
     ctx.save();
     ctx.translate(p.x, p.y);
     ctx.rotate(0); // Explicit zero degree rotation
-    
+
     if (engine.gnomeModeTime > time) {
       ctx.shadowBlur = 30; ctx.shadowColor = "#fbbf24";
     }
 
     const rocket = assetsRef.current["rocket"];
     if (rocket) {
-      ctx.drawImage(rocket, -p.w/2, -p.h/2, p.w, p.h); 
+      ctx.drawImage(rocket, -p.w / 2, -p.h / 2, p.w, p.h);
     } else {
       ctx.fillStyle = "green";
-      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
     }
     ctx.restore();
 
@@ -785,7 +885,7 @@ export default function Game() {
     particlesRef.current.forEach(pt => {
       ctx.globalAlpha = Math.max(0, pt.life);
       ctx.fillStyle = pt.color;
-      ctx.beginPath(); ctx.arc(pt.x, pt.y, 4, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2); ctx.fill();
     });
     ctx.globalAlpha = 1.0;
 
@@ -793,46 +893,46 @@ export default function Game() {
     ctx.textAlign = "center";
     floatingTextsRef.current.forEach(ft => {
       ctx.globalAlpha = Math.max(0, ft.life);
-      
+
       const isCombo = ft.text.includes("COMBO");
       ctx.font = isCombo ? "900 32px sans-serif" : "bold 24px sans-serif";
-      
+
       if (isCombo) {
         ctx.shadowBlur = 10;
         ctx.shadowColor = "#fbbf24";
       }
-      
+
       ctx.strokeStyle = "black"; ctx.lineWidth = 4;
       ctx.strokeText(ft.text, ft.x, ft.y);
       ctx.fillStyle = isCombo ? "#fbbf24" : "#4ade80";
       ctx.fillText(ft.text, ft.x, ft.y);
-      
+
       ctx.shadowBlur = 0;
     });
     ctx.globalAlpha = 1.0;
-    
+
     // 7. Level Up Announcer
     if (engine.levelUpTime > time) {
       ctx.save();
       const alpha = Math.min(1, (engine.levelUpTime - time) / 1000);
       ctx.globalAlpha = alpha;
-      
+
       ctx.textAlign = "center";
       ctx.shadowBlur = 20;
       ctx.shadowColor = "rgba(249, 115, 22, 0.8)";
-      
+
       // Main "LEVEL UP!" text
       ctx.fillStyle = "#fbbf24";
       const mainSize = CANVAS_W < 500 ? 36 : 50;
       ctx.font = `900 ${mainSize}px sans-serif`;
       ctx.fillText("LEVEL UP!", CANVAS_W / 2, CANVAS_H / 2 - 160);
-      
+
       // Chapter Name text
       ctx.fillStyle = "white";
       const subSize = CANVAS_W < 500 ? 22 : 32;
       ctx.font = `900 ${subSize}px sans-serif`;
       ctx.fillText(engine.levelUpText, CANVAS_W / 2, CANVAS_H / 2 - 120);
-      
+
       ctx.restore();
     }
   };
@@ -846,9 +946,9 @@ export default function Game() {
 
   return (
     <div className="relative w-full h-[100dvh] bg-black overflow-hidden font-sans text-white select-none">
-      
+
       {/* Canvas Layer */}
-      <div 
+      <div
         className="absolute inset-0 cursor-crosshair touch-none"
         onPointerMove={handlePointerMove}
         onPointerDown={handlePointerMove}
@@ -931,7 +1031,7 @@ export default function Game() {
           <div className="max-w-md w-full max-h-[95dvh] overflow-y-auto bg-slate-900 border-2 border-red-900 rounded-2xl p-6 sm:p-8 shadow-2xl text-center flex flex-col items-center gap-4 sm:gap-6">
             <h2 className="text-4xl sm:text-5xl font-black text-red-500">REKT!</h2>
             <p className="text-xl text-slate-300">You {gameOverReason}.</p>
-            
+
             <div className="bg-black/50 rounded-xl p-4 w-full my-2">
               <div className="text-sm text-slate-400 uppercase font-bold">Final Market Cap</div>
               <div className="text-4xl font-black text-green-400">${displayScore.toLocaleString()}</div>
@@ -958,7 +1058,7 @@ export default function Game() {
 
       {/* Global Mute Toggle (Bottom Right) */}
       <div className="absolute bottom-4 right-4 z-50">
-        <button 
+        <button
           onClick={() => {
             if (!audioCtxRef.current) initAudio();
             const newMuted = !isMuted;
