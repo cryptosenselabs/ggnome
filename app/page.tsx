@@ -14,7 +14,12 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const ogImage = `https://chaosgnome.xyz/assets/og-${safeOgId}.png`;
 
   return {
+    title: "$GNOME Runner",
+    description: "Dodge Bears. Survive Rugs. Stack $GNOME.",
     openGraph: {
+      title: "$GNOME Runner",
+      description: "Dodge Bears. Survive Rugs. Stack $GNOME.",
+      url: "https://chaosgnome.xyz",
       images: [
         {
           url: ogImage,
@@ -26,6 +31,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     },
     twitter: {
       card: "summary_large_image",
+      title: "$GNOME Runner",
+      description: "Dodge Bears. Survive Rugs. Stack $GNOME.",
       images: [ogImage],
     },
   };
