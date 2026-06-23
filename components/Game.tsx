@@ -1192,38 +1192,30 @@ export default function Game() {
         </div>
       )}
 
-      {/* HUD overlay */}
-      <div className="absolute top-4 left-6 pointer-events-none z-30">
-        <div className="bg-black/80 backdrop-blur-md px-6 py-3 rounded-xl border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
-          <h2 className="text-xl md:text-2xl font-black text-blue-400 drop-shadow-lg">
+      {/* HUD overlay (Level) */}
+      <div className="absolute bottom-4 md:bottom-auto md:top-4 left-4 md:left-6 pointer-events-none z-30">
+        <div className="bg-black/80 backdrop-blur-md px-3 py-2 md:px-6 md:py-3 rounded-xl border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+          <h2 className="text-sm md:text-2xl font-black text-blue-400 drop-shadow-lg">
             [CH {Math.floor(currentLevel/3) + 1}] {CAMPAIGN_LEVELS[currentLevel]?.name}
           </h2>
         </div>
       </div>
 
-      <div className="absolute top-4 right-6 flex flex-col items-end gap-2 pointer-events-none z-30">
-        <div className="bg-black/60 backdrop-blur-md px-6 py-3 rounded-xl border border-green-500/30">
-          <h2 className="text-4xl font-black text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.8)] tracking-tighter">
+      {/* HUD overlay (Score & Status) */}
+      <div className="absolute bottom-4 md:bottom-auto md:top-4 right-4 md:right-6 flex flex-col items-end gap-2 pointer-events-none z-30">
+        <div className="bg-black/60 backdrop-blur-md px-3 py-2 md:px-6 md:py-3 rounded-xl border border-green-500/30">
+          <h2 className="text-xl md:text-4xl font-black text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.8)] tracking-tighter">
             MCAP: ${score.toLocaleString()}
           </h2>
         </div>
         <div className="flex gap-4">
            {gnomeModeActive && (
-              <div className="bg-red-900/80 backdrop-blur-md px-4 py-2 rounded-xl flex items-center border border-red-500 animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.6)]">
-                <span className="text-xl font-black text-white tracking-widest">
+              <div className="bg-red-900/80 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-xl flex items-center border border-red-500 animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.6)]">
+                <span className="text-sm md:text-xl font-black text-white tracking-widest">
                   GNOME MODE ACTIVE
                 </span>
               </div>
            )}
-           
-           <div className="bg-black/60 backdrop-blur-md px-4 py-2 rounded-xl flex flex-col items-end justify-center gap-0 border border-yellow-500/30">
-              <span className="text-sm font-bold text-gray-300">
-                Harvested: <span className="text-yellow-400">{harvestedCount}</span>
-              </span>
-              <span className="text-xs font-bold text-green-400">
-                {lastGrab ? `Last Grab: ${lastGrab}` : ''}
-              </span>
-           </div>
         </div>
       </div>
 
