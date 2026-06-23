@@ -1415,41 +1415,6 @@ export default function Game() {
           </div>
         </div>
       )}
-      {/* Landscape Prompt Overlay */}
-      <div className="portrait:flex hidden fixed inset-0 z-[100] bg-black items-center justify-center flex-col pointer-events-auto px-6 text-center py-8">
-        <div className="flex-shrink-0 mb-6 flex flex-col items-center">
-          <img src="/assets/splash.png" alt="Gnome Character" className="w-24 h-24 object-contain drop-shadow-[0_0_15px_rgba(74,222,128,0.5)] mb-4" />
-          <h1 className="text-5xl font-black text-white mb-2 drop-shadow-2xl text-center">$GNOME RUNNER</h1>
-          <p className="text-green-400 text-sm font-bold mb-8 text-center px-4">Dodge Bears. Survive Rugs. Stack $GNOME.</p>
-
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-green-400 mb-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          <h2 className="text-2xl font-black text-white leading-tight mb-2">
-            ROTATE TO PLAY
-          </h2>
-          <p className="text-gray-400 font-bold text-sm">Landscape mode required</p>
-        </div>
-
-        {/* Leaderboard Panel for Portrait */}
-        <div className="bg-black/60 p-4 rounded-2xl border border-yellow-500/30 text-left w-full max-w-[350px] flex flex-col h-[300px] flex-1">
-          <h2 className="text-lg font-black text-yellow-400 mb-4 text-center border-b border-yellow-500/20 pb-2">GLOBAL TOP 100</h2>
-          <div className="flex flex-col gap-2 overflow-y-auto pr-2 custom-scrollbar flex-1">
-            {getDisplayLeaderboard().length > 0 ? getDisplayLeaderboard().map((entry, idx) => (
-              <div key={idx} className="flex justify-between items-center text-sm border-b border-gray-800/50 pb-1">
-                <span className="font-bold text-gray-300 truncate max-w-[150px] flex items-center gap-2">
-                  <span className="text-gray-500 w-6 text-right inline-block">{idx + 1}.</span>
-                  <span className="text-base">{idx === 0 ? "👑" : idx < 3 ? "🔥" : "🍄"}</span>
-                  {entry.name}
-                </span>
-                <span className="font-black text-green-400">${entry.score.toLocaleString()}</span>
-              </div>
-            )) : (
-              <div className="text-gray-500 text-center text-sm italic mt-4">Connecting to blockchain...</div>
-            )}
-          </div>
-        </div>
-      </div>
     </main>
   );
 }
