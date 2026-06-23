@@ -3,7 +3,8 @@ import { Pool } from 'pg';
 
 export const dynamic = 'force-dynamic';
 
-const connectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL;
+const rawConnectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL;
+const connectionString = rawConnectionString ? rawConnectionString.replace("?sslmode=require", "").replace("&sslmode=require", "") : undefined;
 
 const pool = new Pool({
   connectionString,

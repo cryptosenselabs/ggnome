@@ -4,13 +4,16 @@ import bots from "./bots.json";
 
 export const dynamic = 'force-dynamic';
 
-const connectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL;
+const rawConnectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL;
+
+// Strip sslmode=require from the URL because it overrides the Pool's ssl config
+// and causes "self-signed certificate in certificate chain" errors with Supabase pooler.
+const connectionString = rawConnectionString ? rawConnectionString.replace("?sslmode=require", "").replace("&sslmode=require", "") : undefined;
 
 // We use a connection pool to handle multiple concurrent requests efficiently.
 const pool = new Pool({
   connectionString,
   // If we are connecting to a cloud database (Supabase/Vercel) over the internet, we usually need ssl.
-  // The Vercel injected URL typically handles this, but we explicitly require it for non-localhost.
   ssl: connectionString?.includes("localhost") ? false : { rejectUnauthorized: false },
 });
 
