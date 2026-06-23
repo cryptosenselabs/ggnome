@@ -508,8 +508,10 @@ export default function Game() {
     const isGnomeMode = time < engine.gnomeModeTime;
 
     // Engine Progression
-    engine.speed += 0.002;
-    engine.score += engine.speed * (isGnomeMode ? 20 : 10);
+    // Smoothly interpolate current speed toward the target speed for this level
+    engine.speed += (CAMPAIGN_LEVELS[engine.levelIndex].speedBase - engine.speed) * 0.01;
+    // Score increases over time, normalized by roughly 60 FPS
+    engine.score += (engine.speed * (isGnomeMode ? 20 : 10)) / 60;
 
     // --- Level Progression ---
     let nextLevelIdx = engine.levelIndex;
