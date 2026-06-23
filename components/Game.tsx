@@ -637,9 +637,9 @@ export default function Game() {
     // Hitbox dimensions based on state (physics hitboxes)
     const pBox = {
       x: p.x + 30, // Tighter horizontal hitboxes
-      y: p.state === "sliding" ? p.y - 60 : p.y - 110,
+      y: p.y - 110,
       w: p.w - 40,
-      h: p.state === "sliding" ? 60 : 110,
+      h: 110,
     };
 
     // Spawning
