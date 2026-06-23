@@ -88,6 +88,7 @@ export default function Game() {
   const [gameOverReason, setGameOverReason] = useState("");
   const [isMobileLandscape, setIsMobileLandscape] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [visitorCount, setVisitorCount] = useState<number | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const engineAudioRef = useRef<{ osc1: OscillatorNode, osc2: OscillatorNode, gain: GainNode } | null>(null);
 
@@ -312,6 +313,12 @@ export default function Game() {
         { id: "bitcoin", symbol: "BTC", name: "Bitcoin", priceUsd: 65000, rank: 1, change24h: 1.2, logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png", scoreValue: calculateCoinScore(65000) }
       ];
     });
+
+    // Fetch Visitor Count
+    fetch("/api/visitors")
+      .then(res => res.json())
+      .then(data => setVisitorCount(data.count))
+      .catch(e => console.error("Failed to fetch visitors:", e));
 
     // Preload Gnome Rocket
     const rocketImg = new Image();
@@ -831,6 +838,12 @@ export default function Game() {
   };
 
   // --- JSX Rendering ---
+  const formatVisitors = (num: number) => {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toString();
+  };
+
   return (
     <div className="relative w-full h-[100dvh] bg-black overflow-hidden font-sans text-white select-none">
       
@@ -872,6 +885,12 @@ export default function Game() {
               $GNOME MOON RUN
             </h1>
             <p className="text-slate-300 text-lg">Ascend to the moon. Harvest crypto. Dodge red candles.</p>
+
+            {visitorCount !== null && (
+              <div className="text-green-400 text-xs sm:text-sm font-black tracking-widest bg-green-950/50 py-1.5 px-4 rounded-full border border-green-800/50 shadow-[0_0_10px_rgba(74,222,128,0.2)]">
+                🚀 {formatVisitors(visitorCount)} DEGENS VISITED
+              </div>
+            )}
 
             <input
               type="text"
