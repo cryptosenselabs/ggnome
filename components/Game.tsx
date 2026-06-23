@@ -329,7 +329,7 @@ export default function Game() {
     
     if (nextLevelIdx !== engine.levelIndex) {
       engine.levelIndex = nextLevelIdx;
-      engine.levelUpText = "LEVEL UP: " + CAMPAIGN_LEVELS[nextLevelIdx].name;
+      engine.levelUpText = CAMPAIGN_LEVELS[nextLevelIdx].name;
       engine.levelUpTime = time + 4000;
       
       // Celebration particles
@@ -613,12 +613,23 @@ export default function Game() {
       ctx.save();
       const alpha = Math.min(1, (engine.levelUpTime - time) / 1000);
       ctx.globalAlpha = alpha;
-      ctx.fillStyle = "#fbbf24";
-      ctx.font = "900 40px sans-serif";
+      
       ctx.textAlign = "center";
       ctx.shadowBlur = 20;
       ctx.shadowColor = "rgba(249, 115, 22, 0.8)";
-      ctx.fillText(engine.levelUpText, CANVAS_W / 2, CANVAS_H / 2 - 150);
+      
+      // Main "LEVEL UP!" text
+      ctx.fillStyle = "#fbbf24";
+      const mainSize = CANVAS_W < 500 ? 36 : 50;
+      ctx.font = `900 ${mainSize}px sans-serif`;
+      ctx.fillText("LEVEL UP!", CANVAS_W / 2, CANVAS_H / 2 - 160);
+      
+      // Chapter Name text
+      ctx.fillStyle = "white";
+      const subSize = CANVAS_W < 500 ? 22 : 32;
+      ctx.font = `900 ${subSize}px sans-serif`;
+      ctx.fillText(engine.levelUpText, CANVAS_W / 2, CANVAS_H / 2 - 120);
+      
       ctx.restore();
     }
   };
