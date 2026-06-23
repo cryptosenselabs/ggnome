@@ -35,9 +35,10 @@ interface Particle {
 }
 
 interface FloatingText {
+  id?: number;
+  text: string;
   x: number;
   y: number;
-  text: string;
   life: number;
 }
 
@@ -88,6 +89,7 @@ export default function Game() {
   const [isMobileLandscape, setIsMobileLandscape] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const engineAudioRef = useRef<{ osc1: OscillatorNode, osc2: OscillatorNode, gain: GainNode } | null>(null);
 
   // --- Audio Synthesizer ---
   const initAudio = () => {
@@ -141,6 +143,48 @@ export default function Game() {
       gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
       osc.start(now);
       osc.stop(now + 0.6);
+    }
+  };
+
+  const startEngineSound = (muted = isMuted) => {
+    if (muted || !audioCtxRef.current || engineAudioRef.current) return;
+    const ctx = audioCtxRef.current;
+    
+    // Deep, throbbing rocket rumble
+    const osc1 = ctx.createOscillator();
+    osc1.type = "sawtooth";
+    osc1.frequency.value = 40;
+    
+    const osc2 = ctx.createOscillator();
+    osc2.type = "square";
+    osc2.frequency.value = 42;
+    
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = 150; // Muffler to make it a deep rumble, not harsh
+    
+    const gainNode = ctx.createGain();
+    gainNode.gain.value = 0.15; // Quiet background noise
+    
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    osc1.start();
+    osc2.start();
+    
+    engineAudioRef.current = { osc1, osc2, gain: gainNode };
+  };
+
+  const stopEngineSound = () => {
+    if (engineAudioRef.current) {
+      engineAudioRef.current.osc1.stop();
+      engineAudioRef.current.osc2.stop();
+      engineAudioRef.current.osc1.disconnect();
+      engineAudioRef.current.osc2.disconnect();
+      engineAudioRef.current.gain.disconnect();
+      engineAudioRef.current = null;
     }
   };
 
@@ -288,6 +332,10 @@ export default function Game() {
     initAudio();
     if (!playerName.trim()) return alert("Please enter your name!");
     localStorage.setItem("gnome_runner_name", playerName);
+    
+    startEngineSound(isMuted);
+    
+    // Reset Engine State
 
     setGameState("playing");
     engineRef.current.state = "playing";
@@ -314,6 +362,7 @@ export default function Game() {
 
   const triggerGameOver = (reason: string) => {
     playSound("crash");
+    stopEngineSound();
     engineRef.current.state = "gameover";
     setGameState("gameover");
     setGameOverReason(reason);
@@ -854,7 +903,13 @@ export default function Game() {
         <button 
           onClick={() => {
             if (!audioCtxRef.current) initAudio();
-            setIsMuted(!isMuted);
+            const newMuted = !isMuted;
+            setIsMuted(newMuted);
+            if (newMuted) {
+              stopEngineSound();
+            } else if (gameState === "playing") {
+              startEngineSound(newMuted);
+            }
           }}
           className="bg-slate-900/80 backdrop-blur-md text-white p-3 rounded-full border-2 border-slate-700 shadow-xl hover:bg-slate-800 transition-colors"
         >
