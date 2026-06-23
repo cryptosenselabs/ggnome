@@ -731,6 +731,7 @@ export default function Game() {
             });
           }
         }
+        }
       }
 
       // Cleanup offscreen or collected
@@ -1192,9 +1193,9 @@ export default function Game() {
               >
                 START RUN
               </button>
-              <div className="mt-6 text-gray-400 text-xs md:text-sm text-center px-6 hidden md:block">
-                <p className="mb-2">Desktop: Space/Up = Jump, Down = Slide</p>
-                <p>Mobile: Tap top = Jump, Tap bottom = Slide</p>
+              <div className="mt-6 text-green-300 text-sm md:text-base font-bold text-center px-6 bg-green-900/40 py-3 rounded-xl border border-green-500/30 pointer-events-auto">
+                <p className="mb-1">🖱️ Desktop: Click and drag Mouse to steer</p>
+                <p>📱 Mobile: Touch and drag Finger to steer</p>
               </div>
             </div>
 
