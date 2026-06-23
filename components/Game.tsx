@@ -581,12 +581,14 @@ export default function Game() {
 
     // Spawning Hazards & Obstacles
     if (time > engine.nextObstacleSpawn) {
-      let types = ["redCandle", "liquidationLaser"];
-      if (engine.levelIndex >= 2) types.push("bearTrap");
-      if (engine.levelIndex >= 4) types.push("rugPull");
-      if (engine.levelIndex >= 6) types.push("fudCloud");
-
-      const type = types[Math.floor(Math.random() * types.length)];
+      let type = "redCandle";
+      const rand = Math.random();
+      
+      if (rand > 0.92 && engine.levelIndex >= 1) type = "liquidationLaser"; // 8% chance
+      else if (rand > 0.80 && engine.levelIndex >= 2) type = "bearTrap";    // 12% chance
+      else if (rand > 0.70 && engine.levelIndex >= 4) type = "rugPull";     // 10% chance
+      else if (rand > 0.60 && engine.levelIndex >= 6) type = "fudCloud";    // 10% chance
+      else type = "redCandle"; // 60% chance
 
       let w = 40, h = 100;
       let x = 0;
