@@ -606,7 +606,8 @@ export default function Game() {
         h = engine.canvasH + 200;
         x = Math.random() * (CANVAS_W - w);
       } else if (type === "whaleBlackHole") {
-        w = 150; h = 150;
+        w = Math.min(100, CANVAS_W * 0.25); // Smaller base size, even smaller on mobile
+        h = w;
         x = Math.random() * (CANVAS_W - w);
       } else if (type === "bearTrap") {
         w = 60; h = 60;
@@ -871,15 +872,21 @@ export default function Game() {
         ctx.restore();
       } else if (ent.type === "whaleBlackHole") {
         const whaleImg = assetsRef.current.enemyWhale;
+        const pulse = Math.sin(time * 0.01 + ent.id) * 0.15; // Pulsates visually by 15%
+        const visualW = ent.w * (1 + pulse);
+        const visualH = ent.h * (1 + pulse);
+        const offsetX = ent.x - (visualW - ent.w) / 2;
+        const offsetY = ent.y - (visualH - ent.h) / 2;
+
         if (whaleImg && whaleImg.naturalWidth > 0) {
-           ctx.drawImage(whaleImg, ent.x - 20, ent.y - 20, ent.w + 40, ent.h + 40);
+           ctx.drawImage(whaleImg, offsetX - 15, offsetY - 15, visualW + 30, visualH + 30);
         } else {
            // Fallback Black Hole
            ctx.fillStyle = "#000";
-           ctx.shadowBlur = 50;
+           ctx.shadowBlur = 50 + pulse * 30;
            ctx.shadowColor = "#3b82f6";
            ctx.beginPath();
-           ctx.arc(ent.x + ent.w/2, ent.y + ent.h/2, ent.w/2, 0, Math.PI * 2);
+           ctx.arc(offsetX + visualW/2, offsetY + visualH/2, visualW/2, 0, Math.PI * 2);
            ctx.fill();
            ctx.shadowBlur = 0;
         }
