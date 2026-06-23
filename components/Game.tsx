@@ -447,9 +447,11 @@ export default function Game() {
     setGameOverReason(reason);
 
     const mcapString = Math.floor(engineRef.current.score).toLocaleString();
+    const ogIndex = Math.floor(Math.random() * 3) + 1;
     const finalMsg = SHARE_MESSAGES[Math.floor(Math.random() * SHARE_MESSAGES.length)]
       .replace("{mcap}", mcapString)
-      .replace("{reason}", reason);
+      .replace("{reason}", reason)
+      .replace("https://chaosgnome.xyz", `https://chaosgnome.xyz?og=${ogIndex}`);
     setShareMessage(encodeURIComponent(finalMsg));
 
     const finalScore = Math.floor(engineRef.current.score);
@@ -1009,11 +1011,14 @@ export default function Game() {
             </button>
 
             {leaderboardData.length > 0 && (
-              <div className="w-full mt-4 text-left">
-                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Top Degens</h3>
-                <div className="space-y-1">
-                  {leaderboardData.slice(0, 5).map((l, i) => (
-                    <div key={i} className="flex justify-between text-sm">
+              <div className="w-full mt-4 text-left border-t border-slate-700 pt-4">
+                <div className="flex justify-between items-end mb-2">
+                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Top Degens</h3>
+                  <span className="text-xs font-bold text-slate-500 uppercase">Global Top 100</span>
+                </div>
+                <div className="space-y-1 max-h-[160px] overflow-y-auto pr-2 custom-scrollbar">
+                  {leaderboardData.slice(0, 100).map((l, i) => (
+                    <div key={i} className="flex justify-between text-sm py-0.5 border-b border-white/5 last:border-0">
                       <span className="font-bold text-slate-300">{i + 1}. {l.name}</span>
                       <span className="text-green-400 font-mono">${l.score.toLocaleString()}</span>
                     </div>
