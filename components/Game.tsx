@@ -10,8 +10,8 @@ const FLOOR_Y = 520; // Hover altitude (roughly 72% down the screen)
 const GRAVITY = 0.8;
 const JUMP_VELOCITY = -22;
 const SLIDE_DURATION = 450;
-const INITIAL_SPEED = 18; // 1.5x original base speed
-const SPEED_INCREMENT = 0.002;
+const INITIAL_SPEED = 14; // Reduced base speed
+const SPEED_INCREMENT = 0.001; // Slower speed scaling
 
 // Visual Sizes
 const GNOME_VISUAL_WIDTH = 170;
@@ -61,8 +61,8 @@ interface LevelData {
 
 const CAMPAIGN_LEVELS: LevelData[] = [
   // Chapter 1: The Garden Awakens
-  { chapter: "Chapter 1: The Garden Awakens", name: "Gnome Meadow", scoreThreshold: 0, bgFolder: "level1", backgroundTint: "rgba(0, 0, 0, 0)", speedMultiplier: 1.0, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 1300, coinSpawnRate: 550 },
-  { chapter: "Chapter 1: The Garden Awakens", name: "Seedling Valley", scoreThreshold: 5000, bgFolder: "level2", backgroundTint: "rgba(255, 165, 0, 0.15)", speedMultiplier: 1.2, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1200, coinSpawnRate: 450 },
+  { chapter: "Chapter 1: The Garden Awakens", name: "Gnome Meadow", scoreThreshold: 0, bgFolder: "level1", backgroundTint: "rgba(0, 0, 0, 0)", speedMultiplier: 1.0, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 1500, coinSpawnRate: 600 },
+  { chapter: "Chapter 1: The Garden Awakens", name: "Seedling Valley", scoreThreshold: 5000, bgFolder: "level2", backgroundTint: "rgba(255, 165, 0, 0.15)", speedMultiplier: 1.2, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1400, coinSpawnRate: 500 },
 
   // Chapter 2: The Gnome Homeland
   { chapter: "Chapter 2: The Gnome Homeland", name: "Mushroom Fields", scoreThreshold: 15000, bgFolder: "level3", backgroundTint: "rgba(128, 0, 128, 0.2)", speedMultiplier: 1.4, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 1000, coinSpawnRate: 400 },
