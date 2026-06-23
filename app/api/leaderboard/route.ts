@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { Pool } from "pg";
 import bots from "./bots.json";
 
+export const dynamic = 'force-dynamic';
+
 const connectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL;
 
 // We use a connection pool to handle multiple concurrent requests efficiently.

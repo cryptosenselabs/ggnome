@@ -1,33 +1,56 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { Pool } from 'pg';
 
-// Store in a local temp directory or use a simple file-based approach
-const dataFilePath = path.join(process.cwd(), 'public', 'visitors.json');
+export const dynamic = 'force-dynamic';
+
+const connectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL;
+
+const pool = new Pool({
+  connectionString,
+  ssl: connectionString?.includes("localhost") ? false : { rejectUnauthorized: false },
+});
+
+// Create table if it doesn't exist
+async function ensureTableExists() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS site_stats (
+      id VARCHAR(50) PRIMARY KEY,
+      value INTEGER NOT NULL
+    );
+  `);
+  
+  // Seed it with 1042 if it's completely empty
+  await pool.query(`
+    INSERT INTO site_stats (id, value) 
+    VALUES ('visitors', 1042) 
+    ON CONFLICT (id) DO NOTHING;
+  `);
+}
 
 export async function GET() {
   try {
-    let count = 1000;
-    
-    // Read current count if file exists
-    if (fs.existsSync(dataFilePath)) {
-      const data = fs.readFileSync(dataFilePath, 'utf-8');
-      const parsed = JSON.parse(data);
-      if (typeof parsed.count === 'number') {
-        count = parsed.count;
-      }
+    if (!connectionString) {
+      return NextResponse.json({ count: 1042 });
     }
 
-    // Increment
-    count += 1;
+    await ensureTableExists();
 
-    // Save new count
-    fs.writeFileSync(dataFilePath, JSON.stringify({ count }));
+    // Atomically increment the visitor count and return the new value
+    const result = await pool.query(`
+      UPDATE site_stats 
+      SET value = value + 1 
+      WHERE id = 'visitors' 
+      RETURNING value;
+    `);
 
-    return NextResponse.json({ count });
+    if (result.rows.length > 0) {
+      return NextResponse.json({ count: result.rows[0].value });
+    }
+
+    return NextResponse.json({ count: 1042 });
   } catch (error) {
-    console.error("Failed to read/write visitors file:", error);
-    // Fallback if file system is read-only (like Vercel serverless)
+    console.error("Failed to update Postgres visitors:", error);
+    // Fallback if DB fails
     return NextResponse.json({ count: 1042 });
   }
 }
