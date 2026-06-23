@@ -188,6 +188,19 @@ export default function Game() {
     }
   };
 
+  const speakGnome = (text: string) => {
+    if (isMuted || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    
+    window.speechSynthesis.cancel(); // Stop current speech
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.4; // Speak fast
+    utterance.pitch = 1.8; // High squeaky Gnome pitch
+    utterance.volume = 0.9;
+    
+    window.speechSynthesis.speak(utterance);
+  };
+
   // --- Mutable Game Engine State (Does not trigger React re-renders) ---
   const engineRef = useRef({
     state: "menu",
@@ -334,6 +347,7 @@ export default function Game() {
     localStorage.setItem("gnome_runner_name", playerName);
     
     startEngineSound(isMuted);
+    speakGnome("Let's go to the moon!");
     
     // Reset Engine State
 
@@ -363,6 +377,7 @@ export default function Game() {
   const triggerGameOver = (reason: string) => {
     playSound("crash");
     stopEngineSound();
+    speakGnome(`Oh no! I ${reason}!`);
     engineRef.current.state = "gameover";
     setGameState("gameover");
     setGameOverReason(reason);
@@ -439,6 +454,8 @@ export default function Game() {
     
     if (nextLevelIdx !== engine.levelIndex) {
       playSound("levelup");
+      const levelName = CAMPAIGN_LEVELS[nextLevelIdx].name.split(":")[1] || CAMPAIGN_LEVELS[nextLevelIdx].name;
+      speakGnome(`Level up! Welcome to ${levelName}`);
       engine.levelIndex = nextLevelIdx;
       engine.levelUpText = CAMPAIGN_LEVELS[nextLevelIdx].name;
       engine.levelUpTime = time + 4000;
@@ -576,9 +593,10 @@ export default function Game() {
           });
           
           // Trigger Gnome Mode randomly on pickup
-          if (Math.random() > 0.95 && !isGnomeMode) {
-            engine.gnomeModeTime = time + 6000;
-            floatingTextsRef.current.push({ x: p.x, y: p.y - 100, text: "GNOME MODE!", life: 2.0 });
+          if (Math.random() > 0.98 && !isGnomeMode) {
+            engine.gnomeModeTime = time + 5000;
+            speakGnome("Gnome mode activated!");
+            floatingTextsRef.current.push({ id: time, x: p.x, y: p.y - 100, text: "GNOME MODE!", life: 2.0 });
           }
         }
       }
@@ -598,14 +616,6 @@ export default function Game() {
       ft.y -= 2; ft.life -= 0.02;
     });
     floatingTextsRef.current = floatingTextsRef.current.filter(f => f.life > 0);
-
-    // Stars
-    starsRef.current.forEach(s => {
-      s.y += s.speed + engine.speed * 0.2;
-      if (s.y > engine.canvasH) {
-        s.y = 0; s.x = Math.random() * CANVAS_W;
-      }
-    });
   };
 
   const render = (time: number) => {
