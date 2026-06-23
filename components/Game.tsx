@@ -16,7 +16,7 @@ export type CryptoCoin = {
 
 interface Entity {
   id: number;
-  type: "redCandle" | "cryptoCoin" | "liquidationLaser";
+  type: "redCandle" | "cryptoCoin";
   x: number;
   y: number;
   w: number;
@@ -62,6 +62,14 @@ const SHARE_MESSAGES = [
   "I was farming $GNOME at ${mcap} MCAP when suddenly: {reason}. Can you beat my score? https://chaosgnome.xyz",
 ];
 
+const CAMPAIGN_LEVELS = [
+  { name: "1: The Garden", scoreThreshold: 0, r1: 135, g1: 206, b1: 235, r2: 224, g2: 246, b2: 255, stars: 0, obstacleRate: 2000 },
+  { name: "2: Sunset Drop", scoreThreshold: 50000, r1: 255, g1: 94, b1: 98, r2: 255, g2: 153, b2: 102, stars: 0, obstacleRate: 1500 },
+  { name: "3: Liquidation Ridge", scoreThreshold: 150000, r1: 139, g1: 0, b1: 0, r2: 20, g2: 0, b2: 0, stars: 20, obstacleRate: 1000 },
+  { name: "4: Deep Space", scoreThreshold: 350000, r1: 10, g1: 10, b1: 30, r2: 0, g2: 0, b2: 0, stars: 150, obstacleRate: 700 },
+  { name: "5: Moon Pump", scoreThreshold: 750000, r1: 45, g1: 35, b1: 5, r2: 0, g2: 0, b2: 0, stars: 150, obstacleRate: 400 }
+];
+
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -77,6 +85,7 @@ export default function Game() {
   const [displayCoins, setDisplayCoins] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [gameOverReason, setGameOverReason] = useState("");
+  const [isMobileLandscape, setIsMobileLandscape] = useState(false);
 
   // --- Mutable Game Engine State (Does not trigger React re-renders) ---
   const engineRef = useRef({
@@ -89,7 +98,13 @@ export default function Game() {
     nextObstacleSpawn: 0,
     nextCoinSpawn: 0,
     canvasW: 720,
-    canvasH: 1280
+    canvasH: 1280,
+    levelIndex: 0,
+    r1: 135, g1: 206, b1: 235,
+    r2: 224, g2: 246, b2: 255,
+    starAlpha: 0,
+    levelUpText: "",
+    levelUpTime: 0
   });
 
   const playerRef = useRef({
@@ -109,6 +124,14 @@ export default function Game() {
     y: Math.random() * 2000,
     size: Math.random() * 2 + 0.5,
     speed: Math.random() * 3 + 1
+  })));
+
+  const windRef = useRef(Array.from({ length: 20 }).map(() => ({
+    x: Math.random() * 2000,
+    y: Math.random() * 2000,
+    length: Math.random() * 150 + 50,
+    speed: Math.random() * 15 + 10,
+    opacity: Math.random() * 0.15 + 0.05
   })));
 
   // --- Assets ---
@@ -155,6 +178,9 @@ export default function Game() {
   // --- Responsive Canvas Setup ---
   useEffect(() => {
     const handleResize = () => {
+      // Check for mobile landscape
+      setIsMobileLandscape(window.innerWidth < 950 && window.innerHeight < 600 && window.innerWidth > window.innerHeight);
+
       if (canvasRef.current) {
         // High DPI Support
         const dpr = window.devicePixelRatio || 1;
@@ -288,13 +314,52 @@ export default function Game() {
     
     const isGnomeMode = time < engine.gnomeModeTime;
 
-    // Progression
+    // Engine Progression
     engine.speed += 0.002;
     engine.score += engine.speed * (isGnomeMode ? 20 : 10);
 
-    // Player Movement (Smooth X follow and fixed Y to avoid mobile bottom bars)
+    // --- Level Progression ---
+    let nextLevelIdx = engine.levelIndex;
+    for (let i = CAMPAIGN_LEVELS.length - 1; i >= 0; i--) {
+      if (engine.score >= CAMPAIGN_LEVELS[i].scoreThreshold) {
+        nextLevelIdx = i;
+        break;
+      }
+    }
+    
+    if (nextLevelIdx !== engine.levelIndex) {
+      engine.levelIndex = nextLevelIdx;
+      engine.levelUpText = "LEVEL UP: " + CAMPAIGN_LEVELS[nextLevelIdx].name;
+      engine.levelUpTime = time + 4000;
+      
+      // Celebration particles
+      for (let i = 0; i < 40; i++) {
+        particlesRef.current.push({
+          x: p.x + (Math.random() - 0.5) * 150,
+          y: p.y - 100 + (Math.random() - 0.5) * 150,
+          vx: (Math.random() - 0.5) * 15,
+          vy: (Math.random() - 0.5) * 15,
+          life: 1.5,
+          color: Math.random() > 0.5 ? "#4ade80" : "#fbbf24"
+        });
+      }
+    }
+
+    const currentLvl = CAMPAIGN_LEVELS[engine.levelIndex];
+
+    // Smooth Color Interpolation
+    engine.r1 += (currentLvl.r1 - engine.r1) * 0.01;
+    engine.g1 += (currentLvl.g1 - engine.g1) * 0.01;
+    engine.b1 += (currentLvl.b1 - engine.b1) * 0.01;
+    engine.r2 += (currentLvl.r2 - engine.r2) * 0.01;
+    engine.g2 += (currentLvl.g2 - engine.g2) * 0.01;
+    engine.b2 += (currentLvl.b2 - engine.b2) * 0.01;
+    engine.starAlpha += ((currentLvl.stars > 0 ? 1 : 0) - engine.starAlpha) * 0.01;
+    // --- End Level Progression ---
+
+    // Player Movement (Smooth X follow and fixed Y lower on screen)
     p.x += (p.targetX - p.x) * 0.15;
-    p.y = engine.canvasH * 0.7 + Math.sin(time * 0.005) * 10;
+    p.y = engine.canvasH * 0.85 + Math.sin(time * 0.005) * 10;
 
     // Thruster Particles
     if (Math.random() > 0.4) {
@@ -310,17 +375,10 @@ export default function Game() {
 
     // Spawning
     if (time > engine.nextObstacleSpawn) {
-      const type = Math.random() > 0.2 ? "redCandle" : "liquidationLaser";
+      const type = "redCandle";
       
-      let w, h;
-      if (type === "redCandle") {
-        w = 40 + Math.random() * 30;
-        h = 100 + Math.random() * 200;
-      } else {
-        // Laser acts as a falling horizontal wall, clamp width to 30%-50% of screen
-        w = CANVAS_W * (0.3 + Math.random() * 0.2);
-        h = 20;
-      }
+      let w = 40 + Math.random() * 30;
+      let h = 100 + Math.random() * 200;
       
       entitiesRef.current.push({
         id: time, type,
@@ -328,7 +386,7 @@ export default function Game() {
         y: -h - 100,
         w, h
       });
-      engine.nextObstacleSpawn = time + Math.max(400, 1500 - engine.speed * 10);
+      engine.nextObstacleSpawn = time + Math.max(250, currentLvl.obstacleRate - engine.speed * 10);
     }
 
     if (time > engine.nextCoinSpawn && cryptoCoinsRef.current.length > 0) {
@@ -366,8 +424,8 @@ export default function Game() {
           pBox.y < ent.y + ent.h &&
           pBox.y + pBox.h > ent.y) {
         
-        if (ent.type === "redCandle" || ent.type === "liquidationLaser") {
-          triggerGameOver(ent.type === "redCandle" ? "hit a Red Candle" : "got Liquidated");
+        if (ent.type === "redCandle") {
+          triggerGameOver("hit a Red Candle");
           return;
         } else if (ent.type === "cryptoCoin" && ent.coin) {
           ent.collected = true;
@@ -421,34 +479,31 @@ export default function Game() {
 
     ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
 
-    // 1. Procedural Sky Gradient (Changes with score)
-    const progress = Math.min(1, engine.score / 500000); // 0 to 500k
-    
-    // Sky Blue
-    let r1 = 135, g1 = 206, b1 = 235;
-    let r2 = 224, g2 = 246, b2 = 255;
-    
-    if (progress > 0) {
-      // Transition to space (dark blue/black)
-      r1 = Math.floor(135 - (130 * progress));
-      g1 = Math.floor(206 - (200 * progress));
-      b1 = Math.floor(235 - (215 * progress));
-      
-      r2 = Math.floor(224 - (204 * progress));
-      g2 = Math.floor(246 - (226 * progress));
-      b2 = Math.floor(255 - (215 * progress));
-    }
-
+    // 1. Procedural Sky Gradient (Interpolated by Level)
     const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
-    grad.addColorStop(0, `rgb(${r1},${g1},${b1})`);
-    grad.addColorStop(1, `rgb(${r2},${g2},${b2})`);
+    grad.addColorStop(0, `rgb(${Math.floor(engine.r1)},${Math.floor(engine.g1)},${Math.floor(engine.b1)})`);
+    grad.addColorStop(1, `rgb(${Math.floor(engine.r2)},${Math.floor(engine.g2)},${Math.floor(engine.b2)})`);
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
     // 2. Stars
-    ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, progress * 2)})`;
-    starsRef.current.forEach(s => {
-      ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
+    if (engine.starAlpha > 0.01) {
+      ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, engine.starAlpha)})`;
+      starsRef.current.forEach(s => {
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
+      });
+    }
+
+    // 2.5 Speed/Wind Streaks
+    windRef.current.forEach(w => {
+      // Move streaks downwards relative to engine speed to simulate upward flight
+      w.y += w.speed + engine.speed * 2; 
+      if (w.y > CANVAS_H + w.length) {
+        w.y = -w.length;
+        w.x = Math.random() * CANVAS_W;
+      }
+      ctx.fillStyle = `rgba(255, 255, 255, ${w.opacity})`;
+      ctx.fillRect(w.x, w.y, 2, w.length);
     });
 
     // 3. Entities
@@ -476,27 +531,6 @@ export default function Game() {
         ctx.fillRect(ent.x + ent.w - 6, ent.y - 30 + (pulse * 10), 2, 15);
         ctx.restore();
         
-      } else if (ent.type === "liquidationLaser") {
-        ctx.save();
-        const laserPulse = Math.sin(time * 0.03 + ent.id);
-        
-        // Extreme Heat Glow
-        ctx.shadowBlur = 20 + laserPulse * 15;
-        ctx.shadowColor = "#ef4444";
-        
-        // Outer Aura (flickering size & opacity)
-        const auraSpread = 10 + laserPulse * 5;
-        ctx.fillStyle = `rgba(239, 68, 68, ${0.4 + laserPulse * 0.2})`;
-        ctx.fillRect(ent.x, ent.y - auraSpread, ent.w, ent.h + auraSpread * 2);
-        
-        // Base Laser Beam
-        ctx.fillStyle = "#ef4444";
-        ctx.fillRect(ent.x, ent.y, ent.w, ent.h);
-        
-        // White-Hot Plasma Center (blinking)
-        ctx.fillStyle = `rgba(255, 255, 255, ${0.7 + laserPulse * 0.3})`;
-        ctx.fillRect(ent.x, ent.y + ent.h/2 - 2, ent.w, 4);
-        ctx.restore();
       } else if (ent.type === "cryptoCoin" && ent.coin) {
         const floatY = ent.y + Math.sin(time * 0.005 + ent.id) * 10;
         
@@ -573,6 +607,20 @@ export default function Game() {
       ctx.fillText(ft.text, ft.x, ft.y);
     });
     ctx.globalAlpha = 1.0;
+    
+    // 7. Level Up Announcer
+    if (engine.levelUpTime > time) {
+      ctx.save();
+      const alpha = Math.min(1, (engine.levelUpTime - time) / 1000);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = "#fbbf24";
+      ctx.font = "900 40px sans-serif";
+      ctx.textAlign = "center";
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = "rgba(249, 115, 22, 0.8)";
+      ctx.fillText(engine.levelUpText, CANVAS_W / 2, CANVAS_H / 2 - 150);
+      ctx.restore();
+    }
   };
 
   // --- JSX Rendering ---
@@ -610,7 +658,7 @@ export default function Game() {
       )}
 
       {/* Main Menu */}
-      {gameState === "menu" && (
+      {gameState === "menu" && !isMobileLandscape && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm z-20 p-4">
           <div className="max-w-md w-full max-h-[95dvh] overflow-y-auto bg-slate-900 border-2 border-slate-700 rounded-2xl p-6 sm:p-8 shadow-2xl text-center flex flex-col items-center gap-4 sm:gap-6">
             <h1 className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-green-400 to-emerald-600 mb-2 filter drop-shadow-[0_0_15px_rgba(74,222,128,0.5)]">
@@ -652,7 +700,7 @@ export default function Game() {
       )}
 
       {/* Game Over Screen */}
-      {gameState === "gameover" && (
+      {gameState === "gameover" && !isMobileLandscape && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-red-950/80 backdrop-blur-sm z-30 p-4">
           <div className="max-w-md w-full max-h-[95dvh] overflow-y-auto bg-slate-900 border-2 border-red-900 rounded-2xl p-6 sm:p-8 shadow-2xl text-center flex flex-col items-center gap-4 sm:gap-6">
             <h2 className="text-4xl sm:text-5xl font-black text-red-500">REKT!</h2>
@@ -667,7 +715,7 @@ export default function Game() {
               onClick={startGame}
               className="w-full bg-green-600 hover:bg-green-500 text-white font-black text-xl py-4 rounded-xl transition-colors shadow-lg"
             >
-              APING BACK IN (PLAY AGAIN)
+              PLAY AGAIN
             </button>
 
             <a
@@ -679,6 +727,17 @@ export default function Game() {
               Share on X
             </a>
           </div>
+        </div>
+      )}
+
+      {/* Mobile Landscape Blocker */}
+      {isMobileLandscape && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 z-[100] p-8 text-center border-4 border-red-500">
+          <div className="text-8xl mb-6 animate-pulse">📱</div>
+          <h2 className="text-4xl font-black text-red-500 mb-4">ROTATE YOUR DEVICE</h2>
+          <p className="text-xl text-slate-300 font-bold max-w-sm">
+            GNOME MOON RUN is a vertical climber! Please rotate your phone to portrait mode to continue playing.
+          </p>
         </div>
       )}
 
