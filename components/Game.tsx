@@ -394,6 +394,8 @@ export default function Game() {
 
   // --- Game Loop Methods ---
   const startGame = () => {
+    if (engineRef.current.state === "playing") return;
+    
     initAudio();
     if (!playerName.trim()) return alert("Please enter your name!");
     localStorage.setItem("gnome_runner_name", playerName);

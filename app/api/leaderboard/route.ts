@@ -2,10 +2,7 @@ import { NextResponse } from "next/server";
 import { Pool } from "pg";
 import bots from "./bots.json";
 
-// Using a generic connection string allows connecting to any Postgres database.
-// In dev: postgres://postgres:postgres@localhost:5432/postgres
-// In prod (Vercel): Automatically injected by the Supabase Vercel Integration
-const connectionString = process.env.POSTGRES_URL;
+const connectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL;
 
 // We use a connection pool to handle multiple concurrent requests efficiently.
 const pool = new Pool({
