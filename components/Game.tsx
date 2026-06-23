@@ -648,8 +648,8 @@ export default function Game() {
       coin: coinData,
       x: CANVAS_W + 100,
       y: Math.random() * (FLOOR_Y - 100) + 50, // Any altitude from 50 to FLOOR_Y-50
-      w: 40,
-      h: 40,
+      w: 60,
+      h: 60,
     });
   };
 
@@ -974,11 +974,11 @@ export default function Game() {
 
         ctx.save();
         // glowing circular frame
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = "rgba(250, 204, 21, 0.6)";
-        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-        ctx.strokeStyle = "rgba(250, 204, 21, 0.8)";
-        ctx.lineWidth = 2;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.9)"; // Strong drop shadow
+        ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+        ctx.strokeStyle = "rgba(250, 204, 21, 1.0)";
+        ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.arc(ent.x + ent.w / 2, floatY + ent.h / 2, ent.w / 2, 0, Math.PI * 2);
         ctx.fill();
@@ -991,14 +991,14 @@ export default function Game() {
         if (ent.coin && cryptoLogosRef.current[ent.coin.symbol]) {
           const img = cryptoLogosRef.current[ent.coin.symbol];
           if (img.complete && img.naturalWidth !== 0) {
-            ctx.drawImage(img, ent.x + 4, floatY + 4, ent.w - 8, ent.h - 8);
+            ctx.drawImage(img, ent.x + 6, floatY + 6, ent.w - 12, ent.h - 12);
             drawnLogo = true;
           }
         }
 
         if (!drawnLogo && ent.coin) {
           ctx.fillStyle = "#fbbf24";
-          ctx.font = "bold 14px sans-serif";
+          ctx.font = "bold 18px sans-serif";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
           ctx.fillText(ent.coin.symbol.slice(0, 3), ent.x + ent.w / 2, floatY + ent.h / 2);
@@ -1006,16 +1006,17 @@ export default function Game() {
 
         // draw ticker and price
         if (ent.coin) {
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = "#000000"; // Strong text shadow
+          
           ctx.fillStyle = "#ffffff";
-          ctx.font = "bold 12px sans-serif";
+          ctx.font = "900 14px sans-serif";
           ctx.textAlign = "center";
-          ctx.shadowBlur = 5;
-          ctx.shadowColor = "#000000";
-          ctx.fillText(ent.coin.symbol, ent.x + ent.w / 2, floatY - 6);
+          ctx.fillText(ent.coin.symbol, ent.x + ent.w / 2, floatY - 8);
 
           ctx.fillStyle = "#4ade80"; // green
-          ctx.font = "bold 10px sans-serif";
-          ctx.fillText(formatPrice(ent.coin.priceUsd), ent.x + ent.w / 2, floatY + ent.h + 12);
+          ctx.font = "900 12px sans-serif";
+          ctx.fillText(formatPrice(ent.coin.priceUsd), ent.x + ent.w / 2, floatY + ent.h + 16);
         }
 
         ctx.restore();
