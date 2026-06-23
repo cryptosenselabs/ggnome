@@ -10,7 +10,7 @@ const FLOOR_Y = 520; // Hover altitude (roughly 72% down the screen)
 const GRAVITY = 0.8;
 const JUMP_VELOCITY = -22;
 const SLIDE_DURATION = 450;
-const INITIAL_SPEED = 12;
+const INITIAL_SPEED = 24; // Doubled original base speed
 const SPEED_INCREMENT = 0.002;
 
 // Visual Sizes
