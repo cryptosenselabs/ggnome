@@ -10,7 +10,7 @@ const FLOOR_Y = 520; // Hover altitude (roughly 72% down the screen)
 const GRAVITY = 0.8;
 const JUMP_VELOCITY = -22;
 const SLIDE_DURATION = 450;
-const INITIAL_SPEED = 24; // Doubled original base speed
+const INITIAL_SPEED = 18; // 1.5x original base speed
 const SPEED_INCREMENT = 0.002;
 
 // Visual Sizes
@@ -61,24 +61,24 @@ interface LevelData {
 
 const CAMPAIGN_LEVELS: LevelData[] = [
   // Chapter 1: The Garden Awakens
-  { chapter: "Chapter 1: The Garden Awakens", name: "Gnome Meadow", scoreThreshold: 0, bgFolder: "level1", backgroundTint: "rgba(0, 0, 0, 0)", speedMultiplier: 1.0, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 1000, coinSpawnRate: 400 },
-  { chapter: "Chapter 1: The Garden Awakens", name: "Seedling Valley", scoreThreshold: 5000, bgFolder: "level2", backgroundTint: "rgba(255, 165, 0, 0.15)", speedMultiplier: 1.2, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 900, coinSpawnRate: 350 },
+  { chapter: "Chapter 1: The Garden Awakens", name: "Gnome Meadow", scoreThreshold: 0, bgFolder: "level1", backgroundTint: "rgba(0, 0, 0, 0)", speedMultiplier: 1.0, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 1300, coinSpawnRate: 550 },
+  { chapter: "Chapter 1: The Garden Awakens", name: "Seedling Valley", scoreThreshold: 5000, bgFolder: "level2", backgroundTint: "rgba(255, 165, 0, 0.15)", speedMultiplier: 1.2, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 1200, coinSpawnRate: 450 },
 
   // Chapter 2: The Gnome Homeland
-  { chapter: "Chapter 2: The Gnome Homeland", name: "Mushroom Fields", scoreThreshold: 15000, bgFolder: "level3", backgroundTint: "rgba(128, 0, 128, 0.2)", speedMultiplier: 1.4, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 750, coinSpawnRate: 300 },
-  { chapter: "Chapter 2: The Gnome Homeland", name: "Alpine Wind Run", scoreThreshold: 30000, bgFolder: "level4", backgroundTint: "rgba(0, 191, 255, 0.2)", speedMultiplier: 1.6, hazards: { candles: false, lasers: false, wind: true }, obstacleSpawnRate: 650, coinSpawnRate: 250 },
+  { chapter: "Chapter 2: The Gnome Homeland", name: "Mushroom Fields", scoreThreshold: 15000, bgFolder: "level3", backgroundTint: "rgba(128, 0, 128, 0.2)", speedMultiplier: 1.4, hazards: { candles: true, lasers: false, wind: false }, obstacleSpawnRate: 1000, coinSpawnRate: 400 },
+  { chapter: "Chapter 2: The Gnome Homeland", name: "Alpine Wind Run", scoreThreshold: 30000, bgFolder: "level4", backgroundTint: "rgba(0, 191, 255, 0.2)", speedMultiplier: 1.6, hazards: { candles: false, lasers: false, wind: true }, obstacleSpawnRate: 850, coinSpawnRate: 350 },
 
   // Chapter 3: Market Chaos
-  { chapter: "Chapter 3: Market Chaos", name: "Red Candle Pass", scoreThreshold: 50000, bgFolder: "level5", backgroundTint: "rgba(255, 0, 0, 0.2)", speedMultiplier: 1.8, hazards: { candles: true, lasers: false, wind: true }, obstacleSpawnRate: 550, coinSpawnRate: 250 },
-  { chapter: "Chapter 3: Market Chaos", name: "Liquidation Ridge", scoreThreshold: 75000, bgFolder: "level6", backgroundTint: "rgba(255, 0, 0, 0.4)", speedMultiplier: 2.1, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 450, coinSpawnRate: 300 },
+  { chapter: "Chapter 3: Market Chaos", name: "Red Candle Pass", scoreThreshold: 50000, bgFolder: "level5", backgroundTint: "rgba(255, 0, 0, 0.2)", speedMultiplier: 1.8, hazards: { candles: true, lasers: false, wind: true }, obstacleSpawnRate: 750, coinSpawnRate: 350 },
+  { chapter: "Chapter 3: Market Chaos", name: "Liquidation Ridge", scoreThreshold: 75000, bgFolder: "level6", backgroundTint: "rgba(255, 0, 0, 0.4)", speedMultiplier: 2.1, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 600, coinSpawnRate: 400 },
 
   // Chapter 4: The Gnomad Cult
-  { chapter: "Chapter 4: The Gnomad Cult", name: "The Gnomad Village", scoreThreshold: 125000, bgFolder: "level7", backgroundTint: "rgba(0, 100, 0, 0.3)", speedMultiplier: 2.5, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 400, coinSpawnRate: 200 },
-  { chapter: "Chapter 4: The Gnomad Cult", name: "Full Moon Raid", scoreThreshold: 200000, bgFolder: "level8", backgroundTint: "rgba(0, 0, 139, 0.6)", speedMultiplier: 3.0, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 350, coinSpawnRate: 150 },
+  { chapter: "Chapter 4: The Gnomad Cult", name: "The Gnomad Village", scoreThreshold: 125000, bgFolder: "level7", backgroundTint: "rgba(0, 100, 0, 0.3)", speedMultiplier: 2.5, hazards: { candles: true, lasers: true, wind: false }, obstacleSpawnRate: 550, coinSpawnRate: 250 },
+  { chapter: "Chapter 4: The Gnomad Cult", name: "Full Moon Raid", scoreThreshold: 200000, bgFolder: "level8", backgroundTint: "rgba(0, 0, 139, 0.6)", speedMultiplier: 3.0, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 450, coinSpawnRate: 200 },
 
   // Chapter 5: The Moon Pump
-  { chapter: "Chapter 5: The Moon Pump", name: "Bear Market Storm", scoreThreshold: 350000, bgFolder: "level9", backgroundTint: "rgba(50, 50, 50, 0.8)", speedMultiplier: 3.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 300, coinSpawnRate: 200 },
-  { chapter: "Chapter 5: The Moon Pump", name: "Moon Pump Summit", scoreThreshold: 750000, bgFolder: "level10", backgroundTint: "rgba(255, 215, 0, 0.5)", speedMultiplier: 4.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 200, coinSpawnRate: 100 },
+  { chapter: "Chapter 5: The Moon Pump", name: "Bear Market Storm", scoreThreshold: 350000, bgFolder: "level9", backgroundTint: "rgba(50, 50, 50, 0.8)", speedMultiplier: 3.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 400, coinSpawnRate: 250 },
+  { chapter: "Chapter 5: The Moon Pump", name: "Moon Pump Summit", scoreThreshold: 750000, bgFolder: "level10", backgroundTint: "rgba(255, 215, 0, 0.5)", speedMultiplier: 4.5, hazards: { candles: true, lasers: true, wind: true }, obstacleSpawnRate: 250, coinSpawnRate: 150 },
 ];
 
 // Interfaces
@@ -641,7 +641,7 @@ export default function Game() {
 
     let forwardBoost = 1.0;
     if ((p as any).isDragging && (p as any).targetX && (p as any).targetX > 200) {
-      forwardBoost = 1.0 + Math.min(((p as any).targetX - 200) / 400, 1.5); // Max 2.5x speed multiplier
+      forwardBoost = 1.0 + Math.min(((p as any).targetX - 200) / 400, 0.5); // Max 1.5x speed multiplier
     }
     const currentFrameSpeed = s.speed * forwardBoost;
 
