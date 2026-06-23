@@ -985,7 +985,7 @@ export default function Game() {
       {/* Main Menu */}
       {gameState === "menu" && !isMobileLandscape && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm z-20 p-4">
-          <div className="max-w-md w-full max-h-[95dvh] overflow-y-auto custom-scrollbar bg-slate-900 border-2 border-slate-700 rounded-2xl p-6 sm:p-8 shadow-2xl text-center flex flex-col items-center gap-4 sm:gap-6">
+          <div className="max-w-md w-full bg-slate-900 border-2 border-slate-700 rounded-2xl p-4 sm:p-6 shadow-2xl text-center flex flex-col items-center gap-3 sm:gap-4">
             <h1 className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-green-400 to-emerald-600 mb-2 filter drop-shadow-[0_0_15px_rgba(74,222,128,0.5)]">
               $GNOME MOON RUN
             </h1>
@@ -1019,7 +1019,7 @@ export default function Game() {
                   <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Top Degens</h3>
                   <span className="text-xs font-bold text-slate-500 uppercase">Global Top 100</span>
                 </div>
-                <div className="space-y-1 max-h-[160px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-1 max-h-[120px] overflow-y-auto pr-2 custom-scrollbar">
                   {leaderboardData.slice(0, 100).map((l, i) => (
                     <div key={i} className="flex justify-between text-sm py-0.5 border-b border-white/5 last:border-0">
                       <span className="font-bold text-slate-300">{i + 1}. {l.name}</span>
@@ -1036,7 +1036,7 @@ export default function Game() {
       {/* Game Over Screen */}
       {gameState === "gameover" && !isMobileLandscape && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-red-950/80 backdrop-blur-sm z-30 p-4">
-          <div className="max-w-md w-full max-h-[95dvh] overflow-y-auto custom-scrollbar bg-slate-900 border-2 border-red-900 rounded-2xl p-6 sm:p-8 shadow-2xl text-center flex flex-col items-center gap-4 sm:gap-6">
+          <div className="max-w-md w-full bg-slate-900 border-2 border-red-900 rounded-2xl p-4 sm:p-6 shadow-2xl text-center flex flex-col items-center gap-3 sm:gap-4">
             <h2 className="text-4xl sm:text-5xl font-black text-red-500">REKT!</h2>
             <p className="text-xl text-slate-300">You {gameOverReason}.</p>
 
