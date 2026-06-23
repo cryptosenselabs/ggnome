@@ -401,10 +401,12 @@ export default function Game() {
     const mcapString = Math.floor(stateRef.current.score).toLocaleString();
     const levelStr = (stateRef.current.levelIndex + 1).toString();
     const randomMsg = SHARE_MESSAGES[Math.floor(Math.random() * SHARE_MESSAGES.length)];
+    const randomOg = Math.floor(Math.random() * 3) + 1; // 1, 2, or 3
     const finalMsg = randomMsg
       .replace("{mcap}", mcapString)
       .replace("{level}", levelStr)
-      .replace("{reason}", reason);
+      .replace("{reason}", reason)
+      .replace("https://chaosgnome.xyz", `https://chaosgnome.xyz/?og=${randomOg}`);
     setShareMessage(encodeURIComponent(finalMsg));
 
     // Screen flash and hit particles
