@@ -86,6 +86,96 @@ const CAMPAIGN_LEVELS = [
   { threshold: 1000000, name: "Level 20: THE MOON", bg: [[255, 255, 0], [255, 255, 255]], speedBase: 46, hazardRate: 0.12 },
 ];
 
+const ROADMAP_PHASES = [
+  {
+    title: "Phase 1 — The Seed Is Planted",
+    status: "Live / In Progress",
+    items: [
+      "Launch chaosgnome.xyz",
+      "Build the $GNOME visual identity",
+      "Create the GNomad Manifesto",
+      "Open the first community channels",
+      "Publish daily Gnome meme posters",
+      "Start gathering the first GNomads before token launch"
+    ],
+    theme: "The garden begins before the coin. First we grow the village.",
+    statusColor: "text-green-400"
+  },
+  {
+    title: "Phase 2 — The GNomads Gather",
+    status: "Pre-Launch",
+    items: [
+      "Grow the early GNomad community",
+      "Release the first meme poster series",
+      "Launch “Daily Life of a GNomad” content",
+      "Publish lore articles on X",
+      "Start community rituals: profile picture planting, meme replies, score sharing, GNomad sightings",
+      "Finalize launch readiness"
+    ],
+    theme: "No empty launch. No silent chart. The Village must gather first.",
+    statusColor: "text-blue-400"
+  },
+  {
+    title: "Phase 3 — The Coin Awakens",
+    status: "Upcoming",
+    items: [
+      "Launch $GNOME on Solana",
+      "Share verified contract address only through official channels",
+      "Open public trading",
+      "Begin first community raid wave",
+      "Publish launch-day memes and posters",
+      "Start the first “Stay Planted” campaign"
+    ],
+    theme: "When enough GNomads are planted, the coin awakens.",
+    statusColor: "text-purple-400"
+  },
+  {
+    title: "Phase 4 — Gnome Moon Run",
+    status: "In Development",
+    items: [
+      "Release the playable browser game",
+      "Add crypto coin harvesting",
+      "Add red candle dodging",
+      "Add MCAP score system",
+      "Add player name entry",
+      "Add global leaderboard",
+      "Enable shareable score posts for X",
+      "Launch first leaderboard season"
+    ],
+    theme: "Most meme coins make you watch candles. $GNOME makes you dodge them.",
+    statusColor: "text-yellow-400"
+  },
+  {
+    title: "Phase 5 — The Village Expands",
+    status: "Planned",
+    items: [
+      "Add new game levels",
+      "Add more Gnome characters",
+      "Add seasonal meme events",
+      "Add community-submitted poster ideas",
+      "Create GNomad rank system",
+      "Build “Wall of GNomads”",
+      "Reward active community members with visibility, roles, and lore status"
+    ],
+    theme: "The strongest meme coins are not bought. They are inhabited.",
+    statusColor: "text-slate-400"
+  },
+  {
+    title: "Phase 6 — The Garden Goes Everywhere",
+    status: "Future",
+    items: [
+      "Expand GNomad lore",
+      "Release more mini-games and meme tools",
+      "Build creator-friendly share assets",
+      "Launch community challenges",
+      "Explore future utility only if it strengthens the meme",
+      "Keep the project fun, chaotic, and community-first"
+    ],
+    theme: "Plant chaos. Grow culture. Spread the garden everywhere.",
+    statusColor: "text-slate-500"
+  }
+];
+
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -95,6 +185,7 @@ export default function Game() {
   const [leaderboardData, setLeaderboardData] = useState<{ name: string, score: number }[]>([]);
   const [assetError, setAssetError] = useState("");
   const [shareMessage, setShareMessage] = useState("");
+  const [showRoadmap, setShowRoadmap] = useState(false);
 
   // Game Stats (Synced selectively to avoid massive re-renders)
   const [displayScore, setDisplayScore] = useState(0);
@@ -1068,12 +1159,21 @@ export default function Game() {
               maxLength={15}
             />
 
-            <button
-              onClick={startGame}
-              className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-black text-2xl py-4 rounded-xl hover:scale-105 active:scale-95 transition-transform shadow-[0_0_20px_rgba(16,185,129,0.4)]"
-            >
-              LAUNCH ROCKET
-            </button>
+            <div className="w-full flex flex-col gap-2">
+              <button
+                onClick={startGame}
+                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-black text-2xl py-4 rounded-xl hover:scale-105 active:scale-95 transition-transform shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+              >
+                LAUNCH ROCKET
+              </button>
+              
+              <button
+                onClick={() => setShowRoadmap(true)}
+                className="w-full bg-slate-800 text-slate-300 border-2 border-slate-600 font-bold text-lg py-3 rounded-xl hover:bg-slate-700 hover:text-white transition-colors"
+              >
+                THE GNOME ROADMAP
+              </button>
+            </div>
 
             {leaderboardData.length > 0 && (
               <div className="w-full mt-4 text-left border-t border-slate-700 pt-4">
@@ -1164,6 +1264,53 @@ export default function Game() {
           {isMuted ? "🔇 Muted" : "🔊 Sound On"}
         </button>
       </div>
+
+      {/* Roadmap Modal */}
+      {showRoadmap && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-8">
+          <div className="max-w-3xl w-full h-full max-h-[90dvh] flex flex-col bg-slate-900 border-2 border-green-500 rounded-2xl shadow-[0_0_30px_rgba(74,222,128,0.2)] overflow-hidden">
+            <div className="flex justify-between items-center p-4 sm:p-6 border-b border-slate-700 bg-slate-900 z-10 shadow-md">
+              <h2 className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">
+                $GNOME ROADMAP
+              </h2>
+              <button 
+                onClick={() => setShowRoadmap(false)}
+                className="text-slate-400 hover:text-white font-bold text-xl px-4 py-2 bg-slate-800 rounded-lg transition-colors"
+              >
+                ✕ CLOSE
+              </button>
+            </div>
+            
+            <div className="p-4 sm:p-8 overflow-y-auto custom-scrollbar flex-1 space-y-8">
+              {ROADMAP_PHASES.map((phase, idx) => (
+                <div key={idx} className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 sm:p-6 transition-all hover:border-slate-500">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                    <h3 className="text-xl font-bold text-white">{phase.title}</h3>
+                    <span className={`text-xs font-black uppercase tracking-widest px-3 py-1 bg-black rounded-full border border-slate-700 ${phase.statusColor}`}>
+                      {phase.status}
+                    </span>
+                  </div>
+                  
+                  <ul className="space-y-2 mb-6">
+                    {phase.items.map((item, i) => (
+                      <li key={i} className="flex items-start text-sm sm:text-base text-slate-300">
+                        <span className="text-green-500 mr-2 font-bold">✓</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="bg-black/40 border-l-4 border-green-500 p-3 sm:p-4 rounded-r-lg">
+                    <p className="text-green-400 italic font-medium text-sm sm:text-base">
+                      "{phase.theme}"
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Mobile Landscape Blocker */}
       {isMobileLandscape && (
