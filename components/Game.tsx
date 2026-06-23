@@ -659,7 +659,7 @@ export default function Game() {
 
     let forwardBoost = 1.0;
     if ((p as any).isDragging && (p as any).targetX && (p as any).targetX > 200) {
-      forwardBoost = 1.0 + Math.min(((p as any).targetX - 200) / 400, 0.5); // Max 1.5x speed multiplier
+      forwardBoost = 1.0 + Math.min(((p as any).targetX - 200) / 400, 0.2); // Max 1.2x speed multiplier
     }
     const currentFrameSpeed = s.speed * forwardBoost;
 
@@ -716,7 +716,7 @@ export default function Game() {
       p.targetY = FLOOR_Y; // Gravity pulls back to the ground when released
     }
     const diffY = p.targetY - p.y;
-    p.y += diffY * 0.15; // Smooth interpolation Y
+    p.y += diffY * 0.08; // Smooth interpolation Y (heavier steering)
 
     // Elastic forward pull (X-axis)
     let desiredX = (p as any).baseX;
