@@ -1169,9 +1169,9 @@ export default function Game() {
               
               <button
                 onClick={() => setShowRoadmap(true)}
-                className="w-full bg-slate-800 text-slate-300 border-2 border-slate-600 font-bold text-lg py-3 rounded-xl hover:bg-slate-700 hover:text-white transition-colors"
+                className="w-full bg-slate-800 text-slate-300 border-2 border-slate-600 font-bold text-lg py-3 rounded-xl hover:bg-slate-700 hover:text-purple-400 transition-colors"
               >
-                THE GNOME ROADMAP
+                THE GNOMAD MANIFESTO
               </button>
             </div>
 
@@ -1268,10 +1268,10 @@ export default function Game() {
       {/* Roadmap Modal */}
       {showRoadmap && (
         <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-8">
-          <div className="max-w-3xl w-full h-full max-h-[90dvh] flex flex-col bg-slate-900 border-2 border-green-500 rounded-2xl shadow-[0_0_30px_rgba(74,222,128,0.2)] overflow-hidden">
+          <div className="max-w-4xl w-full h-full max-h-[90dvh] flex flex-col bg-slate-900 border-2 border-purple-500 rounded-2xl shadow-[0_0_30px_rgba(168,85,247,0.2)] overflow-hidden">
             <div className="flex justify-between items-center p-4 sm:p-6 border-b border-slate-700 bg-slate-900 z-10 shadow-md">
-              <h2 className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">
-                $GNOME ROADMAP
+              <h2 className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-emerald-500">
+                THE GNOMAD MANIFESTO
               </h2>
               <button 
                 onClick={() => setShowRoadmap(false)}
@@ -1281,32 +1281,158 @@ export default function Game() {
               </button>
             </div>
             
-            <div className="p-4 sm:p-8 overflow-y-auto custom-scrollbar flex-1 space-y-8">
-              {ROADMAP_PHASES.map((phase, idx) => (
-                <div key={idx} className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 sm:p-6 transition-all hover:border-slate-500">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
-                    <h3 className="text-xl font-bold text-white">{phase.title}</h3>
-                    <span className={`text-xs font-black uppercase tracking-widest px-3 py-1 bg-black rounded-full border border-slate-700 ${phase.statusColor}`}>
-                      {phase.status}
-                    </span>
-                  </div>
-                  
-                  <ul className="space-y-2 mb-6">
-                    {phase.items.map((item, i) => (
-                      <li key={i} className="flex items-start text-sm sm:text-base text-slate-300">
-                        <span className="text-green-500 mr-2 font-bold">✓</span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="bg-black/40 border-l-4 border-green-500 p-3 sm:p-4 rounded-r-lg">
-                    <p className="text-green-400 italic font-medium text-sm sm:text-base">
-                      "{phase.theme}"
-                    </p>
-                  </div>
+            <div className="p-4 sm:p-8 overflow-y-auto custom-scrollbar flex-1 space-y-12 text-slate-300 leading-relaxed">
+              
+              {/* Section 01 */}
+              <section>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 border-b border-slate-700 pb-2">Section 01 — The GNomad Manifesto</h3>
+                <h4 className="text-lg font-bold text-purple-400 mb-4">We Don't Launch First. We Grow First.</h4>
+                <p className="mb-4">Most meme coins open a Telegram, drop a contract, and pray for attention. <strong className="text-white">$GNOME is built differently.</strong> Before a single token trades, we are building something rarer than a 100x: a real community with identity, culture, rituals, and a reason to stay.</p>
+                <p className="mb-4">The GNomad is not a bag-holder. The GNomad is a builder, a shitposter, a meme warrior, a lore keeper. The garden grows in the dark, quietly, before anyone else knows the fruit is coming. <strong className="text-white">When the coin awakens, the village will already be standing.</strong></p>
+                <div className="bg-black/40 border-l-4 border-purple-500 p-4 rounded-r-lg mb-4 italic text-slate-400">
+                  We launch transparently when we have at least 500 active GNomads in the community. First we grow the garden, then we launch $GNOME.
                 </div>
-              ))}
+                <ul className="space-y-2 list-none">
+                  <li><span className="text-green-500 mr-2">✦</span><strong className="text-white">Principle 01:</strong> Community before contract. The garden grows before the coin wakes.</li>
+                  <li><span className="text-green-500 mr-2">✦</span><strong className="text-white">Principle 02:</strong> Transparency is the protocol. No stealth. No rugs. No silence.</li>
+                  <li><span className="text-green-500 mr-2">✦</span><strong className="text-white">Principle 03:</strong> Memes are infrastructure. Chaos is the strategy. Gnomes are the army.</li>
+                  <li><span className="text-green-500 mr-2">✦</span><strong className="text-white">Principle 04:</strong> The strongest meme coins are not bought. They are inhabited.</li>
+                </ul>
+              </section>
+
+              {/* Section 02 */}
+              <section>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 border-b border-slate-700 pb-2">Section 02 — Who Are The GNomads</h3>
+                <h4 className="text-lg font-bold text-purple-400 mb-4">The Village Is Already Forming</h4>
+                <p className="mb-4">GNomads are the early believers. The ones who showed up before the chart existed. <strong className="text-white">Before there was a ticker to watch, they were planting the garden</strong> — posting memes, spreading lore, raiding timelines, and building the culture that will carry $GNOME to the moon.</p>
+                <p className="mb-4">Every GNomad who joins before launch becomes part of the founding lore. Their handles, their memes, their raids — written into the history of the village. <strong className="text-white">Being early here is not just a financial opportunity. It's a cultural one.</strong></p>
+                <ul className="space-y-3 list-none mb-4">
+                  <li>🌱 <strong className="text-white">Meme Raiders:</strong> The frontline of the garden. Armed with meme posters and chaotic energy, they take the $GNOME message to every corner of X.</li>
+                  <li>📜 <strong className="text-white">Lore Keepers:</strong> Writers and storytellers who build the mythology of $GNOME. Every project that lasts has a story. Lore Keepers write ours.</li>
+                  <li>🍄 <strong className="text-white">Score Sharers:</strong> The leaderboard athletes. They play Gnome Moon Run, post their scores, and spread the $GNOME brand through competition.</li>
+                  <li>👁️ <strong className="text-white">GNomad Spotters:</strong> Tag a wild GNomad in the community and earn recognition. Building social proof through community visibility rituals.</li>
+                  <li>🎨 <strong className="text-white">Poster Artists:</strong> Creators of the Daily Life of a GNomad series. Every meme poster is a seed. Every share is a new root in the garden.</li>
+                  <li>🌍 <strong className="text-white">Community Builders:</strong> The backbone. They invite, they onboard, they hold the village together — every new GNomad they bring gets us closer to launch.</li>
+                </ul>
+                <div className="bg-black/40 border-l-4 border-purple-500 p-4 rounded-r-lg italic text-slate-400">
+                  No empty launch. No silent chart. The Village must gather first.
+                </div>
+              </section>
+
+              {/* Section 03 - Roadmap Phases */}
+              <section>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 border-b border-slate-700 pb-2">Section 03 — The Garden Expansion Plan</h3>
+                <h4 className="text-lg font-bold text-purple-400 mb-6">Six Phases of Growth</h4>
+                <p className="mb-6">$GNOME does not have a roadmap built on promises. It has a roadmap built on <strong className="text-white">community milestones</strong>. Each phase is unlocked not by a timer, but by the village — by GNomads showing up, spreading the garden, and crossing thresholds together.</p>
+                
+                <div className="space-y-6">
+                  {ROADMAP_PHASES.map((phase, idx) => (
+                    <div key={idx} className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 sm:p-6 transition-all hover:border-slate-500">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                        <h3 className="text-xl font-bold text-white">{phase.title}</h3>
+                        <span className={`text-xs font-black uppercase tracking-widest px-3 py-1 bg-black rounded-full border border-slate-700 ${phase.statusColor}`}>
+                          {phase.status}
+                        </span>
+                      </div>
+                      
+                      <ul className="space-y-2 mb-6">
+                        {phase.items.map((item, i) => (
+                          <li key={i} className="flex items-start text-sm sm:text-base text-slate-300">
+                            <span className="text-green-500 mr-2 font-bold">✓</span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="bg-black/40 border-l-4 border-green-500 p-3 sm:p-4 rounded-r-lg">
+                        <p className="text-green-400 italic font-medium text-sm sm:text-base">
+                          "{phase.theme}"
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* Section 04 */}
+              <section>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 border-b border-slate-700 pb-2">Section 04 — Gnome Moon Run</h3>
+                <h4 className="text-lg font-bold text-purple-400 mb-4">Dodge Candles. Harvest Coins.</h4>
+                <p className="mb-4">While every other meme coin project asks you to stare at a chart and hope, <strong className="text-white">$GNOME gives you something to do.</strong> Gnome Moon Run is a playable browser game built for the community — free to play, shareable to X, and wired directly into the $GNOME leaderboard culture.</p>
+                <p className="mb-4">Your Gnome sprints across a procedurally generated market environment. Harvest green crypto coins to grow your MCAP score. <strong className="text-white">Dodge the red candles — they're coming for your portfolio and your life.</strong> Post your score. Challenge your GNomads. Repeat.</p>
+                <ul className="space-y-3 list-none mb-4">
+                  <li>🪙 <strong className="text-white">Coin Harvesting:</strong> Run through the market and collect green crypto coins to grow your score. The higher you go, the harder the candles fall.</li>
+                  <li>📉 <strong className="text-white">Red Candle Dodging:</strong> The market is hostile. Candles rain from above. One hit and your run ends — just like in real trading.</li>
+                  <li>📊 <strong className="text-white">MCAP Score System:</strong> Your score tracks like a market cap. Enter your name, claim your rank, and let the leaderboard decide who stays planted.</li>
+                  <li>🏆 <strong className="text-white">Global Leaderboard:</strong> Season-based. Community-driven. Post your scores directly to X and let the garden know who the real GNomads are.</li>
+                </ul>
+                <div className="bg-black/40 border-l-4 border-purple-500 p-4 rounded-r-lg italic text-slate-400">
+                  Most meme coins make you watch candles. $GNOME makes you dodge them.
+                </div>
+              </section>
+
+              {/* Section 05 */}
+              <section>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 border-b border-slate-700 pb-2">Section 05 — The Raid Contest</h3>
+                <h4 className="text-lg font-bold text-purple-400 mb-4">The Garden Raids Together</h4>
+                <p className="mb-4">The $GNOME raid system is not optional. It is <strong className="text-white">how the garden spreads.</strong> GNomads do not lurk — they show up on every post, every thread, every conversation where $GNOME belongs. The raid contest rewards the most active spreaders of chaos in the garden.</p>
+                <div className="bg-red-950/40 border border-red-500/50 p-6 rounded-xl text-center mb-4">
+                  <h5 className="text-xl font-black text-red-400 mb-2">⚔ Active Raid Contest ⚔</h5>
+                  <p className="text-slate-300">A raid contest is currently live for the $GNOME community. GNomads who spread the most — posts, replies, meme drops, community sightings — will be recognized, rewarded, and written into the founding lore of the garden.</p>
+                </div>
+                <p className="text-center font-bold text-white mb-4">Join the Telegram community and follow X to get your raid assignments, poster drops, and contest updates in real time.</p>
+                <div className="flex flex-wrap justify-center gap-4 text-sm font-bold text-slate-400 uppercase tracking-widest">
+                  <span>1. Join The Garden</span>
+                  <span>2. Get Your Drop</span>
+                  <span>3. Raid & Spread</span>
+                  <span>4. Claim Rank</span>
+                </div>
+              </section>
+
+              {/* Section 06 */}
+              <section>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 border-b border-slate-700 pb-2">Section 06 — Join The Village</h3>
+                <h4 className="text-lg font-bold text-purple-400 mb-4">500 GNomads Before The Coin Wakes</h4>
+                <p className="mb-4">Launch is not a date on a calendar. Launch is a threshold the community crosses together. When 500 active GNomads are rooted in the garden — posting, raiding, playing, sharing, building — <strong className="text-white">the coin awakens.</strong></p>
+                <p className="mb-8">Every GNomad who joins now is a founding member. The earlier you plant, the deeper your roots. Follow on X. Join the Telegram. Spread the garden. <strong className="text-white">The village is building. Come find your plot of chaos.</strong></p>
+                
+                <div className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700">
+                  <table className="w-full text-left border-collapse">
+                    <tbody className="divide-y divide-slate-700">
+                      <tr className="hover:bg-slate-700/50 transition-colors">
+                        <th className="p-4 text-slate-400 font-bold w-1/3 border-r border-slate-700">Official Website</th>
+                        <td className="p-4 text-green-400 font-mono"><a href="https://chaosgnome.xyz" target="_blank" rel="noopener noreferrer" className="hover:underline">chaosgnome.xyz</a></td>
+                      </tr>
+                      <tr className="hover:bg-slate-700/50 transition-colors">
+                        <th className="p-4 text-slate-400 font-bold border-r border-slate-700">Twitter / X</th>
+                        <td className="p-4 text-green-400 font-mono"><a href="https://x.com/gardengnomecoin" target="_blank" rel="noopener noreferrer" className="hover:underline">@gardengnomecoin</a></td>
+                      </tr>
+                      <tr className="hover:bg-slate-700/50 transition-colors">
+                        <th className="p-4 text-slate-400 font-bold border-r border-slate-700">Telegram</th>
+                        <td className="p-4 text-green-400 font-mono"><a href="https://t.me/+TeAQNGPoQ7c4NmI0" target="_blank" rel="noopener noreferrer" className="hover:underline">t.me/GNomads</a></td>
+                      </tr>
+                      <tr className="hover:bg-slate-700/50 transition-colors">
+                        <th className="p-4 text-slate-400 font-bold border-r border-slate-700">Blockchain</th>
+                        <td className="p-4 text-white font-bold">Solana</td>
+                      </tr>
+                      <tr className="hover:bg-slate-700/50 transition-colors">
+                        <th className="p-4 text-slate-400 font-bold border-r border-slate-700">Launch Threshold</th>
+                        <td className="p-4 text-white font-bold">500 Active GNomads</td>
+                      </tr>
+                      <tr className="hover:bg-slate-700/50 transition-colors">
+                        <th className="p-4 text-slate-400 font-bold border-r border-slate-700">Contract Address</th>
+                        <td className="p-4 text-slate-500 italic">Announced at Launch — Official Channels Only</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="mt-12 text-center text-sm text-slate-500 italic">
+                  $GNOME: Plant Chaos. Grow Culture. Spread the Garden Everywhere.<br/>
+                  Official White Paper v1.0 — Solana Ecosystem — 2025
+                </div>
+              </section>
+
             </div>
           </div>
         </div>
