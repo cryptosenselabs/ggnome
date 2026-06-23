@@ -1291,7 +1291,7 @@ export default function Game() {
             {/* Left: Title and Input */}
             <div className="flex flex-col items-center flex-1">
               <img src="/assets/splash.png" alt="Gnome Character" className="w-24 h-24 md:w-32 md:h-32 object-contain drop-shadow-[0_0_15px_rgba(74,222,128,0.5)] animate-bounce mb-2" />
-              <h1 className="text-4xl md:text-7xl landscape:text-5xl font-black text-white mb-2 md:mb-4 drop-shadow-2xl text-center">GNOME RUNNER</h1>
+              <h1 className="text-4xl md:text-7xl landscape:text-5xl font-black text-white mb-2 md:mb-4 drop-shadow-2xl text-center">$GNOME RUNNER</h1>
               <p className="text-green-400 text-sm md:text-xl font-bold mb-4 md:mb-6 text-center px-4 hidden md:block portrait:block">Dodge Bears. Survive Rugs. Stack $GNOME.</p>
               <div className="mb-4 md:mb-6 flex flex-col items-center pointer-events-auto">
                 <input
@@ -1399,7 +1399,7 @@ export default function Game() {
       <div className="portrait:flex hidden fixed inset-0 z-[100] bg-black items-center justify-center flex-col pointer-events-auto px-6 text-center py-8">
         <div className="flex-shrink-0 mb-6 flex flex-col items-center">
           <img src="/assets/splash.png" alt="Gnome Character" className="w-24 h-24 object-contain drop-shadow-[0_0_15px_rgba(74,222,128,0.5)] mb-4" />
-          <h1 className="text-5xl font-black text-white mb-2 drop-shadow-2xl text-center">GNOME RUNNER</h1>
+          <h1 className="text-5xl font-black text-white mb-2 drop-shadow-2xl text-center">$GNOME RUNNER</h1>
           <p className="text-green-400 text-sm font-bold mb-8 text-center px-4">Dodge Bears. Survive Rugs. Stack $GNOME.</p>
 
           <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-green-400 mb-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
