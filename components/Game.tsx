@@ -16,7 +16,7 @@ export type CryptoCoin = {
 
 interface Entity {
   id: number;
-  type: "redCandle" | "cryptoCoin" | "liquidationLaser" | "bearTrap" | "rugPull" | "fudCloud";
+  type: "redCandle" | "cryptoCoin" | "liquidationLaser" | "bearTrap" | "rugPull" | "fudCloud" | "whaleBlackHole";
   x: number;
   y: number;
   w: number;
