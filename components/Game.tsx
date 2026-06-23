@@ -196,6 +196,7 @@ export default function Game() {
 
   const playerRef = useRef({
     x: 200,
+    baseX: 200,
     y: FLOOR_Y,
     targetY: FLOOR_Y,
     w: 100,
@@ -464,16 +465,25 @@ export default function Game() {
     if (stateRef.current.state === "playing") {
       if (e.pointerType === "touch" || e.buttons === 1) {
         const rect = e.currentTarget.getBoundingClientRect();
-        const scaleY = CANVAS_H / rect.height;
+        const scaleX = CANVAS_W / rect.width;
         let y = (e.clientY - rect.top) * scaleY;
+        let x = (e.clientX - rect.left) * scaleX;
         
         // Clamp to screen
         if (y < GNOME_VISUAL_HEIGHT - 20) y = GNOME_VISUAL_HEIGHT - 20;
         if (y > FLOOR_Y) y = FLOOR_Y;
 
         playerRef.current.targetY = y;
+        (playerRef.current as any).targetX = x;
+        (playerRef.current as any).isDragging = true;
+      } else {
+        (playerRef.current as any).isDragging = false;
       }
     }
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLElement>) => {
+    (playerRef.current as any).isDragging = false;
   };
 
   const handlePointerDown = (e: React.PointerEvent<HTMLElement>) => {
@@ -498,6 +508,8 @@ export default function Game() {
     if (stateRef.current.state === "menu") {
       return;
     }
+
+    (playerRef.current as any).isDragging = true;
 
     // Player Physics & Animation (Drag to Steer)
     handlePointerMove(e);
@@ -627,8 +639,14 @@ export default function Game() {
     const p = playerRef.current;
     const s = stateRef.current;
 
+    let forwardBoost = 1.0;
+    if ((p as any).isDragging && (p as any).targetX && (p as any).targetX > 200) {
+      forwardBoost = 1.0 + Math.min(((p as any).targetX - 200) / 400, 1.5); // Max 2.5x speed multiplier
+    }
+    const currentFrameSpeed = s.speed * forwardBoost;
+
     // Increase score & speed
-    s.score += (s.speed * s.multiplier) / 10;
+    s.score += (currentFrameSpeed * s.multiplier) / 10;
     s.speed += SPEED_INCREMENT;
 
     // Check Level Up
@@ -673,8 +691,16 @@ export default function Game() {
     const isGnomeMode = time < s.gnomeModeTime;
 
     // Player Physics & Animation (Drag to Steer)
-    const diff = p.targetY - p.y;
-    p.y += diff * 0.15; // Smooth interpolation
+    const diffY = p.targetY - p.y;
+    p.y += diffY * 0.15; // Smooth interpolation Y
+    
+    // Elastic forward pull (X-axis)
+    let desiredX = (p as any).baseX;
+    if ((p as any).isDragging && (p as any).targetX > (p as any).baseX) {
+      desiredX = (p as any).baseX + Math.min(((p as any).targetX - (p as any).baseX), 300); // Stretch up to 300px forward
+    }
+    const diffX = desiredX - p.x;
+    p.x += diffX * 0.1; // Smooth elastic interpolation X
 
     // Boundaries
     if (p.y < GNOME_VISUAL_HEIGHT - 20) p.y = GNOME_VISUAL_HEIGHT - 20;
@@ -687,8 +713,8 @@ export default function Game() {
       particlesRef.current.push({
         x: p.x + 35, // booster nozzle
         y: p.y - 10,
-        vx: -s.speed - Math.random() * 5,
-        vy: diff * 0.1 + (Math.random() - 0.5) * 5,
+        vx: -currentFrameSpeed - Math.random() * 5,
+        vy: diffY * 0.1 + (Math.random() - 0.5) * 5,
         life: 0.6,
         color: Math.random() > 0.5 ? "#fbbf24" : "#f97316", // fiery exhaust
       });
@@ -729,7 +755,7 @@ export default function Game() {
     // Entities Logic
     for (let i = entitiesRef.current.length - 1; i >= 0; i--) {
       const ent = entitiesRef.current[i];
-      ent.x -= s.speed;
+      ent.x -= currentFrameSpeed;
 
       if (ent.type === "redCandle") {
         ent.y += ent.vy ?? 2.5; // Diagonal drop simulation
@@ -816,7 +842,7 @@ export default function Game() {
 
     // Background Sequence Scroll
     const bg = bgStateRef.current;
-    bg.x -= s.speed * 0.3; // Slower than foreground for parallax depth effect
+    bg.x -= currentFrameSpeed * 0.3; // Slower than foreground for parallax depth effect
 
     const currentBgImg = assetsRef.current[`bg-${String(bg.currentIndex + 1).padStart(2, '0')}`];
     if (currentBgImg) {
@@ -1175,6 +1201,9 @@ export default function Game() {
       className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-black font-sans"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerUp}
+      onPointerCancel={handlePointerUp}
     >
       <canvas
         ref={canvasRef}
