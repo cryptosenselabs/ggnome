@@ -1175,6 +1175,30 @@ export default function Game() {
               </button>
             </div>
 
+            <div className="w-full flex gap-2 mt-2">
+              <a
+                href="https://x.com/GardenGnomeCoin"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 bg-black text-slate-300 border-2 border-slate-700 font-bold text-sm sm:text-base py-2 rounded-xl hover:bg-slate-800 hover:text-white transition-colors flex justify-center items-center gap-2"
+              >
+                𝕏 FOLLOW
+              </a>
+              <a
+                href="https://t.me/+fV3iA_VITGtlMTI0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 bg-black text-slate-300 border-2 border-slate-700 font-bold text-sm sm:text-base py-2 rounded-xl hover:bg-slate-800 hover:text-[#0088cc] transition-colors flex justify-center items-center gap-2"
+              >
+                💬 TELEGRAM
+              </a>
+            </div>
+
+            <div className="w-full mt-2 bg-black/60 border border-purple-500/50 rounded-xl p-3 flex flex-col items-center shadow-[0_0_10px_rgba(168,85,247,0.1)]">
+              <span className="text-[10px] text-purple-400 font-bold uppercase tracking-widest mb-1">Solana Contract Address</span>
+              <span className="text-sm font-mono font-black text-slate-300 tracking-wider">COMING SOON</span>
+            </div>
+
             {leaderboardData.length > 0 && (
               <div className="w-full mt-4 text-left border-t border-slate-700 pt-4">
                 <div className="flex justify-between items-end mb-2">
