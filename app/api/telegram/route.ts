@@ -84,6 +84,16 @@ export async function POST(req: Request) {
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
+      await query(`
+        CREATE TABLE IF NOT EXISTS bot_tasks (
+          id SERIAL PRIMARY KEY,
+          chat_id BIGINT,
+          task_name TEXT,
+          assignee TEXT,
+          status TEXT DEFAULT 'open',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
 
       // Track Activity
       await query(`
@@ -217,6 +227,41 @@ export async function POST(req: Request) {
         const bearConfidence = Math.floor(Math.random() * 20) + 1; // 1-20%
         
         await sendMessage(chatId, `Village Mood: ${randomMood}\nBear Confidence: ${bearConfidence}%\nMushroom Energy: Rising\nGnomad Activity: ${randomActivity}\n\n<i>Atmospheric Pressure: ${passiveUsers}${totalUsers} hPa</i>`);
+      } else if (text.startsWith('/create')) {
+        // Example: /create Update the website @Hamza_Cho
+        const match = text.match(/\/create\s+(.*?)\s+(@\w+)/i);
+        if (match) {
+          const taskName = match[1].trim();
+          const assignee = match[2];
+          
+          const insertResult = await query(`
+            INSERT INTO bot_tasks (chat_id, task_name, assignee) 
+            VALUES ($1, $2, $3) RETURNING id
+          `, [chatId, taskName, assignee]);
+          
+          const taskId = insertResult.rows[0].id;
+          await sendMessage(chatId, `Task #${taskId} assigned to ${assignee}!\nTo complete it, type: /done ${taskId}`);
+        } else {
+          await sendMessage(chatId, "Format: /create [task details] @username");
+        }
+      } else if (text.startsWith('/done')) {
+        const match = text.match(/\/done\s+(\d+)/);
+        if (match) {
+          const taskId = parseInt(match[1]);
+          const updateResult = await query(`
+            UPDATE bot_tasks SET status = 'completed' 
+            WHERE id = $1 AND chat_id = $2 AND status = 'open'
+            RETURNING id
+          `, [taskId, chatId]);
+          
+          if (updateResult.rowCount > 0) {
+            await sendMessage(chatId, `✅ Task #${taskId} marked as completed!`);
+          } else {
+            await sendMessage(chatId, `Task #${taskId} not found or already completed.`);
+          }
+        } else {
+          await sendMessage(chatId, "Format: /done [Task ID]");
+        }
       }
     }
 
