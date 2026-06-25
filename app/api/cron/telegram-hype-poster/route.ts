@@ -85,10 +85,8 @@ export async function GET(req: Request) {
         continue;
       }
 
-      // Probability Check: 50% chance to drop each time the cron runs (targets ~6 drops per hour)
-      if (Math.random() > 0.50) {
-        continue;
-      }
+      // Probability Check: 100% chance to drop each time the cron runs (for launch day)
+      // (The frequency is now completely controlled by how often you ping the URL)
 
       // Find random poster from public/images/posters
       const postersDir = path.join(process.cwd(), 'public', 'images', 'posters');
@@ -102,12 +100,12 @@ export async function GET(req: Request) {
       }
 
       const randomFile = files[Math.floor(Math.random() * files.length)];
-      
+
       // Determine the absolute URL for the image
       const host = req.headers.get('host') || 'www.chaosgnome.xyz';
       const protocol = req.headers.get('x-forwarded-proto') || 'https';
       const photoUrl = `${protocol}://${host}/images/posters/${randomFile}`;
-      
+
       const randomCaption = captions[Math.floor(Math.random() * captions.length)];
 
       // Send the photo
@@ -119,7 +117,7 @@ export async function GET(req: Request) {
         SET hype_drops_today = $1, last_hype_drop_at = CURRENT_TIMESTAMP 
         WHERE chat_id = $2
       `, [dropsToday + 1, group.chat_id]);
-      
+
       dropped++;
     }
 
