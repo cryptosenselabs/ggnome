@@ -104,8 +104,30 @@ export async function POST(req: Request) {
       if (body.message.new_chat_members) {
         for (const member of body.message.new_chat_members) {
           if (member.is_bot) continue;
+          
+          const memberId = member.id;
+          const memberUsername = member.username || '';
+          const memberFirstName = member.first_name || '';
           const displayUsername = member.username ? `@${member.username}` : member.first_name;
-          await sendMessage(chatId, `A new Gnomad has entered the village.\n\n${displayUsername}, stand before the mushroom council.\n\nReply with:\nI plant\n\n…and GnomeDad will give you your first village title.\n*(You have 5 minutes before the soil forgets you)*`);
+
+          // Automatically bless the new user with +1 respect
+          await query(`
+            INSERT INTO bot_users (telegram_user_id, username, first_name, points, plant_count) 
+            VALUES ($1, $2, $3, 1, 0)
+            ON CONFLICT (telegram_user_id) 
+            DO UPDATE SET points = bot_users.points + 1;
+          `, [memberId, memberUsername, memberFirstName]);
+
+          const welcomeText = `A new Gnomad has entered the village! 🍄\n\n` +
+            `${displayUsername}, you have been officially BLESSED by the mushroom council (+1 Village Respect).\n\n` +
+            `📜 **The Gnome Dictionary:**\n` +
+            `- **Gnomad**: A trusted member of the village.\n` +
+            `- **Planting**: Holding the line and trusting the soil.\n` +
+            `- **Bears**: The enemy. We do not fear them.\n` +
+            `- **Soil**: The foundation of our wealth.\n\n` +
+            `Reply with:\n**I plant**\n\n…and GnomeDad will give you your first official rank. *(You have 5 minutes before the soil forgets you)*`;
+
+          await sendMessage(chatId, welcomeText);
         }
       }
 
