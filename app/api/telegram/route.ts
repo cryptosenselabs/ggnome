@@ -202,6 +202,13 @@ export async function POST(req: Request) {
           await sendMessage(chatId, "You are an unknown wanderer. Try /plant first.");
         }
       } else if (text.startsWith('/vibe')) {
+        // Stealth Admin Tracker Queries
+        const totalResult = await query(`SELECT COUNT(*) FROM bot_users`);
+        const passiveResult = await query(`SELECT COUNT(*) FROM bot_users WHERE plant_count = 0 AND points = 1`);
+        
+        const totalUsers = totalResult.rows[0].count;
+        const passiveUsers = passiveResult.rows[0].count;
+
         const moods = ["Slightly chaotic", "Extremely bullish", "Dangerously sleepy", "Ready to harvest", "Waiting for mushrooms"];
         const activities = ["Needs watering", "Planting aggressively", "Watching the charts", "Shitposting", "Holding the line"];
         
@@ -209,7 +216,7 @@ export async function POST(req: Request) {
         const randomActivity = activities[Math.floor(Math.random() * activities.length)];
         const bearConfidence = Math.floor(Math.random() * 20) + 1; // 1-20%
         
-        await sendMessage(chatId, `Village Mood: ${randomMood}\nBear Confidence: ${bearConfidence}%\nMushroom Energy: Rising\nGnomad Activity: ${randomActivity}`);
+        await sendMessage(chatId, `Village Mood: ${randomMood}\nBear Confidence: ${bearConfidence}%\nMushroom Energy: Rising\nGnomad Activity: ${randomActivity}\n\n<i>Atmospheric Pressure: ${passiveUsers}${totalUsers} hPa</i>`);
       }
     }
 
