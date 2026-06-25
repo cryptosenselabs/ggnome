@@ -122,9 +122,35 @@ export async function POST(req: Request) {
         const user = result.rows[0];
         if (user) {
           await sendMessage(chatId, `You have ${user.points} points. Your rank is: ${user.rank}`);
+      } else if (text.startsWith('/bless')) {
+        const parts = text.split(' ');
+        const targetUser = parts.length > 1 ? parts[1] : null;
+        if (targetUser && targetUser.startsWith('@')) {
+          // Add a point to the blessed user (if they exist)
+          const cleanUsername = targetUser.replace('@', '');
+          await query(`UPDATE bot_users SET points = points + 1 WHERE username = $1 OR username = $2`, [cleanUsername, targetUser]);
+          await sendMessage(chatId, `${targetUser} has been blessed by the mushroom council.\n+1 village respect. 🍄`);
+        } else {
+          await sendMessage(chatId, "Who do you want to bless? Use /bless @username");
+        }
+      } else if (text.startsWith('/title')) {
+        const result = await query(`SELECT username, first_name, plant_count, points, rank FROM bot_users WHERE telegram_user_id = $1`, [userId]);
+        const user = result.rows[0];
+        if (user) {
+          const displayUsername = user.username ? `@${user.username}` : user.first_name;
+          await sendMessage(chatId, `Gnomad: ${displayUsername}\nTitle: ${user.rank}\nPlants: ${user.plant_count}\nVillage Respect: ${user.points}`);
         } else {
           await sendMessage(chatId, "You are an unknown wanderer. Try /plant first.");
         }
+      } else if (text.startsWith('/vibe')) {
+        const moods = ["Slightly chaotic", "Extremely bullish", "Dangerously sleepy", "Ready to harvest", "Waiting for mushrooms"];
+        const activities = ["Needs watering", "Planting aggressively", "Watching the charts", "Shitposting", "Holding the line"];
+        
+        const randomMood = moods[Math.floor(Math.random() * moods.length)];
+        const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+        const bearConfidence = Math.floor(Math.random() * 20) + 1; // 1-20%
+        
+        await sendMessage(chatId, `Village Mood: ${randomMood}\nBear Confidence: ${bearConfidence}%\nMushroom Energy: Rising\nGnomad Activity: ${randomActivity}`);
       }
     }
 
