@@ -64,8 +64,8 @@ export async function GET(req: Request) {
       const lastHumanMsg = new Date(group.last_human_message_at);
       const diffMinutes = (now.getTime() - lastHumanMsg.getTime()) / (1000 * 60);
 
-      // Check 3-Hour Emergency
-      if (diffMinutes >= 180) {
+      // Check 1-Hour Emergency
+      if (diffMinutes >= 60) {
         if (!group.last_3_hour_event_at || new Date(group.last_3_hour_event_at).getTime() < lastHumanMsg.getTime()) {
           await sendMessage(group.chat_id, "🚨 Village Emergency. The bears are holding a meeting. Send one meme, one prophecy, or one “I plant” to cancel their confidence.");
           await query(`UPDATE bot_group_state SET last_3_hour_event_at = CURRENT_TIMESTAMP WHERE chat_id = $1`, [group.chat_id]);
@@ -73,8 +73,8 @@ export async function GET(req: Request) {
         }
       }
 
-      // Check 30-Minute Quest
-      if (diffMinutes >= 30) {
+      // Check 15-Minute Quest
+      if (diffMinutes >= 15) {
         if (!group.last_30_min_quest_at || new Date(group.last_30_min_quest_at).getTime() < lastHumanMsg.getTime()) {
           await sendMessage(group.chat_id, "🍄 Mini Quest:\nFirst 3 Gnomads to say “I plant” receive mushroom blessings.");
           await query(`UPDATE bot_group_state SET last_30_min_quest_at = CURRENT_TIMESTAMP WHERE chat_id = $1`, [group.chat_id]);
@@ -82,8 +82,8 @@ export async function GET(req: Request) {
         }
       }
 
-      // Check 20-Minute Silence
-      if (diffMinutes >= 20) {
+      // Check 5-Minute Silence
+      if (diffMinutes >= 5) {
         if (!group.last_20_min_message_at || new Date(group.last_20_min_message_at).getTime() < lastHumanMsg.getTime()) {
           await sendMessage(group.chat_id, "Gnomads… the village is too quiet.\nEven the mushrooms are checking the chart. 🌱");
           await query(`UPDATE bot_group_state SET last_20_min_message_at = CURRENT_TIMESTAMP WHERE chat_id = $1`, [group.chat_id]);
