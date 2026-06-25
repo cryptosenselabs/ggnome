@@ -254,7 +254,7 @@ export async function POST(req: Request) {
             RETURNING id
           `, [taskId, chatId]);
           
-          if (updateResult.rowCount > 0) {
+          if (updateResult && updateResult.rowCount && updateResult.rowCount > 0) {
             await sendMessage(chatId, `✅ Task #${taskId} marked as completed!`);
           } else {
             await sendMessage(chatId, `Task #${taskId} not found or already completed.`);
