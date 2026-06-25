@@ -64,7 +64,7 @@ export async function GET(req: Request) {
     const captions = [
       "The Garden is Awake. 🍄",
       "Another Gnomad just joined the underground.",
-      "500 Gnomads is not a number. It is a signal.",
+      "The Gnomad Army is not a number. It is a signal.",
       "We are planting. The bears are panicking. 🌱",
       "The mushroom council approves this message."
     ];
