@@ -121,7 +121,7 @@ export async function POST(req: Request) {
         const result = await query(`SELECT points, rank FROM bot_users WHERE telegram_user_id = $1`, [userId]);
         const user = result.rows[0];
         if (user) {
-          await sendMessage(chatId, \`You have \${user.points} points. Your rank is: \${user.rank}\`);
+          await sendMessage(chatId, `You have ${user.points} points. Your rank is: ${user.rank}`);
         } else {
           await sendMessage(chatId, "You are an unknown wanderer. Try /plant first.");
         }
