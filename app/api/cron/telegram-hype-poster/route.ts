@@ -80,13 +80,13 @@ export async function GET(req: Request) {
         dropsToday = 0;
       }
 
-      // Max 3 drops per day per group
-      if (dropsToday >= 3) {
+      // Max 500 drops per day (set very high for aggressive launch mode)
+      if (dropsToday >= 500) {
         continue;
       }
 
-      // Probability Check: 10% chance to drop each time the cron runs
-      if (Math.random() > 0.10) {
+      // Probability Check: 50% chance to drop each time the cron runs (targets ~6 drops per hour)
+      if (Math.random() > 0.50) {
         continue;
       }
 
