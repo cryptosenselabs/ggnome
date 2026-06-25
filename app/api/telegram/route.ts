@@ -126,6 +126,12 @@ export async function POST(req: Request) {
             `- **Bears**: The enemy. We do not fear them.\n` +
             `- **Red Candles**: Temporary bad weather. We plant through the storm.\n` +
             `- **Soil**: The foundation of our wealth.\n\n` +
+            `📜 **The 5 Commandments of a Gnomad:**\n` +
+            `1. Thou shalt never sell the bottom.\n` +
+            `2. Thou shalt plant thy seeds daily.\n` +
+            `3. Thou shalt respect the mushroom council.\n` +
+            `4. Thou shalt mock the bears relentlessly.\n` +
+            `5. Thou shalt hold the line until the garden blooms.\n\n` +
             `Reply with:\n**I plant**\n\n…and GnomeDad will give you your first official rank. *(You have 5 minutes before the soil forgets you)*`;
 
           await sendMessage(chatId, welcomeText);
