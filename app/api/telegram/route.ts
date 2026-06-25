@@ -102,9 +102,9 @@ export async function POST(req: Request) {
 
       // Command handling
       if (text.startsWith('/start')) {
-        await sendMessage(chatId, "GnomeDad is awake.\\nAdd me to the village and I will watch over the Gnomads.");
+        await sendMessage(chatId, "GnomeDad is awake.\nAdd me to the village and I will watch over the Gnomads.");
       } else if (text.startsWith('/help')) {
-        await sendMessage(chatId, "Available commands:\\n/plant - Plant your seed in the garden\\n/prophecy - Hear a prophecy from the elders\\n/quest - See the current quest\\n/rank - Check your rank\\n/about - Learn about me\\n/stats - View village statistics");
+        await sendMessage(chatId, "Available commands:\n/plant - Plant your seed in the garden\n/prophecy - Hear a prophecy from the elders\n/quest - See the current quest\n/rank - Check your rank\n/about - Learn about me\n/stats - View village statistics");
       } else if (text.startsWith('/about')) {
         await sendMessage(chatId, "GnomeDad watches the village, wakes sleepy Gnomads, blesses planters, and releases tiny chaos when the group gets too quiet.");
       } else if (text.startsWith('/plant')) {
