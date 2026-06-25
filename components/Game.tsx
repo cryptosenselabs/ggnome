@@ -1194,9 +1194,9 @@ export default function Game() {
               </a>
             </div>
 
-            <div className="w-full mt-2 bg-black/60 border border-purple-500/50 rounded-xl p-3 flex flex-col items-center shadow-[0_0_10px_rgba(168,85,247,0.1)]">
-              <span className="text-[10px] text-purple-400 font-bold uppercase tracking-widest mb-1">Solana Contract Address</span>
-              <span className="text-sm font-mono font-black text-slate-300 tracking-wider">COMING SOON</span>
+            <div className="w-full mt-2 bg-black/60 border border-green-500/50 rounded-xl p-3 flex flex-col items-center shadow-[0_0_10px_rgba(74,222,128,0.1)]">
+              <span className="text-[10px] text-green-400 font-bold uppercase tracking-widest mb-1">Launching on Solana</span>
+              <span className="text-sm font-mono font-black text-white tracking-wider">26.06.2026 @ 15:00 CET</span>
             </div>
 
             {leaderboardData.length > 0 && (
