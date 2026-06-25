@@ -100,6 +100,17 @@ export async function POST(req: Request) {
         DO UPDATE SET username = $2, first_name = $3, last_seen_at = CURRENT_TIMESTAMP;
       `, [userId, username, firstName]);
 
+      // Handle new members joining
+      if (body.message.new_chat_members) {
+        for (const member of body.message.new_chat_members) {
+          if (member.is_bot) continue;
+          const displayUsername = member.username ? `@${member.username}` : member.first_name;
+          await sendMessage(chatId, `A new Gnomad has entered the village.\n\n${displayUsername}, stand before the mushroom council.\n\nReply with:\nI plant\n\n…and GnomeDad will give you your first village title.`);
+        }
+      }
+
+      const displaySenderName = username ? `@${username}` : firstName;
+
       // Command handling
       if (text.startsWith('/start')) {
         await sendMessage(chatId, "GnomeDad is awake.\nAdd me to the village and I will watch over the Gnomads.");
@@ -107,14 +118,30 @@ export async function POST(req: Request) {
         await sendMessage(chatId, "Available commands:\n/plant - Plant your seed in the garden\n/prophecy - Hear a prophecy from the elders\n/quest - See the current quest\n/rank - Check your rank\n/about - Learn about me\n/stats - View village statistics");
       } else if (text.startsWith('/about')) {
         await sendMessage(chatId, "GnomeDad watches the village, wakes sleepy Gnomads, blesses planters, and releases tiny chaos when the group gets too quiet.");
-      } else if (text.startsWith('/plant')) {
-        // Record plant
-        await query(`
-          UPDATE bot_users 
-          SET plant_count = plant_count + 1, points = points + 1, last_plant_at = CURRENT_TIMESTAMP
-          WHERE telegram_user_id = $1
-        `, [userId]);
-        await sendMessage(chatId, "You planted. The soil respects you. 🌱");
+      } else if (text.startsWith('/plant') || text.toLowerCase() === 'i plant') {
+        const result = await query(`SELECT plant_count FROM bot_users WHERE telegram_user_id = $1`, [userId]);
+        const userState = result.rows[0];
+        
+        if (userState && userState.plant_count === 0) {
+          const titles = ["Baby Root Gnomad", "Tiny Hat Recruit", "Mushroom Intern", "Soil Walker", "Bear Annoyer", "Candle Whisperer", "Village Sprout", "Garden Goblin"];
+          const randomTitle = titles[Math.floor(Math.random() * titles.length)];
+          
+          await query(`
+            UPDATE bot_users 
+            SET plant_count = plant_count + 1, points = points + 1, last_plant_at = CURRENT_TIMESTAMP, rank = $2
+            WHERE telegram_user_id = $1
+          `, [userId, randomTitle]);
+          
+          await sendMessage(chatId, `The soil accepts you, ${displaySenderName}.\n\nYour first title:\n${randomTitle}\n\nWelcome to the village.`);
+        } else {
+          // Record normal plant
+          await query(`
+            UPDATE bot_users 
+            SET plant_count = plant_count + 1, points = points + 1, last_plant_at = CURRENT_TIMESTAMP
+            WHERE telegram_user_id = $1
+          `, [userId]);
+          await sendMessage(chatId, "You planted. The soil respects you. 🌱");
+        }
       } else if (text.startsWith('/prophecy')) {
         await sendMessage(chatId, "Prophecy #888: When Gnomads stand together, even red candles lose courage.");
       } else if (text.startsWith('/rank')) {
@@ -122,6 +149,9 @@ export async function POST(req: Request) {
         const user = result.rows[0];
         if (user) {
           await sendMessage(chatId, `You have ${user.points} points. Your rank is: ${user.rank}`);
+        } else {
+          await sendMessage(chatId, "You are an unknown wanderer. Try /plant first.");
+        }
       } else if (text.startsWith('/bless')) {
         const parts = text.split(' ');
         const targetUser = parts.length > 1 ? parts[1] : null;
