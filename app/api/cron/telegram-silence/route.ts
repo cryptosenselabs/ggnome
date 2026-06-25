@@ -39,6 +39,21 @@ export async function GET(req: Request) {
   }
 
   try {
+    // Initialize DB schemas if not exists (Lazy init)
+    await query(`
+      CREATE TABLE IF NOT EXISTS bot_group_state (
+          chat_id BIGINT PRIMARY KEY,
+          mode TEXT DEFAULT 'calm',
+          last_human_message_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          last_20_min_message_at TIMESTAMP,
+          last_30_min_quest_at TIMESTAMP,
+          last_3_hour_event_at TIMESTAMP,
+          auto_messages_today INTEGER DEFAULT 0,
+          gemini_calls_today INTEGER DEFAULT 0,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     // Get all groups
     const result = await query(`SELECT * FROM bot_group_state`);
     const groups = result.rows;
