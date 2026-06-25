@@ -124,6 +124,7 @@ export async function POST(req: Request) {
             `- **Gnomad**: A trusted member of the village.\n` +
             `- **Planting**: Holding the line and trusting the soil.\n` +
             `- **Bears**: The enemy. We do not fear them.\n` +
+            `- **Red Candles**: Temporary bad weather. We plant through the storm.\n` +
             `- **Soil**: The foundation of our wealth.\n\n` +
             `Reply with:\n**I plant**\n\n…and GnomeDad will give you your first official rank. *(You have 5 minutes before the soil forgets you)*`;
 
