@@ -105,7 +105,7 @@ export async function POST(req: Request) {
         for (const member of body.message.new_chat_members) {
           if (member.is_bot) continue;
           const displayUsername = member.username ? `@${member.username}` : member.first_name;
-          await sendMessage(chatId, `A new Gnomad has entered the village.\n\n${displayUsername}, stand before the mushroom council.\n\nReply with:\nI plant\n\n…and GnomeDad will give you your first village title.`);
+          await sendMessage(chatId, `A new Gnomad has entered the village.\n\n${displayUsername}, stand before the mushroom council.\n\nReply with:\nI plant\n\n…and GnomeDad will give you your first village title.\n*(You have 5 minutes before the soil forgets you)*`);
         }
       }
 
