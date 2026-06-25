@@ -85,8 +85,10 @@ export async function GET(req: Request) {
         continue;
       }
 
-      // Probability Check: 100% chance to drop each time the cron runs (for launch day)
-      // (The frequency is now completely controlled by how often you ping the URL)
+      // Probability Check: 50% chance to drop each time the cron runs (targets ~6 drops per hour)
+      if (Math.random() > 0.50) {
+        continue;
+      }
 
       // Find random poster from public/images/posters
       const postersDir = path.join(process.cwd(), 'public', 'images', 'posters');
