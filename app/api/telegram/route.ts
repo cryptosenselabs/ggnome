@@ -18,7 +18,7 @@ async function sendMessage(chatId: number, text: string) {
   await fetch(`${TELEGRAM_API}/sendMessage`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text: text })
+    body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' })
   });
 }
 
@@ -120,19 +120,19 @@ export async function POST(req: Request) {
 
           const welcomeText = `A new Gnomad has entered the village! 🍄\n\n` +
             `${displayUsername}, you have been officially BLESSED by the mushroom council (+1 Village Respect).\n\n` +
-            `📜 **The Gnome Dictionary:**\n` +
-            `- **Gnomad**: A trusted member of the village.\n` +
-            `- **Planting**: Holding the line and trusting the soil.\n` +
-            `- **Bears**: The enemy. We do not fear them.\n` +
-            `- **Red Candles**: Temporary bad weather. We plant through the storm.\n` +
-            `- **Soil**: The foundation of our wealth.\n\n` +
-            `📜 **The 5 Commandments of a Gnomad:**\n` +
+            `📜 <b>The Gnome Dictionary:</b>\n` +
+            `- <b>Gnomad</b>: A trusted member of the village.\n` +
+            `- <b>Planting</b>: Holding the line and trusting the soil.\n` +
+            `- <b>Bears</b>: The enemy. We do not fear them.\n` +
+            `- <b>Red Candles</b>: Temporary bad weather. We plant through the storm.\n` +
+            `- <b>Soil</b>: The foundation of our wealth.\n\n` +
+            `📜 <b>The 5 Commandments of a Gnomad:</b>\n` +
             `1. Thou shalt never sell the bottom.\n` +
             `2. Thou shalt plant thy seeds daily.\n` +
             `3. Thou shalt respect the mushroom council.\n` +
             `4. Thou shalt mock the bears relentlessly.\n` +
             `5. Thou shalt hold the line until the garden blooms.\n\n` +
-            `Reply with:\n**I plant**\n\n…and GnomeDad will give you your first official rank. *(You have 5 minutes before the soil forgets you)*`;
+            `Reply with:\n<b>I plant</b>\n\n…and GnomeDad will give you your first official rank. <i>(You have 5 minutes before the soil forgets you)</i>`;
 
           await sendMessage(chatId, welcomeText);
         }
