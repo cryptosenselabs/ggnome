@@ -290,9 +290,9 @@ export async function POST(req: Request) {
             if (diffMs > 0) {
               const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
               const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-              countdownCaption = `🍄 $GNOME launch window opens in ${diffHrs}H ${diffMins}M. Stay ready, Gnomads!`;
+              countdownCaption = `🚨 <b>LAUNCH WINDOW OPENS IN ${diffHrs}H ${diffMins}M</b> 🚨\n<b>Stay ready, Gnomads!</b> 🍄\n\n⚠️ <i>Admins will update the group description with the CA. Do NOT trust other messages. We will NEVER DM you!</i>`;
             } else {
-              countdownCaption = `🍄 $GNOME IS LIVE! The garden is officially open!`;
+              countdownCaption = `🚨 <b>$GNOME IS LIVE!</b> 🚨\n<b>The garden is officially open!</b> 🍄\n\n⚠️ <i>Admins will update the group description with the CA. Do NOT trust other messages. We will NEVER DM you!</i>`;
             }
             
             const captions = [
