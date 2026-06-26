@@ -20,7 +20,7 @@ async function sendPhoto(chatId: number, photoUrl: string, caption: string) {
   await fetch(`${TELEGRAM_API}/sendPhoto`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, photo: photoUrl, caption: caption })
+    body: JSON.stringify({ chat_id: chatId, photo: photoUrl, caption: caption, parse_mode: 'HTML' })
   });
 }
 
@@ -78,8 +78,7 @@ export async function GET(req: Request) {
       "Another Gnomad just joined the underground.",
       "The Gnomad Army is not a number. It is a signal.",
       "We are planting. The bears are panicking. 🌱",
-      "The mushroom council approves this message.",
-      countdownCaption
+      "The mushroom council approves this message."
     ];
 
     let dropped = 0;
@@ -122,9 +121,10 @@ export async function GET(req: Request) {
       const photoUrl = `${protocol}://${host}/images/posters/${randomFile}`;
 
       const randomCaption = captions[Math.floor(Math.random() * captions.length)];
+      const finalCaption = `${randomCaption}\n\n${countdownCaption}`;
 
       // Send the photo
-      await sendPhoto(group.chat_id, photoUrl, randomCaption);
+      await sendPhoto(group.chat_id, photoUrl, finalCaption);
 
       // Update DB with the new drop count
       await query(`

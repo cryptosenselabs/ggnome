@@ -28,7 +28,7 @@ async function sendPhoto(chatId: number, photoUrl: string, caption: string) {
   await fetch(`${TELEGRAM_API}/sendPhoto`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, photo: photoUrl, caption: caption })
+    body: JSON.stringify({ chat_id: chatId, photo: photoUrl, caption: caption, parse_mode: 'HTML' })
   });
 }
 
@@ -300,12 +300,12 @@ export async function POST(req: Request) {
               "Another Gnomad just joined the underground.",
               "The Gnomad Army is not a number. It is a signal.",
               "We are planting. The bears are panicking. 🌱",
-              "The mushroom council approves this message.",
-              countdownCaption
+              "The mushroom council approves this message."
             ];
             
             const randomCaption = captions[Math.floor(Math.random() * captions.length)];
-            await sendPhoto(chatId, photoUrl, randomCaption);
+            const finalCaption = `${randomCaption}\n\n${countdownCaption}`;
+            await sendPhoto(chatId, photoUrl, finalCaption);
           }
         }
       }
