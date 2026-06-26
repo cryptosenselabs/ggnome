@@ -437,6 +437,25 @@ export default function Game() {
     whaleImg.src = "/assets/whale.png";
     whaleImg.onload = () => { assetsRef.current["enemyWhale"] = whaleImg; };
 
+    // Launch Countdown Timer
+    const launchDate = new Date('2026-06-26T13:00:00Z').getTime();
+    
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const diffMs = launchDate - now;
+      
+      if (diffMs > 0) {
+        const h = Math.floor(diffMs / (1000 * 60 * 60)).toString().padStart(2, '0');
+        const m = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+        const s = Math.floor((diffMs % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        setLaunchCountdown(`${h} : ${m} : ${s}`);
+      } else {
+        setLaunchCountdown("LIVE");
+      }
+    }, 1000);
+    
+    return () => clearInterval(interval);
+
   }, []);
 
   // --- Responsive Canvas Setup ---
