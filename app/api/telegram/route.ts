@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
+import fs from 'fs';
+import path from 'path';
 
 const rawConnectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL;
 const connectionString = rawConnectionString ? rawConnectionString.replace("?sslmode=require", "") : "";
@@ -19,6 +21,14 @@ async function sendMessage(chatId: number, text: string) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' })
+  });
+}
+
+async function sendPhoto(chatId: number, photoUrl: string, caption: string) {
+  await fetch(`${TELEGRAM_API}/sendPhoto`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, photo: photoUrl, caption: caption })
   });
 }
 
@@ -261,6 +271,42 @@ export async function POST(req: Request) {
           }
         } else {
           await sendMessage(chatId, "Format: /done [Task ID]");
+        }
+      } else if (text.startsWith('/hype')) {
+        // Manual Hype Poster Trigger
+        const postersDir = path.join(process.cwd(), 'public', 'images', 'posters');
+        if (fs.existsSync(postersDir)) {
+          const files = fs.readdirSync(postersDir).filter(f => f.match(/\.(png|jpe?g|gif|webp)$/i));
+          if (files.length > 0) {
+            const randomFile = files[Math.floor(Math.random() * files.length)];
+            const host = req.headers.get('host') || 'www.chaosgnome.xyz';
+            const protocol = req.headers.get('x-forwarded-proto') || 'https';
+            const photoUrl = `${protocol}://${host}/images/posters/${randomFile}`;
+            
+            const launchDate = new Date('2026-06-26T13:00:00Z');
+            const now = new Date();
+            const diffMs = launchDate.getTime() - now.getTime();
+            let countdownCaption = "";
+            if (diffMs > 0) {
+              const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+              const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+              countdownCaption = `🍄 $GNOME launch window opens in ${diffHrs}H ${diffMins}M. Stay ready, Gnomads!`;
+            } else {
+              countdownCaption = `🍄 $GNOME IS LIVE! The garden is officially open!`;
+            }
+            
+            const captions = [
+              "The Garden is Awake. 🍄",
+              "Another Gnomad just joined the underground.",
+              "The Gnomad Army is not a number. It is a signal.",
+              "We are planting. The bears are panicking. 🌱",
+              "The mushroom council approves this message.",
+              countdownCaption
+            ];
+            
+            const randomCaption = captions[Math.floor(Math.random() * captions.length)];
+            await sendPhoto(chatId, photoUrl, randomCaption);
+          }
         }
       }
     }

@@ -195,6 +195,7 @@ export default function Game() {
   const [isMobileLandscape, setIsMobileLandscape] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [visitorCount, setVisitorCount] = useState<number | null>(null);
+  const [launchCountdown, setLaunchCountdown] = useState<string | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const engineAudioRef = useRef<{ osc1: OscillatorNode, osc2: OscillatorNode, gain: GainNode } | null>(null);
 
@@ -1194,9 +1195,13 @@ export default function Game() {
               </a>
             </div>
 
-            <div className="w-full mt-2 bg-black/60 border border-green-500/50 rounded-xl p-3 flex flex-col items-center shadow-[0_0_10px_rgba(74,222,128,0.1)]">
-              <span className="text-[10px] text-green-400 font-bold uppercase tracking-widest mb-1">Launching on Solana</span>
-              <span className="text-sm font-mono font-black text-white tracking-wider">26.06.2026 @ 15:00 CET</span>
+            <div className={`w-full mt-2 bg-black/80 border-2 rounded-xl p-3 flex flex-col items-center shadow-lg transition-colors ${launchCountdown === "LIVE" ? "border-green-500 shadow-[0_0_20px_rgba(74,222,128,0.5)]" : "border-red-600 shadow-[0_0_20px_rgba(220,38,38,0.3)] animate-pulse"}`}>
+              <span className={`text-[10px] font-black uppercase tracking-widest mb-1 ${launchCountdown === "LIVE" ? "text-green-400" : "text-red-500"}`}>
+                {launchCountdown === "LIVE" ? "LIVE ON SOLANA" : "LAUNCH WINDOW OPENS"}
+              </span>
+              <span className={`text-2xl sm:text-3xl font-mono font-black tracking-wider ${launchCountdown === "LIVE" ? "text-white" : "text-red-400"}`}>
+                {launchCountdown || "00 : 00 : 00"}
+              </span>
             </div>
 
             {leaderboardData.length > 0 && (
