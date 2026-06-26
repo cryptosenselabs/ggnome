@@ -1186,7 +1186,7 @@ export default function Game() {
                 𝕏 FOLLOW
               </a>
               <a
-                href="https://t.me/+fV3iA_VITGtlMTI0"
+                href="https://t.me/gardengnomecoin"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1 bg-black text-slate-300 border-2 border-slate-700 font-bold text-sm sm:text-base py-2 rounded-xl hover:bg-slate-800 hover:text-[#0088cc] transition-colors flex justify-center items-center gap-2"
@@ -1438,7 +1438,7 @@ export default function Game() {
                       </tr>
                       <tr className="hover:bg-slate-700/50 transition-colors">
                         <th className="p-4 text-slate-400 font-bold border-r border-slate-700">Telegram</th>
-                        <td className="p-4 text-green-400 font-mono"><a href="https://t.me/+TeAQNGPoQ7c4NmI0" target="_blank" rel="noopener noreferrer" className="hover:underline">t.me/GNomads</a></td>
+                        <td className="p-4 text-green-400 font-mono"><a href="https://t.me/gardengnomecoin" target="_blank" rel="noopener noreferrer" className="hover:underline">t.me/gardengnomecoin</a></td>
                       </tr>
                       <tr className="hover:bg-slate-700/50 transition-colors">
                         <th className="p-4 text-slate-400 font-bold border-r border-slate-700">Blockchain</th>
