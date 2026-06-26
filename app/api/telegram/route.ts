@@ -104,6 +104,19 @@ export async function POST(req: Request) {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
+      await query(`
+        CREATE TABLE IF NOT EXISTS bot_scam_reports (
+            id SERIAL PRIMARY KEY,
+            chat_id BIGINT,
+            reporter_telegram_id BIGINT,
+            reporter_username TEXT,
+            scam_url TEXT,
+            scam_evidence TEXT,
+            status TEXT DEFAULT 'pending',
+            upvotes INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
 
       // Track Activity
       await query(`
@@ -253,6 +266,43 @@ export async function POST(req: Request) {
           await sendMessage(chatId, `Task #${taskId} assigned to ${assignee}!\nTo complete it, type: /done ${taskId}`);
         } else {
           await sendMessage(chatId, "Format: /create [task details] @username");
+        }
+      } else if (text.startsWith('/report')) {
+        const parts = text.split(' ');
+        if (parts.length > 1) {
+          const scamUrl = parts[1];
+          const scamEvidence = parts.slice(2).join(' ') || 'No additional evidence provided.';
+          
+          await query(`
+            INSERT INTO bot_scam_reports (chat_id, reporter_telegram_id, reporter_username, scam_url, scam_evidence) 
+            VALUES ($1, $2, $3, $4, $5)
+          `, [chatId, userId, displaySenderName, scamUrl, scamEvidence]);
+          
+          // Reward the user
+          await query(`UPDATE bot_users SET points = points + 1 WHERE telegram_user_id = $1`, [userId]);
+          
+          await sendMessage(chatId, `👁️ The Gnomad council has logged your report against:\n${scamUrl}\n\nWe are watching them. Thank you for protecting the village, ${displaySenderName}! (+1 Village Respect)`);
+        } else {
+          await sendMessage(chatId, "Format: /report [URL like Twitter/Telegram] [Evidence or reason]");
+        }
+      } else if (text.startsWith('/wallofshame')) {
+        const result = await query(`
+          SELECT scam_url, reporter_username, status 
+          FROM bot_scam_reports 
+          ORDER BY created_at DESC 
+          LIMIT 5
+        `);
+        
+        if (result.rows.length > 0) {
+          let msg = "🚨 <b>Gnomad Watchlist (Recent Reports)</b> 🚨\n\n";
+          result.rows.forEach((row, idx) => {
+            const safeUrl = row.scam_url.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const safeUsername = row.reporter_username.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            msg += `${idx + 1}. ${safeUrl} (Reported by ${safeUsername}) - Status: ${row.status}\n`;
+          });
+          await sendMessage(chatId, msg);
+        } else {
+          await sendMessage(chatId, "The wall of shame is currently empty. The village is safe... for now.");
         }
       } else if (text.startsWith('/done')) {
         const match = text.match(/\/done\s+(\d+)/);

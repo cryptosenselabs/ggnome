@@ -1,0 +1,18 @@
+{
+  "update_id": 10000,
+  "message": {
+    "date": 1441645532,
+    "chat": {
+      "id": 1111111,
+      "type": "group",
+      "title": "Gnomad Testing"
+    },
+    "message_id": 1365,
+    "from": {
+      "id": 1111111,
+      "first_name": "GnomadAdmin",
+      "username": "GnomadAdmin"
+    },
+    "text": "/report https://t.me/Lucifers_Calls Asking for $20 upfront promo fee to Solana wallet 9ATDy5NYDoY7e13gGhriyoZ3e6ee5gsMn56GnJRNBzEd"
+  }
+}
