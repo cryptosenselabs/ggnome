@@ -1214,14 +1214,28 @@ export default function Game() {
               </a>
             </div>
 
-            <div className={`w-full mt-2 bg-black/80 border-2 rounded-xl p-3 flex flex-col items-center shadow-lg transition-colors ${launchCountdown === "LIVE" ? "border-green-500 shadow-[0_0_20px_rgba(74,222,128,0.5)]" : "border-red-600 shadow-[0_0_20px_rgba(220,38,38,0.3)] animate-pulse"}`}>
-              <span className={`text-[10px] font-black uppercase tracking-widest mb-1 ${launchCountdown === "LIVE" ? "text-green-400" : "text-red-500"}`}>
-                {launchCountdown === "LIVE" ? "LIVE ON SOLANA" : "LAUNCH WINDOW OPENS"}
-              </span>
-              <span className={`text-2xl sm:text-3xl font-mono font-black tracking-wider ${launchCountdown === "LIVE" ? "text-white" : "text-red-400"}`}>
-                {launchCountdown || "00 : 00 : 00"}
-              </span>
-            </div>
+            {launchCountdown === "LIVE" ? (
+              <div className="w-full mt-2 bg-black/80 border-2 border-green-500 rounded-xl p-3 flex flex-col items-center shadow-[0_0_20px_rgba(74,222,128,0.5)]">
+                <span className="text-[10px] font-black uppercase tracking-widest mb-1 text-green-400">
+                  OFFICIAL CONTRACT ADDRESS
+                </span>
+                <span className="text-[11px] sm:text-xs font-mono font-black tracking-wider text-white break-all text-center selection:bg-green-500/30">
+                  HbRpHGekMEE8eMpbNsM4GYS2FNMybGpUQGXR92axpump
+                </span>
+                <a href="https://dexscreener.com/solana/HbRpHGekMEE8eMpbNsM4GYS2FNMybGpUQGXR92axpump" target="_blank" rel="noopener noreferrer" className="mt-2 text-[10px] bg-green-500/20 text-green-300 px-4 py-1.5 rounded-full hover:bg-green-500/40 transition-colors border border-green-500/30 font-bold tracking-widest flex items-center gap-2">
+                  VIEW ON DEXSCREENER 📈
+                </a>
+              </div>
+            ) : (
+              <div className="w-full mt-2 bg-black/80 border-2 border-red-600 rounded-xl p-3 flex flex-col items-center shadow-[0_0_20px_rgba(220,38,38,0.3)] animate-pulse">
+                <span className="text-[10px] font-black uppercase tracking-widest mb-1 text-red-500">
+                  LAUNCH WINDOW OPENS
+                </span>
+                <span className="text-2xl sm:text-3xl font-mono font-black tracking-wider text-red-400">
+                  {launchCountdown || "00 : 00 : 00"}
+                </span>
+              </div>
+            )}
 
             {leaderboardData.length > 0 && (
               <div className="w-full mt-4 text-left border-t border-slate-700 pt-4">
