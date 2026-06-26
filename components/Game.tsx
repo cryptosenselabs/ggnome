@@ -1450,7 +1450,7 @@ export default function Game() {
                       </tr>
                       <tr className="hover:bg-slate-700/50 transition-colors">
                         <th className="p-4 text-slate-400 font-bold border-r border-slate-700">Contract Address</th>
-                        <td className="p-4 text-slate-500 italic">Announced at Launch — Official Channels Only</td>
+                        <td className="p-4 text-green-400 font-mono break-all selection:bg-green-500/30">HbRpHGekMEE8eMpbNsM4GYS2FNMybGpUQGXR92axpump</td>
                       </tr>
                     </tbody>
                   </table>
