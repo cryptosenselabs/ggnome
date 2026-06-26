@@ -61,12 +61,25 @@ export async function GET(req: Request) {
       return NextResponse.json({ status: 'skipped', reason: 'quiet_hours' });
     }
 
+    const launchDate = new Date('2026-06-26T13:00:00Z'); // 15:00 CET = 13:00 UTC
+    const diffMs = launchDate.getTime() - now.getTime();
+    let countdownCaption = "";
+    
+    if (diffMs > 0) {
+      const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      countdownCaption = `🍄 $GNOME launch window opens in ${diffHrs}H ${diffMins}M. Stay ready, Gnomads!`;
+    } else {
+      countdownCaption = `🍄 $GNOME IS LIVE! The garden is officially open!`;
+    }
+
     const captions = [
       "The Garden is Awake. 🍄",
       "Another Gnomad just joined the underground.",
       "The Gnomad Army is not a number. It is a signal.",
       "We are planting. The bears are panicking. 🌱",
-      "The mushroom council approves this message."
+      "The mushroom council approves this message.",
+      countdownCaption
     ];
 
     let dropped = 0;
