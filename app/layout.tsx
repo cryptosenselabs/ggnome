@@ -13,19 +13,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "$GNOME Runner",
-  description: "Dodge Bears. Survive Rugs. Stack $GNOME.",
+  title: "Gnomad Wall of Shame",
+  description: "Exposing crypto scams, fake KOLs, and toxic projects. The Gnomad community stands strong against toxic soil.",
   openGraph: {
-    title: "$GNOME Runner",
-    description: "Dodge Bears. Survive Rugs. Stack $GNOME.",
+    title: "🚨 Gnomad Wall of Shame",
+    description: "Exposing crypto scams, fake KOLs, and toxic projects. The Gnomad community stands strong against toxic soil.",
     url: "https://chaosgnome.xyz",
-    siteName: "Gnome Runner",
+    siteName: "Gnomad Wall of Shame",
     images: [
       {
-        url: "https://chaosgnome.xyz/assets/gnome-rocket.png",
+        url: "https://chaosgnome.xyz/assets/og-1.png",
         width: 1200,
         height: 630,
-        alt: "Gnome Rocket Meme",
+        alt: "Gnomad Wall of Shame",
       },
     ],
     locale: "en_US",
@@ -33,14 +33,14 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "$GNOME Runner",
-    description: "Dodge Bears. Survive Rugs. Stack $GNOME.",
-    images: ["https://chaosgnome.xyz/assets/gnome-rocket.png"],
+    title: "🚨 Gnomad Wall of Shame",
+    description: "Exposing crypto scams, fake KOLs, and toxic projects. The Gnomad community stands strong against toxic soil.",
+    images: ["https://chaosgnome.xyz/assets/og-1.png"],
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "$GNOME Runner",
+    title: "Wall of Shame",
   },
   manifest: "/manifest.json",
 };
