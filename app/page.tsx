@@ -83,7 +83,7 @@ export default async function Home({ searchParams }: Props) {
   const totalPages = Math.ceil(totalReports / limit);
 
   return (
-    <div className="min-h-screen bg-[#070e08] text-white p-8 font-sans">
+    <div className="min-h-screen bg-[#070e08] text-white p-4 md:p-8 font-sans">
       <div className="max-w-5xl mx-auto relative z-10">
         
         {/* Navigation Bar */}
@@ -93,8 +93,8 @@ export default async function Home({ searchParams }: Props) {
             <p className="text-xs md:text-sm text-gray-400 italic">Chaos Outside. Discipline Inside.</p>
           </div>
           
-          <div className="flex flex-col md:flex-row items-center gap-4 w-full lg:w-auto justify-center lg:justify-end">
-            <code className="text-green-400 font-mono text-xs bg-[#0b140b] px-3 py-2 rounded-lg border border-green-900/50 text-center max-w-full overflow-hidden text-ellipsis whitespace-nowrap shadow-inner">
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full lg:w-auto justify-center lg:justify-end overflow-hidden">
+            <code className="text-green-400 font-mono text-xs bg-[#0b140b] px-3 py-2 rounded-lg border border-green-900/50 text-center max-w-[250px] sm:max-w-full overflow-hidden text-ellipsis whitespace-nowrap shadow-inner">
               <span className="text-yellow-500 font-bold mr-1">CA:</span> 
               HbRpHGekMEE8eMpbNsM4GYS2FNMybGpUQGXR92axpump
             </code>
@@ -113,7 +113,7 @@ export default async function Home({ searchParams }: Props) {
         </nav>
 
         {/* Hero Section: Wall of Shame */}
-        <div className="mb-10 bg-[#0d160e] p-8 md:p-12 rounded-[2rem] border-2 border-[#3d2c1d] shadow-[0_15px_40px_rgba(0,0,0,0.8)] flex flex-col md:flex-row items-center gap-8 md:gap-12 relative overflow-hidden">
+        <div className="mb-10 bg-[#0d160e] p-6 md:p-12 rounded-[2rem] border-2 border-[#3d2c1d] shadow-[0_15px_40px_rgba(0,0,0,0.8)] flex flex-col md:flex-row items-center gap-8 md:gap-12 relative overflow-hidden">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')] opacity-10 pointer-events-none mix-blend-overlay"></div>
           <div className="flex-shrink-0 relative group z-10 animate-[float_6s_ease-in-out_infinite]">
             <div className="absolute inset-0 bg-red-600 rounded-full blur-[40px] opacity-30 group-hover:opacity-60 transition-opacity duration-500 animate-[pulse-glow_4s_ease-in-out_infinite]"></div>
@@ -123,8 +123,8 @@ export default async function Home({ searchParams }: Props) {
               className="w-48 h-48 md:w-56 md:h-56 rounded-full border-4 border-yellow-500 relative z-10 shadow-[0_0_20px_rgba(250,204,21,0.4)]"
             />
           </div>
-          <div className="text-center md:text-left flex-1 z-10">
-            <h2 className="text-5xl lg:text-6xl font-black text-red-500 mb-4 tracking-tight drop-shadow-[0_0_15px_rgba(220,38,38,0.6)] uppercase whitespace-nowrap">
+          <div className="text-center md:text-left flex-1 z-10 w-full">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-red-500 mb-4 tracking-tight drop-shadow-[0_0_15px_rgba(220,38,38,0.6)] uppercase sm:whitespace-nowrap break-words">
               🚨 Wall of Shame
             </h2>
             <p className="text-lg md:text-xl text-green-100 font-medium max-w-2xl leading-relaxed">
