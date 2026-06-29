@@ -14,7 +14,7 @@ export default function ReportScamForm({ onSuccess }: { onSuccess?: () => void }
     e.preventDefault();
     
     if (!url.trim() || !evidence.trim()) {
-      setErrorMessage('Both URL and Evidence are required.');
+      setErrorMessage('Both Target and Details are required.');
       setStatus('error');
       return;
     }
@@ -57,61 +57,71 @@ export default function ReportScamForm({ onSuccess }: { onSuccess?: () => void }
     } catch (err: any) {
       console.error(err);
       setStatus('error');
-      setErrorMessage(err.message || 'Something went wrong.');
+      setErrorMessage(err.message || 'An error occurred during submission.');
     }
   };
 
   return (
-    <div className="bg-black border border-red-900/30 rounded-2xl p-6 shadow-lg w-full">
-      <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-        <span className="text-red-500">🕵️</span> Report a Scam Anonymously
-      </h3>
-      <p className="text-gray-400 mb-6 text-sm">
-        Help protect the Gnomad village. Submitted reports will be reviewed by the community.
-      </p>
-
-      {status === 'success' ? (
-        <div className="bg-green-500/20 border border-green-500/30 text-green-400 p-4 rounded-xl text-center font-medium">
-          ✅ Thank you! Your report has been submitted.
+    <div className="bg-white rounded-2xl p-6 md:p-8 shadow-xl w-full">
+      <div className="flex items-center gap-3 mb-2 border-b border-gray-100 pb-4">
+        <div className="w-10 h-10 bg-[#f6f9fc] rounded-lg flex items-center justify-center border border-gray-100">
+          <svg className="w-5 h-5 text-[#635bff]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="url" className="block text-sm font-medium text-gray-300 mb-1">Scam URL or Target</label>
-            <input 
-              type="text" 
-              id="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="e.g. https://t.me/FakeGroup or @Scammer123"
-              className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors"
-            />
-          </div>
-          <div>
-            <label htmlFor="evidence" className="block text-sm font-medium text-gray-300 mb-1">Evidence / Details</label>
-            <textarea 
-              id="evidence"
-              value={evidence}
-              onChange={(e) => setEvidence(e.target.value)}
-              rows={3}
-              placeholder="What did they do? Ask for money? Post fake links?"
-              className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors resize-none"
-            ></textarea>
-          </div>
-          
-          {status === 'error' && (
-            <div className="text-red-400 text-sm">{errorMessage}</div>
-          )}
+        <div>
+          <h3 className="text-xl font-bold text-[#0a2540]">Report an Incident</h3>
+          <p className="text-[#425466] text-xs font-medium">Submitted reports will be reviewed by the community.</p>
+        </div>
+      </div>
 
-          <button 
-            type="submit" 
-            disabled={status === 'loading'}
-            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-900 disabled:text-gray-400 text-white font-bold py-3 px-4 rounded-lg transition-colors flex justify-center items-center gap-2"
-          >
-            {status === 'loading' ? 'Submitting...' : 'Submit Report'}
-          </button>
-        </form>
-      )}
+      <div className="mt-6">
+        {status === 'success' ? (
+          <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-xl flex flex-col items-center justify-center py-8">
+            <svg className="w-10 h-10 text-emerald-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="font-semibold">Report successfully submitted.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="url" className="block text-sm font-semibold text-[#0a2540] mb-1">Target (URL or Identifier)</label>
+              <input 
+                type="text" 
+                id="url"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="e.g., https://t.me/FakeGroup or @Scammer123"
+                className="w-full bg-white border border-gray-300 shadow-sm rounded-lg px-4 py-2.5 text-[#0a2540] focus:outline-none focus:border-[#635bff] focus:ring-1 focus:ring-[#635bff] transition-colors text-sm"
+              />
+            </div>
+            <div>
+              <label htmlFor="evidence" className="block text-sm font-semibold text-[#0a2540] mb-1">Incident Details</label>
+              <textarea 
+                id="evidence"
+                value={evidence}
+                onChange={(e) => setEvidence(e.target.value)}
+                rows={4}
+                placeholder="Describe the malicious activity in detail..."
+                className="w-full bg-white border border-gray-300 shadow-sm rounded-lg px-4 py-2.5 text-[#0a2540] focus:outline-none focus:border-[#635bff] focus:ring-1 focus:ring-[#635bff] transition-colors resize-none text-sm"
+              ></textarea>
+            </div>
+            
+            {status === 'error' && (
+              <div className="text-red-500 text-sm font-medium">{errorMessage}</div>
+            )}
+
+            <button 
+              type="submit" 
+              disabled={status === 'loading'}
+              className="w-full bg-[#635bff] hover:bg-[#0a2540] disabled:bg-gray-200 disabled:text-gray-400 disabled:border-transparent text-white font-semibold py-3 px-4 rounded-lg transition-colors flex justify-center items-center gap-2 shadow-sm border border-transparent"
+            >
+              {status === 'loading' ? 'Submitting...' : 'Submit Report'}
+            </button>
+          </form>
+        )}
+      </div>
     </div>
   );
 }

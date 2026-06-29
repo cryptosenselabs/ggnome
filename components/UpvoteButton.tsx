@@ -5,10 +5,8 @@ import { useState, useEffect } from 'react';
 export default function UpvoteButton({ scamId, initialUpvotes }: { scamId: number, initialUpvotes: number }) {
   const [upvotes, setUpvotes] = useState(initialUpvotes);
   const [hasUpvoted, setHasUpvoted] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    // Check local storage to see if the user has already upvoted this scam
     const upvotedScams = JSON.parse(localStorage.getItem('upvotedScams') || '[]');
     if (upvotedScams.includes(scamId)) {
       setHasUpvoted(true);
@@ -18,11 +16,9 @@ export default function UpvoteButton({ scamId, initialUpvotes }: { scamId: numbe
   const handleUpvote = async () => {
     if (hasUpvoted) return;
 
-    // Optimistic update
     setUpvotes(prev => prev + 1);
     setHasUpvoted(true);
 
-    // Save to local storage
     const upvotedScams = JSON.parse(localStorage.getItem('upvotedScams') || '[]');
     upvotedScams.push(scamId);
     localStorage.setItem('upvotedScams', JSON.stringify(upvotedScams));
@@ -35,27 +31,24 @@ export default function UpvoteButton({ scamId, initialUpvotes }: { scamId: numbe
       });
     } catch (error) {
       console.error("Failed to upvote:", error);
-      // Revert if failed (optional, keeping it simple here)
     }
   };
 
   return (
     <button 
       onClick={handleUpvote}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       disabled={hasUpvoted}
-      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all duration-200 ${
+      className={`flex flex-col items-center justify-center min-w-[3.5rem] py-1.5 px-2 rounded-lg border transition-all duration-200 ${
         hasUpvoted 
-          ? 'bg-red-50 border-red-200 text-red-600 cursor-default shadow-sm' 
-          : 'bg-white border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-600 shadow-sm'
+          ? 'bg-[#f6f9fc] border-[#e6ebf1] text-[#635bff] cursor-default shadow-sm' 
+          : 'bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-[#425466] shadow-sm'
       }`}
-      title={hasUpvoted ? "You have already upvoted this" : "Upvote this scam report"}
+      title={hasUpvoted ? "You have already upvoted this" : "Upvote this report"}
     >
-      <span className={`text-lg transition-transform duration-200 ${isHovered && !hasUpvoted ? 'scale-125' : ''}`}>
-        🔥
-      </span>
-      <span className="font-bold font-mono text-lg">{upvotes}</span>
+      <svg className={`w-4 h-4 mb-0.5 ${hasUpvoted ? 'text-[#635bff]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
+      </svg>
+      <span className="font-semibold text-xs">{upvotes}</span>
     </button>
   );
 }
