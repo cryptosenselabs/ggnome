@@ -45,7 +45,7 @@ export default async function Home({ searchParams }: Props) {
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 text-[#0a2540] tracking-tight">
             $GNOME Backed by <br className="hidden lg:block" />
-            <span className="text-[#635bff]">Live Utility</span>
+            <span className="text-[#dc2626]">Live Utility</span>
           </h2>
           <p className="text-xl md:text-2xl text-[#425466] mb-4 font-medium">
             <strong className="text-[#0a2540]">WhaleScanner.com</strong> is now in Public Preview
@@ -54,7 +54,7 @@ export default async function Home({ searchParams }: Props) {
             WhaleScanner is the first public utility connected with the $GNOME ecosystem. It is being built to provide wallet intelligence, whale tracking, token activity visibility, and suspicious movement awareness for crypto markets.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <a href="https://whalescanner.com" target="_blank" rel="noopener noreferrer" className="bg-[#635bff] hover:bg-[#0a2540] text-white px-8 py-3.5 rounded-lg font-semibold transition-colors shadow-sm text-lg text-center">
+            <a href="https://whalescanner.com" target="_blank" rel="noopener noreferrer" className="bg-[#dc2626] hover:bg-[#b91c1c] text-white px-8 py-3.5 rounded-lg font-semibold transition-colors shadow-sm text-lg text-center">
               Visit WhaleScanner
             </a>
             <a href="#roadmap" className="bg-white hover:bg-[#f6f9fc] border border-gray-200 text-[#0a2540] px-8 py-3.5 rounded-lg font-semibold transition-colors text-lg text-center shadow-sm">
@@ -66,7 +66,7 @@ export default async function Home({ searchParams }: Props) {
           </div>
         </div>
         <div className="hidden lg:flex w-1/3 justify-center items-center">
-           <svg className="w-32 h-32 text-[#635bff]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+           <svg className="w-32 h-32 text-[#dc2626]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
            </svg>
         </div>
@@ -77,7 +77,7 @@ export default async function Home({ searchParams }: Props) {
         {/* Utility Card */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 transition-shadow hover:shadow-md">
           <div className="w-12 h-12 bg-[#f6f9fc] rounded-lg flex items-center justify-center mb-6 border border-gray-100">
-            <svg className="w-6 h-6 text-[#635bff]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+            <svg className="w-6 h-6 text-[#dc2626]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
           </div>
           <h3 className="text-2xl font-bold text-[#0a2540] mb-4">First Public Utility: WhaleScanner</h3>
           <p className="text-[#425466] mb-6 leading-relaxed">
@@ -92,7 +92,7 @@ export default async function Home({ searchParams }: Props) {
               "Public preview live"
             ].map((feature, i) => (
               <li key={i} className="flex items-center text-[#425466]">
-                <svg className="w-5 h-5 mr-3 text-[#635bff]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                <svg className="w-5 h-5 mr-3 text-[#dc2626]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
                 {feature}
               </li>
             ))}
@@ -103,7 +103,7 @@ export default async function Home({ searchParams }: Props) {
           {/* Why This Matters */}
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 transition-shadow hover:shadow-md">
             <h3 className="text-xl font-bold text-[#0a2540] mb-3 flex items-center gap-2">
-              <span className="text-[#635bff] text-2xl">⚡</span> Why WhaleScanner matters
+              <span className="text-[#dc2626] text-2xl">⚡</span> Why WhaleScanner matters
             </h3>
             <p className="text-[#425466] leading-relaxed text-sm md:text-base">
               Small crypto projects are often approached by middlemen claiming they can bring whales, private investors, or hidden buyer groups. $GNOME is choosing a different path: more transparency, better on-chain visibility, and tools that help communities understand real wallet activity directly.
@@ -127,18 +127,18 @@ export default async function Home({ searchParams }: Props) {
 
       {/* Roadmap Section */}
       <div id="roadmap" className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 md:p-12 relative overflow-hidden">
-         <div className="absolute left-0 top-0 w-1 h-full bg-[#635bff]"></div>
+         <div className="absolute left-0 top-0 w-1 h-full bg-[#dc2626]"></div>
          <h2 className="text-3xl font-bold text-[#0a2540] mb-8 pl-2">Development Roadmap</h2>
          
          <div className="relative pl-8 md:pl-10">
            <div className="absolute left-[11px] md:left-[15px] top-2 bottom-2 w-px bg-gray-200"></div>
            
            <div className="relative mb-8">
-             <div className="absolute -left-[37px] md:-left-[41px] top-1.5 w-4 h-4 rounded-full bg-[#635bff] border-4 border-white shadow-sm"></div>
+             <div className="absolute -left-[37px] md:-left-[41px] top-1.5 w-4 h-4 rounded-full bg-[#dc2626] border-4 border-white shadow-sm"></div>
              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
                  <h4 className="text-xl font-bold text-[#0a2540]">Live Utility Introduced</h4>
-                 <span className="px-3 py-1 bg-[#f6f9fc] text-[#635bff] text-xs font-semibold rounded-full border border-gray-200 w-fit">Current Phase</span>
+                 <span className="px-3 py-1 bg-[#f6f9fc] text-[#dc2626] text-xs font-semibold rounded-full border border-gray-200 w-fit">Current Phase</span>
                </div>
                <p className="text-[#425466] mb-2">
                  WhaleScanner.com enters public preview as the first public utility connected with the $GNOME ecosystem.

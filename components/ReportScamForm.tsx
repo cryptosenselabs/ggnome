@@ -65,7 +65,7 @@ export default function ReportScamForm({ onSuccess }: { onSuccess?: () => void }
     <div className="bg-white rounded-2xl p-6 md:p-8 shadow-xl w-full">
       <div className="flex items-center gap-3 mb-2 border-b border-gray-100 pb-4">
         <div className="w-10 h-10 bg-[#f6f9fc] rounded-lg flex items-center justify-center border border-gray-100">
-          <svg className="w-5 h-5 text-[#635bff]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <svg className="w-5 h-5 text-[#dc2626]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
         </div>
@@ -93,7 +93,7 @@ export default function ReportScamForm({ onSuccess }: { onSuccess?: () => void }
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="e.g., https://t.me/FakeGroup or @Scammer123"
-                className="w-full bg-white border border-gray-300 shadow-sm rounded-lg px-4 py-2.5 text-[#0a2540] focus:outline-none focus:border-[#635bff] focus:ring-1 focus:ring-[#635bff] transition-colors text-sm"
+                className="w-full bg-white border border-gray-300 shadow-sm rounded-lg px-4 py-2.5 text-[#0a2540] focus:outline-none focus:border-[#dc2626] focus:ring-1 focus:ring-[#dc2626] transition-colors text-sm"
               />
             </div>
             <div>
@@ -104,7 +104,7 @@ export default function ReportScamForm({ onSuccess }: { onSuccess?: () => void }
                 onChange={(e) => setEvidence(e.target.value)}
                 rows={4}
                 placeholder="Describe the malicious activity in detail..."
-                className="w-full bg-white border border-gray-300 shadow-sm rounded-lg px-4 py-2.5 text-[#0a2540] focus:outline-none focus:border-[#635bff] focus:ring-1 focus:ring-[#635bff] transition-colors resize-none text-sm"
+                className="w-full bg-white border border-gray-300 shadow-sm rounded-lg px-4 py-2.5 text-[#0a2540] focus:outline-none focus:border-[#dc2626] focus:ring-1 focus:ring-[#dc2626] transition-colors resize-none text-sm"
               ></textarea>
             </div>
             
@@ -115,7 +115,7 @@ export default function ReportScamForm({ onSuccess }: { onSuccess?: () => void }
             <button 
               type="submit" 
               disabled={status === 'loading'}
-              className="w-full bg-[#635bff] hover:bg-[#0a2540] disabled:bg-gray-200 disabled:text-gray-400 disabled:border-transparent text-white font-semibold py-3 px-4 rounded-lg transition-colors flex justify-center items-center gap-2 shadow-sm border border-transparent"
+              className="w-full bg-[#dc2626] hover:bg-[#b91c1c] disabled:bg-gray-200 disabled:text-gray-400 disabled:border-transparent text-white font-semibold py-3 px-4 rounded-lg transition-colors flex justify-center items-center gap-2 shadow-sm border border-transparent"
             >
               {status === 'loading' ? 'Submitting...' : 'Submit Report'}
             </button>

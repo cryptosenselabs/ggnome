@@ -83,7 +83,7 @@ export default async function ShamePage({ searchParams }: Props) {
                   <div className="flex flex-wrap items-center gap-3 mb-2">
                     <h3 className="text-lg font-bold text-[#0a2540] truncate max-w-full">
                       {report.scam_url.startsWith('http') ? (
-                        <a href={report.scam_url} target="_blank" rel="noopener noreferrer" className="hover:text-[#635bff] transition-colors underline decoration-gray-300 underline-offset-2">
+                        <a href={report.scam_url} target="_blank" rel="noopener noreferrer" className="hover:text-[#dc2626] transition-colors underline decoration-gray-300 underline-offset-2">
                           {report.scam_url}
                         </a>
                       ) : (

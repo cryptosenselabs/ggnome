@@ -13,7 +13,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">
               <h1 className="text-xl font-bold text-[#0a2540] tracking-tight">
-                Garden Gnome <span className="text-[#635bff]">$GNOME</span>
+                Garden Gnome <span className="text-[#dc2626]">$GNOME</span>
               </h1>
             </Link>
           </div>
@@ -28,7 +28,7 @@ export default function Navbar() {
             <code className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-mono border border-slate-200">
               CA: HbRp...pump
             </code>
-            <a href="https://whalescanner.com" target="_blank" rel="noopener noreferrer" className="bg-[#635bff] hover:bg-[#0a2540] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-sm">
+            <a href="https://whalescanner.com" target="_blank" rel="noopener noreferrer" className="bg-[#dc2626] hover:bg-[#b91c1c] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-sm">
               WhaleScanner
             </a>
           </div>
@@ -50,10 +50,10 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 px-4 pt-2 pb-4 space-y-2 shadow-lg absolute w-full left-0 top-[65px]">
-          <Link href="/shame" onClick={() => setIsOpen(false)} className="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-[#635bff] hover:bg-slate-50 transition-colors">
+          <Link href="/shame" onClick={() => setIsOpen(false)} className="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-[#dc2626] hover:bg-slate-50 transition-colors">
             Wall of Shame
           </Link>
-          <Link href="/fame" onClick={() => setIsOpen(false)} className="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-[#635bff] hover:bg-slate-50 transition-colors">
+          <Link href="/fame" onClick={() => setIsOpen(false)} className="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-[#dc2626] hover:bg-slate-50 transition-colors">
             Wall of Fame
           </Link>
           <div className="px-3 py-2">
@@ -62,7 +62,7 @@ export default function Navbar() {
             </code>
           </div>
           <div className="px-3 pt-2">
-             <a href="https://whalescanner.com" target="_blank" rel="noopener noreferrer" className="block w-full text-center bg-[#635bff] hover:bg-[#0a2540] text-white px-4 py-3 rounded-lg text-base font-semibold transition-colors shadow-sm">
+             <a href="https://whalescanner.com" target="_blank" rel="noopener noreferrer" className="block w-full text-center bg-[#dc2626] hover:bg-[#b91c1c] text-white px-4 py-3 rounded-lg text-base font-semibold transition-colors shadow-sm">
               Visit WhaleScanner
             </a>
           </div>
