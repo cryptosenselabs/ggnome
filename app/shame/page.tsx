@@ -19,7 +19,7 @@ const pool = new Pool({
   }
 });
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const revalidate = 60;
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -48,7 +48,6 @@ export default async function ShamePage({ searchParams }: Props) {
     reports = result.rows;
   } catch (err: any) {
     if (err.code === '42P01') { 
-      console.log("Table bot_scam_reports does not exist yet.");
       reports = [];
     } else {
       console.error("Error fetching data:", err);
@@ -60,16 +59,15 @@ export default async function ShamePage({ searchParams }: Props) {
   const totalPages = Math.ceil(totalReports / limit);
 
   return (
-    <div className="w-full flex flex-col gap-10">
+    <div className="w-full flex flex-col gap-10 fade-in">
       {/* Hero Section */}
-      <div className="p-8 md:p-12 rounded-[2rem] border border-red-900/30 bg-[hsl(222,47%,8%)] shadow-xl shadow-red-900/10 flex flex-col items-center gap-6 relative overflow-hidden group text-center">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-20 w-64 h-64 bg-red-600 rounded-full blur-[100px] opacity-20 transition-opacity duration-1000"></div>
-        <h2 className="text-4xl sm:text-5xl font-black mb-2 text-red-500 tracking-tight uppercase relative z-10 drop-shadow-[0_0_15px_rgba(239,68,68,0.3)]">
-          🚨 Wall of Shame
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 md:p-12 flex flex-col items-center gap-6 text-center">
+        <h2 className="text-4xl sm:text-5xl font-black mb-2 text-[#0a2540] tracking-tight flex items-center gap-3">
+          <span className="text-red-500">🚨</span> Wall of Shame
         </h2>
-        <p className="text-lg md:text-xl text-red-100 font-medium max-w-2xl leading-relaxed relative z-10">
+        <p className="text-lg md:text-xl text-[#425466] font-medium max-w-2xl leading-relaxed">
           The Gnomad community stands strong against toxic soil. <br className="hidden md:block" />
-          <span className="text-red-400 font-bold">Here we expose crypto scams, fake KOLs, and rug pulls.</span>
+          <span className="text-red-600 font-bold">Here we expose crypto scams, fake KOLs, and rug pulls.</span>
         </p>
       </div>
 
@@ -79,14 +77,14 @@ export default async function ShamePage({ searchParams }: Props) {
 
       <div className="space-y-6">
         {reports.length === 0 ? (
-          <div className="text-center text-red-600/60 py-12 bg-[hsl(222,47%,8%)] rounded-lg border border-red-900/30">
+          <div className="text-center text-red-600 font-medium py-12 bg-red-50 rounded-lg border border-red-100">
             No scams reported yet. The garden is safe... for now.
           </div>
         ) : (
           reports.map((report: any, index: number) => (
-            <div key={index} className="bg-[hsl(222,47%,8%)] border border-red-900/20 rounded-xl p-6 shadow-lg shadow-red-900/5 transition-transform hover:scale-[1.01] group">
+            <div key={index} className="bg-white border border-gray-200 rounded-2xl p-6 md:p-8 shadow-sm transition-shadow hover:shadow-md">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-4">
-                <h2 className="text-2xl font-semibold text-red-400 break-all group-hover:text-red-300 transition-colors">
+                <h2 className="text-xl md:text-2xl font-bold text-[#0a2540] break-all hover:text-[#635bff] transition-colors">
                   {report.scam_url.startsWith('http') ? (
                     <a href={report.scam_url} target="_blank" rel="noopener noreferrer" className="hover:underline">
                       {report.scam_url}
@@ -95,28 +93,25 @@ export default async function ShamePage({ searchParams }: Props) {
                     report.scam_url
                   )}
                 </h2>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium w-fit h-fit ${
-                  report.status === 'pending' ? 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20' : 
-                  report.status === 'verified_scam' ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 
-                  'bg-green-500/10 text-green-500 border border-green-500/20'
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit h-fit ${
+                  report.status === 'pending' ? 'bg-amber-100 text-amber-700 border border-amber-200' : 
+                  report.status === 'verified_scam' ? 'bg-red-100 text-red-700 border border-red-200' : 
+                  'bg-emerald-100 text-emerald-700 border border-emerald-200'
                 }`}>
-                  {report.status.toUpperCase().replace('_', ' ')}
+                  {report.status.replace('_', ' ')}
                 </span>
               </div>
               
-              <p className="text-gray-200 mb-6 text-lg bg-background p-4 rounded-lg border border-red-900/10 shadow-inner">
+              <p className="text-[#425466] mb-6 text-lg bg-[#f6f9fc] p-4 rounded-xl border border-gray-100 leading-relaxed">
                 "{report.scam_evidence}"
               </p>
               
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div className="flex items-center text-sm text-red-400/80">
+                <div className="flex items-center text-sm text-gray-500 font-medium">
                   <span className="flex items-center">
-                    <svg className="w-4 h-4 mr-1 text-red-900/50" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
-                    </svg>
-                    Reported by <span className="text-red-300 font-medium ml-1">@{report.reporter_username}</span>
+                    Reported by <span className="text-[#0a2540] font-bold ml-1">@{report.reporter_username}</span>
                   </span>
-                  <span className="mx-3">•</span>
+                  <span className="mx-3 text-gray-300">•</span>
                   <span>{new Date(report.created_at).toLocaleDateString()}</span>
                 </div>
                 
@@ -131,25 +126,25 @@ export default async function ShamePage({ searchParams }: Props) {
       {totalPages > 1 && (
         <div className="flex justify-center items-center gap-4 mt-12">
           {page > 1 ? (
-            <Link href={`/shame?page=${page - 1}`} className="bg-[hsl(222,47%,8%)] hover:bg-[hsl(222,47%,12%)] text-red-400 px-4 py-2 rounded-lg transition-colors border border-red-900/30 font-semibold">
+            <Link href={`/shame?page=${page - 1}`} className="bg-white hover:bg-[#f6f9fc] text-[#0a2540] px-4 py-2 rounded-lg transition-colors border border-gray-200 font-semibold shadow-sm">
               ← Previous
             </Link>
           ) : (
-            <div className="px-4 py-2 text-red-900/50 border border-red-900/10 rounded-lg cursor-not-allowed font-semibold">
+            <div className="px-4 py-2 text-gray-400 border border-gray-200 bg-gray-50 rounded-lg cursor-not-allowed font-semibold">
               ← Previous
             </div>
           )}
           
-          <span className="text-red-400/80 font-bold">
+          <span className="text-[#425466] font-bold">
             Page {page} of {totalPages}
           </span>
 
           {page < totalPages ? (
-            <Link href={`/shame?page=${page + 1}`} className="bg-[hsl(222,47%,8%)] hover:bg-[hsl(222,47%,12%)] text-red-400 px-4 py-2 rounded-lg transition-colors border border-red-900/30 font-semibold">
+            <Link href={`/shame?page=${page + 1}`} className="bg-white hover:bg-[#f6f9fc] text-[#0a2540] px-4 py-2 rounded-lg transition-colors border border-gray-200 font-semibold shadow-sm">
               Next →
             </Link>
           ) : (
-            <div className="px-4 py-2 text-red-900/50 border border-red-900/10 rounded-lg cursor-not-allowed font-semibold">
+            <div className="px-4 py-2 text-gray-400 border border-gray-200 bg-gray-50 rounded-lg cursor-not-allowed font-semibold">
               Next →
             </div>
           )}
