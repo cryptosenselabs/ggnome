@@ -78,9 +78,17 @@ export async function POST(req: Request) {
             points INTEGER DEFAULT 0,
             plant_count INTEGER DEFAULT 0,
             last_plant_at TIMESTAMP,
-            rank TEXT DEFAULT 'Baby Root'
+            rank TEXT DEFAULT 'Baby Root',
+            hype_count INTEGER DEFAULT 0
         );
       `);
+      
+      try {
+        await query(`ALTER TABLE bot_users ADD COLUMN hype_count INTEGER DEFAULT 0`);
+      } catch (e) {
+        // ignore if already exists
+      }
+      
       await query(`
         CREATE TABLE IF NOT EXISTS bot_group_state (
             chat_id BIGINT PRIMARY KEY,
@@ -351,6 +359,9 @@ export async function POST(req: Request) {
           await sendMessage(chatId, "Format: /done [Task ID]");
         }
       } else if (text.startsWith('/hype')) {
+        // Track hype usage
+        await query(`UPDATE bot_users SET hype_count = COALESCE(hype_count, 0) + 1, points = points + 1 WHERE telegram_user_id = $1`, [userId]);
+
         // Manual Hype Poster Trigger - Reads from CSV (Robust Fetch)
         let csvContent = "";
         try {
@@ -400,6 +411,27 @@ export async function POST(req: Request) {
         
         await query(`UPDATE bot_group_state SET disable_hype = $1 WHERE chat_id = $2`, [newState, chatId]);
         await sendMessage(chatId, `🤖 Automatic 5-minute poster drops are now **${newState ? 'DISABLED' : 'ENABLED'}** for this group.`);
+      } else if (text.startsWith('/hyperank') || text.startsWith('/hypeboard')) {
+        const result = await query(`
+          SELECT username, first_name, hype_count, points
+          FROM bot_users 
+          WHERE hype_count > 0 
+          ORDER BY hype_count DESC 
+          LIMIT 10
+        `);
+        
+        if (result.rows.length > 0) {
+          let msg = "🔥 <b>TOP 10 GNOME SHILLERS</b> 🔥\n\n";
+          result.rows.forEach((row, idx) => {
+            const name = row.username ? `@${row.username}` : row.first_name;
+            const safeName = name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            msg += `${idx + 1}. ${safeName} - ${row.hype_count} hypes (Respect: ${row.points})\n`;
+          });
+          msg += "\n<i>Keep using /hype to climb the ranks!</i>";
+          await sendMessage(chatId, msg);
+        } else {
+          await sendMessage(chatId, "No one has hyped yet! Be the first to use /hype.");
+        }
       }
     }
 
