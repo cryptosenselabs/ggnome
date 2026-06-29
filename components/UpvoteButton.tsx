@@ -47,8 +47,8 @@ export default function UpvoteButton({ scamId, initialUpvotes }: { scamId: numbe
       disabled={hasUpvoted}
       className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all duration-200 ${
         hasUpvoted 
-          ? 'bg-red-500/20 border-red-500/50 text-red-400 cursor-default' 
-          : 'bg-gray-800 border-gray-700 hover:bg-gray-700 hover:border-gray-500 text-gray-300'
+          ? 'bg-red-50 border-red-200 text-red-600 cursor-default shadow-sm' 
+          : 'bg-white border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-600 shadow-sm'
       }`}
       title={hasUpvoted ? "You have already upvoted this" : "Upvote this scam report"}
     >
