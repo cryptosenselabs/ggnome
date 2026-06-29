@@ -46,11 +46,12 @@ export async function GET(req: Request) {
     try {
       await query(`ALTER TABLE bot_group_state ADD COLUMN hype_drops_today INTEGER DEFAULT 0`);
       await query(`ALTER TABLE bot_group_state ADD COLUMN last_hype_drop_at TIMESTAMP`);
+      await query(`ALTER TABLE bot_group_state ADD COLUMN disable_hype BOOLEAN DEFAULT FALSE`);
     } catch (e) {
       // Columns likely already exist, ignore
     }
 
-    const result = await query(`SELECT * FROM bot_group_state`);
+    const result = await query(`SELECT * FROM bot_group_state WHERE disable_hype IS NOT TRUE`);
     const groups = result.rows;
 
     const now = new Date();

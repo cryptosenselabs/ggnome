@@ -386,6 +386,20 @@ export async function POST(req: Request) {
         
         // Ultimate Fallback if everything fails
         await sendMessage(chatId, "Chaos outside, discipline inside. The Gnomads are building something that actually helps crypto users. Let's see how the ecosystem evolves. $GNOME");
+      } else if (text.startsWith('/toggleautohype')) {
+        // Add column if it doesn't exist just in case
+        try {
+          await query(`ALTER TABLE bot_group_state ADD COLUMN disable_hype BOOLEAN DEFAULT FALSE`);
+        } catch (e) {
+          // ignore
+        }
+        
+        const result = await query(`SELECT disable_hype FROM bot_group_state WHERE chat_id = $1`, [chatId]);
+        const current = result.rows[0]?.disable_hype || false;
+        const newState = !current;
+        
+        await query(`UPDATE bot_group_state SET disable_hype = $1 WHERE chat_id = $2`, [newState, chatId]);
+        await sendMessage(chatId, `🤖 Automatic 5-minute poster drops are now **${newState ? 'DISABLED' : 'ENABLED'}** for this group.`);
       }
     }
 
