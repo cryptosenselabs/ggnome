@@ -351,39 +351,24 @@ export async function POST(req: Request) {
           await sendMessage(chatId, "Format: /done [Task ID]");
         }
       } else if (text.startsWith('/hype')) {
-        // Manual Hype Poster Trigger
-        const postersDir = path.join(process.cwd(), 'public', 'images', 'posters');
-        if (fs.existsSync(postersDir)) {
-          const files = fs.readdirSync(postersDir).filter(f => f.match(/\.(png|jpe?g|gif|webp)$/i));
-          if (files.length > 0) {
-            const randomFile = files[Math.floor(Math.random() * files.length)];
-            const host = req.headers.get('host') || 'www.chaosgnome.xyz';
-            const protocol = req.headers.get('x-forwarded-proto') || 'https';
-            const photoUrl = `${protocol}://${host}/images/posters/${randomFile}`;
+        // Manual Hype Poster Trigger - Reads from CSV
+        const csvPath = path.join(process.cwd(), 'scripts', 'hype_comments.csv');
+        if (fs.existsSync(csvPath)) {
+          const content = fs.readFileSync(csvPath, 'utf8');
+          const lines = content.split('\n').filter(line => line.trim().length > 0);
+          
+          if (lines.length > 1) {
+            // Pick a random line (skip header at index 0)
+            const randomIndex = Math.floor(Math.random() * (lines.length - 1)) + 1;
+            let randomComment = lines[randomIndex];
             
-            const launchDate = new Date('2026-06-26T13:00:00Z');
-            const now = new Date();
-            const diffMs = launchDate.getTime() - now.getTime();
-            let countdownCaption = "";
-            if (diffMs > 0) {
-              const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-              const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-              countdownCaption = `🚨 <b>LAUNCH WINDOW OPENS IN ${diffHrs}H ${diffMins}M</b> 🚨\n<b>Stay ready, Gnomads!</b> 🍄\n\n📜 <b>CA:</b> <code>HbRpHGekMEE8eMpbNsM4GYS2FNMybGpUQGXR92axpump</code>\n\n⚠️ <i>We will NEVER DM you!</i>`;
-            } else {
-              countdownCaption = `🚨 <b>$GNOME IS LIVE!</b> 🚨\n<b>The garden is officially open!</b> 🍄\n\n📜 <b>CA:</b> <code>HbRpHGekMEE8eMpbNsM4GYS2FNMybGpUQGXR92axpump</code>\n\n⚠️ <i>We will NEVER DM you!</i>`;
+            // Remove leading/trailing quotes if escaped
+            if (randomComment.startsWith('"') && randomComment.endsWith('"')) {
+              randomComment = randomComment.substring(1, randomComment.length - 1);
             }
             
-            const captions = [
-              "The Garden is Awake. 🍄",
-              "Another Gnomad just joined the underground.",
-              "The Gnomad Army is not a number. It is a signal.",
-              "We are planting. The bears are panicking. 🌱",
-              "The mushroom council approves this message."
-            ];
-            
-            const randomCaption = captions[Math.floor(Math.random() * captions.length)];
-            const finalCaption = `${randomCaption}\n\n${countdownCaption}`;
-            await sendPhoto(chatId, photoUrl, finalCaption);
+            // Send just the text so it can be easily copy-pasted
+            await sendMessage(chatId, randomComment);
           }
         }
       }
