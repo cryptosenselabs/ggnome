@@ -53,7 +53,7 @@ export default async function Home({ searchParams }: Props) {
           <p className="text-[#425466] mb-8 text-lg max-w-2xl leading-relaxed mx-auto md:mx-0">
             WhaleScanner is the first public utility connected with the $GNOME ecosystem. It is being built to provide wallet intelligence, whale tracking, token activity visibility, and suspicious movement awareness for crypto markets.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-8">
             <a href="https://whalescanner.com" target="_blank" rel="noopener noreferrer" className="bg-[#dc2626] hover:bg-[#b91c1c] text-white px-8 py-3.5 rounded-lg font-semibold transition-colors shadow-sm text-lg text-center">
               Visit WhaleScanner
             </a>
@@ -64,11 +64,19 @@ export default async function Home({ searchParams }: Props) {
               Join Telegram
             </a>
           </div>
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-3">
+            <span className="text-sm font-semibold text-[#425466] mt-1.5 hidden md:block">Contract Address:</span>
+            <code className="bg-[#f6f9fc] text-[#dc2626] px-4 py-2 rounded-lg text-xs sm:text-sm font-mono border border-gray-200 break-all shadow-sm">
+              HbRpHGekMEE8eMpbNsM4GYS2FNMybGpUQGXR92axpump
+            </code>
+          </div>
         </div>
         <div className="hidden lg:flex w-1/3 justify-center items-center">
-           <svg className="w-32 h-32 text-[#dc2626]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-           </svg>
+           <img 
+             src="/assets/logo.png" 
+             alt="$GNOME Logo" 
+             className="w-48 h-48 object-contain drop-shadow-xl hover:scale-105 transition-transform duration-300"
+           />
         </div>
       </div>
 
