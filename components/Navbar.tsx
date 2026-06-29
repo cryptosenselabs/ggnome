@@ -1,45 +1,73 @@
+'use client';
+
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <nav className="flex flex-col lg:flex-row items-center justify-between bg-[hsl(222,47%,8%)] border border-cyan-900/50 rounded-2xl p-4 mb-10 shadow-lg shadow-cyan-900/10 relative z-50">
-      <div className="flex flex-col mb-4 lg:mb-0 w-full lg:w-auto text-center lg:text-left">
-        <Link href="/">
-          <h1 className="text-xl md:text-2xl font-bold text-white tracking-wide cursor-pointer">
-            Garden Gnome <span className="text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]">$GNOME</span>
-          </h1>
-        </Link>
-        <p className="text-xs md:text-sm text-gray-400 italic">Community. Mission. Utility.</p>
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 w-full shadow-sm">
+      <div className="max-w-5xl mx-auto px-4 md:px-8">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
+              <h1 className="text-xl font-bold text-[#0a2540] tracking-tight">
+                Garden Gnome <span className="text-[#635bff]">$GNOME</span>
+              </h1>
+            </Link>
+          </div>
+          
+          <div className="hidden md:flex items-center gap-6">
+            <Link href="/shame" className="text-sm font-medium text-slate-600 hover:text-[#0a2540] transition-colors">
+              Wall of Shame
+            </Link>
+            <Link href="/fame" className="text-sm font-medium text-slate-600 hover:text-[#0a2540] transition-colors">
+              Wall of Fame
+            </Link>
+            <code className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-mono border border-slate-200">
+              CA: HbRp...pump
+            </code>
+            <a href="https://whalescanner.com" target="_blank" rel="noopener noreferrer" className="bg-[#635bff] hover:bg-[#0a2540] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-sm">
+              WhaleScanner
+            </a>
+          </div>
+
+          <div className="md:hidden flex items-center">
+            <button onClick={() => setIsOpen(!isOpen)} className="text-slate-600 hover:text-[#0a2540] focus:outline-none p-2 -mr-2">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
-      
-      <div className="flex flex-col md:flex-row items-center gap-6 w-full lg:w-auto justify-center lg:justify-end overflow-hidden">
-        <div className="flex items-center gap-4">
-          <Link href="/shame" className="text-gray-300 hover:text-white font-medium transition-colors cursor-pointer">
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div className="md:hidden bg-white border-t border-gray-100 px-4 pt-2 pb-4 space-y-2 shadow-lg absolute w-full left-0 top-[65px]">
+          <Link href="/shame" onClick={() => setIsOpen(false)} className="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-[#635bff] hover:bg-slate-50 transition-colors">
             Wall of Shame
           </Link>
-          <Link href="/fame" className="text-gray-300 hover:text-white font-medium transition-colors cursor-pointer">
+          <Link href="/fame" onClick={() => setIsOpen(false)} className="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-[#635bff] hover:bg-slate-50 transition-colors">
             Wall of Fame
           </Link>
-          <a href="https://whalescanner.com" target="_blank" rel="noopener noreferrer" className="bg-[#0e7490] hover:bg-[#0891b2] text-white px-4 py-2 rounded-lg font-bold transition-colors shadow-lg shadow-cyan-900/20 border border-cyan-500/50">
-            WhaleScanner
-          </a>
+          <div className="px-3 py-2">
+            <code className="block bg-slate-50 text-slate-600 px-3 py-2 rounded text-xs font-mono border border-slate-200 break-all">
+              CA: HbRpHGekMEE8eMpbNsM4GYS2FNMybGpUQGXR92axpump
+            </code>
+          </div>
+          <div className="px-3 pt-2">
+             <a href="https://whalescanner.com" target="_blank" rel="noopener noreferrer" className="block w-full text-center bg-[#635bff] hover:bg-[#0a2540] text-white px-4 py-3 rounded-lg text-base font-semibold transition-colors shadow-sm">
+              Visit WhaleScanner
+            </a>
+          </div>
         </div>
-        <code className="hidden lg:block text-cyan-400 font-mono text-xs bg-[#0b140b] px-3 py-2 rounded-lg border border-cyan-900/50 text-center shadow-inner">
-          <span className="text-cyan-500 font-bold mr-1">CA:</span> 
-          HbRpHGekMEE8eMpbNsM4GYS2FNMybGpUQGXR92axpump
-        </code>
-        <div className="flex gap-2">
-          <a href="https://www.chaosgnome.xyz/" target="_blank" rel="noopener noreferrer" className="bg-gray-800 hover:bg-gray-700 text-white p-2 rounded-full transition-colors flex items-center justify-center w-10 h-10" title="Website">
-            🌐
-          </a>
-          <a href="https://x.com/GardenGnomeCoin" target="_blank" rel="noopener noreferrer" className="bg-[#000000] border border-gray-700 hover:border-gray-500 text-white p-2 rounded-full transition-colors flex items-center justify-center w-10 h-10" title="Twitter">
-            𝕏
-          </a>
-          <a href="https://t.me/gardengnomecoin" target="_blank" rel="noopener noreferrer" className="bg-[#24A1DE] hover:bg-[#1d87ba] text-white p-2 rounded-full transition-colors flex items-center justify-center w-10 h-10" title="Telegram">
-            ✈️
-          </a>
-        </div>
-      </div>
+      )}
     </nav>
   );
 }

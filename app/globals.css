@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: hsl(222, 47%, 6%);
-  --foreground: hsl(210, 40%, 98%);
+  --background: #f6f9fc;
+  --foreground: #425466;
+  --heading: #0a2540;
   
-  /* Primary Cyan Neon */
-  --primary: hsl(190, 100%, 50%);
-  --primary-foreground: hsl(222, 47%, 11%);
+  /* Primary Stripe Blurple */
+  --primary: #635bff;
+  --primary-hover: #0a2540;
   
-  /* Secondary Soft Violet */
-  --secondary: hsl(260, 40%, 20%);
-  --secondary-foreground: hsl(260, 80%, 80%);
+  --border: #e6ebf1;
+  --card-bg: #ffffff;
 }
 
 @theme inline {
@@ -26,30 +26,19 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none;
-  z-index: -1;
-  background-image: 
-    radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.15), transparent 25%);
-  background-attachment: fixed;
-}
-
-/* Sleek Scrollbar for Leaderboard */
+/* Minimalist scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.05);
   border-radius: 8px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(6, 182, 212, 0.5); /* Tailwind cyan-500 */
+  background: rgba(99, 91, 255, 0.3);
   border-radius: 8px;
 }
+
 /* Unified Responsive Engine Layout */
 .gameShell {
   position: relative;
@@ -70,14 +59,4 @@ body::before {
   width: 100%;
   height: 100%;
   display: block;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.1); }
 }

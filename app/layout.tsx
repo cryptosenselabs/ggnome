@@ -54,17 +54,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden p-4 md:p-8">
-        <div className="max-w-5xl mx-auto relative z-10 w-full flex-1 flex flex-col">
-          <Navbar />
-          <main className="flex-1 flex flex-col">
+      <body className="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] overflow-x-hidden">
+        <Navbar />
+        <div className="max-w-5xl mx-auto relative z-10 w-full flex-1 flex flex-col px-4 md:px-8 pb-16">
+          <main className="flex-1 flex flex-col mt-8">
             {children}
           </main>
-          <footer className="mt-16 text-center text-cyan-700/60 pb-10 border-t border-cyan-900/20 pt-10 w-full">
-            <p className="mb-4">Want to report a scam? Join our Telegram and type <code className="bg-[hsl(222,47%,8%)] text-cyan-500 px-2 py-1 rounded font-mono border border-cyan-900/30">/report [URL] [Evidence]</code>.</p>
-            <div className="max-w-4xl mx-auto px-4 text-xs text-gray-500/80 leading-relaxed">
+          <footer className="mt-24 text-center text-slate-500 pb-10 border-t border-slate-200 pt-10 w-full">
+            <p className="mb-4 text-sm">Want to report a scam? Join our Telegram and type <code className="bg-slate-100 text-[#0a2540] px-2 py-1 rounded font-mono border border-slate-200">/report [URL] [Evidence]</code>.</p>
+            <div className="max-w-4xl mx-auto px-4 text-xs text-slate-400 leading-relaxed">
               $GNOME and WhaleScanner provide community and wallet-intelligence information only. Nothing on this website is financial advice, investment advice, or a promise of future price performance. Always do your own research.
             </div>
           </footer>
