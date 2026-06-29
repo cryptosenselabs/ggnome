@@ -13,19 +13,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Gnomad Wall of Shame",
-  description: "Exposing crypto scams, fake KOLs, and toxic projects. The Gnomad community stands strong against toxic soil.",
+  title: "$GNOME — Community, Mission, Utility",
+  description: "$GNOME is a community-driven crypto project introducing WhaleScanner.com as its first public utility for wallet intelligence, whale tracking, and token activity visibility.",
   openGraph: {
-    title: "🚨 Gnomad Wall of Shame",
-    description: "Exposing crypto scams, fake KOLs, and toxic projects. The Gnomad community stands strong against toxic soil.",
+    title: "$GNOME — Community, Mission, Utility",
+    description: "$GNOME is a community-driven crypto project introducing WhaleScanner.com as its first public utility for wallet intelligence, whale tracking, and token activity visibility.",
     url: "https://chaosgnome.xyz",
-    siteName: "Gnomad Wall of Shame",
+    siteName: "$GNOME",
     images: [
       {
         url: "https://chaosgnome.xyz/assets/og-1.png",
         width: 1200,
         height: 630,
-        alt: "Gnomad Wall of Shame",
+        alt: "$GNOME — Community, Mission, Utility",
       },
     ],
     locale: "en_US",
@@ -33,14 +33,14 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "🚨 Gnomad Wall of Shame",
-    description: "Exposing crypto scams, fake KOLs, and toxic projects. The Gnomad community stands strong against toxic soil.",
+    title: "$GNOME — Community, Mission, Utility",
+    description: "$GNOME is a community-driven crypto project introducing WhaleScanner.com as its first public utility for wallet intelligence, whale tracking, and token activity visibility.",
     images: ["https://chaosgnome.xyz/assets/og-1.png"],
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Wall of Shame",
+    title: "$GNOME",
   },
   manifest: "/manifest.json",
 };

@@ -117,6 +117,17 @@ export async function POST(req: Request) {
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
+      await query(`
+        CREATE TABLE IF NOT EXISTS bot_fame_posts (
+            id SERIAL PRIMARY KEY,
+            chat_id BIGINT,
+            author_telegram_id BIGINT,
+            author_username TEXT,
+            message TEXT,
+            upvotes INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
 
       // Track Activity
       await query(`
@@ -303,6 +314,23 @@ export async function POST(req: Request) {
           await sendMessage(chatId, msg);
         } else {
           await sendMessage(chatId, "The wall of shame is currently empty. The village is safe... for now.");
+        }
+      } else if (text.startsWith('/fame')) {
+        const parts = text.split(' ');
+        if (parts.length > 1) {
+          const message = parts.slice(1).join(' ');
+          
+          await query(`
+            INSERT INTO bot_fame_posts (chat_id, author_telegram_id, author_username, message) 
+            VALUES ($1, $2, $3, $4)
+          `, [chatId, userId, displaySenderName, message]);
+          
+          // Reward the user for contributing positivity
+          await query(`UPDATE bot_users SET points = points + 1 WHERE telegram_user_id = $1`, [userId]);
+          
+          await sendMessage(chatId, `🏆 Your message has been added to the Wall of Fame!\nThank you for spreading good vibes in the village, ${displaySenderName}! (+1 Village Respect)`);
+        } else {
+          await sendMessage(chatId, "Format: /fame [Your positive message or shoutout]");
         }
       } else if (text.startsWith('/done')) {
         const match = text.match(/\/done\s+(\d+)/);
