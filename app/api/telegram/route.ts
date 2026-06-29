@@ -351,26 +351,41 @@ export async function POST(req: Request) {
           await sendMessage(chatId, "Format: /done [Task ID]");
         }
       } else if (text.startsWith('/hype')) {
-        // Manual Hype Poster Trigger - Reads from CSV
-        const csvPath = path.join(process.cwd(), 'public', 'assets', 'hype_comments.csv');
-        if (fs.existsSync(csvPath)) {
-          const content = fs.readFileSync(csvPath, 'utf8');
-          const lines = content.split('\n').filter(line => line.trim().length > 0);
+        // Manual Hype Poster Trigger - Reads from CSV (Robust Fetch)
+        let csvContent = "";
+        try {
+          const host = req.headers.get('host') || 'www.chaosgnome.xyz';
+          const protocol = req.headers.get('x-forwarded-proto') || 'https';
+          const fetchUrl = `${protocol}://${host}/assets/hype_comments.csv`;
           
+          const res = await fetch(fetchUrl, { next: { revalidate: 60 } });
+          if (res.ok) {
+            csvContent = await res.text();
+          } else {
+            const csvPath = path.join(process.cwd(), 'public', 'assets', 'hype_comments.csv');
+            if (fs.existsSync(csvPath)) {
+              csvContent = fs.readFileSync(csvPath, 'utf8');
+            }
+          }
+        } catch (e) {
+          console.error("Failed to read CSV:", e);
+        }
+
+        if (csvContent) {
+          const lines = csvContent.split('\n').filter(line => line.trim().length > 0);
           if (lines.length > 1) {
-            // Pick a random line (skip header at index 0)
             const randomIndex = Math.floor(Math.random() * (lines.length - 1)) + 1;
             let randomComment = lines[randomIndex];
-            
-            // Remove leading/trailing quotes if escaped
             if (randomComment.startsWith('"') && randomComment.endsWith('"')) {
               randomComment = randomComment.substring(1, randomComment.length - 1);
             }
-            
-            // Send just the text so it can be easily copy-pasted
             await sendMessage(chatId, randomComment);
+            return NextResponse.json({ status: 'ok' });
           }
         }
+        
+        // Ultimate Fallback if everything fails
+        await sendMessage(chatId, "Chaos outside, discipline inside. The Gnomads are building something that actually helps crypto users. Let's see how the ecosystem evolves. $GNOME");
       }
     }
 
