@@ -358,7 +358,7 @@ export async function POST(req: Request) {
         } else {
           await sendMessage(chatId, "Format: /done [Task ID]");
         }
-      } else if (text.startsWith('/hype')) {
+      } else if (text === '/hype' || text.startsWith('/hype ') || text.startsWith('/hype@')) {
         // Track hype usage
         await query(`UPDATE bot_users SET hype_count = COALESCE(hype_count, 0) + 1, points = points + 1 WHERE telegram_user_id = $1`, [userId]);
 
