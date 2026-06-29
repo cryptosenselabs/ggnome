@@ -352,7 +352,7 @@ export async function POST(req: Request) {
         }
       } else if (text.startsWith('/hype')) {
         // Manual Hype Poster Trigger - Reads from CSV
-        const csvPath = path.join(process.cwd(), 'scripts', 'hype_comments.csv');
+        const csvPath = path.join(process.cwd(), 'public', 'assets', 'hype_comments.csv');
         if (fs.existsSync(csvPath)) {
           const content = fs.readFileSync(csvPath, 'utf8');
           const lines = content.split('\n').filter(line => line.trim().length > 0);
