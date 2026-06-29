@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "../components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,9 +54,22 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden p-4 md:p-8">
+        <div className="max-w-5xl mx-auto relative z-10 w-full flex-1 flex flex-col">
+          <Navbar />
+          <main className="flex-1 flex flex-col">
+            {children}
+          </main>
+          <footer className="mt-16 text-center text-cyan-700/60 pb-10 border-t border-cyan-900/20 pt-10 w-full">
+            <p className="mb-4">Want to report a scam? Join our Telegram and type <code className="bg-[hsl(222,47%,8%)] text-cyan-500 px-2 py-1 rounded font-mono border border-cyan-900/30">/report [URL] [Evidence]</code>.</p>
+            <div className="max-w-4xl mx-auto px-4 text-xs text-gray-500/80 leading-relaxed">
+              $GNOME and WhaleScanner provide community and wallet-intelligence information only. Nothing on this website is financial advice, investment advice, or a promise of future price performance. Always do your own research.
+            </div>
+          </footer>
+        </div>
+      </body>
     </html>
   );
 }
