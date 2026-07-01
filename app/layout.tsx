@@ -14,10 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "$GNOME — Community, Mission, Utility",
+  title: "$GNOME — Crypto Crime Awareness",
   description: "$GNOME is a community-driven crypto project introducing WhaleScanner.com as its first public utility for wallet intelligence, whale tracking, and token activity visibility.",
   openGraph: {
-    title: "$GNOME — Community, Mission, Utility",
+    title: "$GNOME — Crypto Crime Awareness",
     description: "$GNOME is a community-driven crypto project introducing WhaleScanner.com as its first public utility for wallet intelligence, whale tracking, and token activity visibility.",
     url: "https://chaosgnome.xyz",
     siteName: "$GNOME",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
         url: "https://chaosgnome.xyz/assets/og-1.png",
         width: 1200,
         height: 630,
-        alt: "$GNOME — Community, Mission, Utility",
+        alt: "$GNOME — Crypto Crime Awareness",
       },
     ],
     locale: "en_US",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "$GNOME — Community, Mission, Utility",
+    title: "$GNOME — Crypto Crime Awareness",
     description: "$GNOME is a community-driven crypto project introducing WhaleScanner.com as its first public utility for wallet intelligence, whale tracking, and token activity visibility.",
     images: ["https://chaosgnome.xyz/assets/og-1.png"],
   },
@@ -62,9 +62,9 @@ export default function RootLayout({
           <main className="flex-1 flex flex-col mt-8">
             {children}
           </main>
-          <footer className="mt-24 text-center text-slate-500 pb-10 border-t border-slate-200 pt-10 w-full">
-            <p className="mb-4 text-sm">Want to report a scam? Join our Telegram and type <code className="bg-slate-100 text-[#0a2540] px-2 py-1 rounded font-mono border border-slate-200">/report [URL] [Evidence]</code>.</p>
-            <div className="max-w-4xl mx-auto px-4 text-xs text-slate-400 leading-relaxed">
+          <footer className="mt-24 text-center text-foreground/70 pb-10 border-t border-border-subtle pt-10 w-full">
+            <p className="mb-4 text-sm">Want to report a scam? Join our Telegram and type <code className="bg-background text-primary px-2 py-1 rounded font-mono border border-border-subtle">/report [URL] [Evidence]</code>.</p>
+            <div className="max-w-4xl mx-auto px-4 text-xs text-foreground/50 leading-relaxed">
               $GNOME and WhaleScanner provide community and wallet-intelligence information only. Nothing on this website is financial advice, investment advice, or a promise of future price performance. Always do your own research.
             </div>
           </footer>
