@@ -40,14 +40,10 @@ export default async function Home({ searchParams }: Props) {
       {/* Hero Image Section */}
       <div className="w-full rounded-2xl overflow-hidden border border-[#333333] shadow-lg relative group">
         <img 
-          src="/hero-gnome.jpg" 
+          src="/assets/hero-gnome.png" 
           alt="$GNOME: A meme coin with a mission" 
           className="w-full h-auto object-cover max-h-[80vh] bg-[#111111]"
         />
-        {/* Helper overlay for user instructions */}
-        <div className="absolute top-4 right-4 bg-black/80 text-[#facc15] text-xs font-mono px-3 py-1.5 rounded-md border border-[#facc15] opacity-0 group-hover:opacity-100 transition-opacity">
-          Save your image as public/hero-gnome.jpg
-        </div>
       </div>
 
       {/* WhaleScanner Hero / Announcement Section */}
