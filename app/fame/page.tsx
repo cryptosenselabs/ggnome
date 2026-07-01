@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { Pool } from 'pg';
 import Link from 'next/link';
+import FameModal from '../../components/FameModal';
 
 export const metadata: Metadata = {
   title: "Hall of Fame | $GNOME",
@@ -62,6 +63,9 @@ export default async function FamePage({ searchParams }: Props) {
         <div>
           <h1 className="text-3xl font-bold text-[#0a2540] tracking-tight mb-2">Hall of Fame</h1>
           <p className="text-[#425466]">Recognizing top contributors who keep the ecosystem safe and transparent.</p>
+        </div>
+        <div>
+          <FameModal />
         </div>
       </div>
 

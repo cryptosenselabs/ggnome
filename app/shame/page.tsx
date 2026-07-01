@@ -90,13 +90,6 @@ export default async function ShamePage({ searchParams }: Props) {
                         <span className="break-all">{report.scam_url}</span>
                       )}
                     </h3>
-                    <span className={`px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider ${
-                      report.status === 'pending' ? 'bg-amber-950/30 text-amber-500 border border-amber-900' : 
-                      report.status === 'verified_scam' ? 'bg-red-950/30 text-red-500 border border-red-900' : 
-                      'bg-emerald-950/30 text-emerald-500 border border-emerald-900'
-                    }`}>
-                      {report.status.replace('_', ' ')}
-                    </span>
                   </div>
                   
                   <p className="text-foreground text-sm mb-4 leading-relaxed whitespace-pre-wrap">

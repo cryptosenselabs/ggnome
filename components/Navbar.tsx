@@ -25,6 +25,9 @@ export default function Navbar() {
             <Link href="/fame" className="text-sm font-medium text-foreground hover:text-heading transition-colors">
               Wall of Fame
             </Link>
+            <Link href="/playbooks" className="text-sm font-medium text-foreground hover:text-heading transition-colors">
+              Scam Playbooks
+            </Link>
             <div className="flex items-center gap-3 mr-2">
               <a href="https://x.com/GardenGnomeCoin" target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100 transition-opacity" aria-label="X (Twitter)">
                 <svg className="w-5 h-5 invert" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
@@ -60,6 +63,9 @@ export default function Navbar() {
           </Link>
           <Link href="/fame" onClick={() => setIsOpen(false)} className="block px-3 py-3 rounded-md text-base font-medium text-heading hover:text-primary hover:bg-background transition-colors">
             Wall of Fame
+          </Link>
+          <Link href="/playbooks" onClick={() => setIsOpen(false)} className="block px-3 py-3 rounded-md text-base font-medium text-heading hover:text-primary hover:bg-background transition-colors">
+            Scam Playbooks
           </Link>
           <div className="px-3 pt-2 pb-2 border-t border-border-subtle flex items-center justify-between">
              <div className="flex gap-4 p-2">
