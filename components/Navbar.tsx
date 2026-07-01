@@ -25,9 +25,14 @@ export default function Navbar() {
             <Link href="/fame" className="text-sm font-medium text-foreground hover:text-heading transition-colors">
               Wall of Fame
             </Link>
-            <a href="https://x.com/GardenGnomeCoin" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#facc15] transition-colors mr-2" aria-label="X (Twitter)">
-              <svg className="w-5 h-5 fill-currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-            </a>
+            <div className="flex items-center gap-3 mr-2">
+              <a href="https://x.com/GardenGnomeCoin" target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100 transition-opacity" aria-label="X (Twitter)">
+                <svg className="w-5 h-5 invert" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+              </a>
+              <a href="https://t.me/gnomeofficial" target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100 transition-opacity" aria-label="Telegram">
+                <svg className="w-5 h-5 invert" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.223-.548.223l.188-2.85 5.18-4.686c.223-.195-.054-.31-.346-.11l-6.4 4.027-2.76-.86c-.6-.188-.61-.6.126-.89l10.81-4.17c.5-.188.944.116.808.854z"/></svg>
+              </a>
+            </div>
             <a href="https://whalescanner.com" target="_blank" rel="noopener noreferrer" className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-sm">
               WhaleScanner
             </a>
@@ -57,9 +62,14 @@ export default function Navbar() {
             Wall of Fame
           </Link>
           <div className="px-3 pt-2 pb-2 border-t border-border-subtle flex items-center justify-between">
-             <a href="https://x.com/GardenGnomeCoin" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-heading transition-colors p-2" aria-label="X (Twitter)">
-               <svg className="w-6 h-6 fill-currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-             </a>
+             <div className="flex gap-4 p-2">
+               <a href="https://x.com/GardenGnomeCoin" target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100 transition-opacity" aria-label="X (Twitter)">
+                 <svg className="w-6 h-6 invert" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+               </a>
+               <a href="https://t.me/gnomeofficial" target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100 transition-opacity" aria-label="Telegram">
+                 <svg className="w-6 h-6 invert" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.223-.548.223l.188-2.85 5.18-4.686c.223-.195-.054-.31-.346-.11l-6.4 4.027-2.76-.86c-.6-.188-.61-.6.126-.89l10.81-4.17c.5-.188.944.116.808.854z"/></svg>
+               </a>
+             </div>
              <a href="https://whalescanner.com" target="_blank" rel="noopener noreferrer" className="bg-primary hover:bg-primary-hover text-white px-6 py-2.5 rounded-lg text-base font-semibold transition-colors shadow-sm">
               Visit WhaleScanner
             </a>
