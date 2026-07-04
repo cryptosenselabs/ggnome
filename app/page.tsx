@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Particles from '../components/Particles';
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -38,11 +39,12 @@ export default async function Home({ searchParams }: Props) {
   return (
     <div className="w-full flex flex-col gap-12 fade-in">
       {/* Hero Image Section */}
-      <div className="w-full rounded-2xl overflow-hidden border border-[#333333] shadow-lg relative group">
+      <div className="w-full rounded-2xl overflow-hidden border border-[#333333] shadow-lg relative group bg-[#111111] min-h-[200px]">
+        <Particles />
         <img 
           src="/assets/hero-gnome.png" 
           alt="$GNOME: A meme coin with a mission" 
-          className="w-full h-auto object-cover max-h-[80vh] bg-[#111111]"
+          className="w-full h-auto object-cover max-h-[80vh] relative z-10 animate-hero-zoom hover:animate-float-slow transition-transform"
         />
       </div>
 

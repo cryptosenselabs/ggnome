@@ -136,6 +136,16 @@ export async function POST(req: Request) {
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
+      await query(`
+        CREATE TABLE IF NOT EXISTS bot_ideas (
+            id SERIAL PRIMARY KEY,
+            chat_id BIGINT,
+            author_telegram_id BIGINT,
+            author_username TEXT,
+            idea TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
 
       // Track Activity
       await query(`
@@ -322,6 +332,67 @@ export async function POST(req: Request) {
           await sendMessage(chatId, msg);
         } else {
           await sendMessage(chatId, "The wall of shame is currently empty. The village is safe... for now.");
+        }
+      } else if (text.startsWith('/idea') && !text.startsWith('/ideas')) {
+        const parts = text.split(' ');
+        if (parts.length > 1) {
+          const ideaText = parts.slice(1).join(' ');
+          
+          await query(`
+            INSERT INTO bot_ideas (chat_id, author_telegram_id, author_username, idea) 
+            VALUES ($1, $2, $3, $4)
+          `, [chatId, userId, displaySenderName, ideaText]);
+          
+          // Reward the user for contributing an idea
+          await query(`UPDATE bot_users SET points = points + 1 WHERE telegram_user_id = $1`, [userId]);
+          
+          await sendMessage(chatId, `💡 Your idea has been submitted, ${displaySenderName}! (+1 Village Respect)\nUse /ideas to view all ideas.`);
+        } else {
+          await sendMessage(chatId, "Format: /idea [Your idea text]");
+        }
+      } else if (text === '/ideas' || text.startsWith('/ideas@')) {
+        const result = await query(`
+          SELECT id, author_username, idea 
+          FROM bot_ideas 
+          ORDER BY created_at ASC
+        `);
+        
+        if (result.rows.length > 0) {
+          let msg = "💡 <b>Village Ideas</b> 💡\n\n";
+          result.rows.forEach((row, idx) => {
+            const safeUsername = row.author_username.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const safeIdea = row.idea.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            msg += `${idx + 1}. [ID: ${row.id}] ${safeIdea} - (by ${safeUsername})\n`;
+          });
+          await sendMessage(chatId, msg);
+        } else {
+          await sendMessage(chatId, "No ideas have been submitted yet. Be the first to use /idea!");
+        }
+      } else if (text.startsWith('/deleteidea')) {
+        const adminUsername = process.env.ADMIN_USERNAME || '';
+        const cleanAdminUsername = adminUsername.replace('@', '').toLowerCase();
+        const currentUsername = (username || '').toLowerCase();
+        
+        if (cleanAdminUsername && currentUsername === cleanAdminUsername) {
+          const match = text.match(/\/deleteidea\s+(\d+)/);
+          if (match) {
+            const ideaId = parseInt(match[1]);
+            const deleteResult = await query(`
+              DELETE FROM bot_ideas 
+              WHERE id = $1
+              RETURNING id
+            `, [ideaId]);
+            
+            if (deleteResult && deleteResult.rowCount && deleteResult.rowCount > 0) {
+              await sendMessage(chatId, `✅ Idea [ID: ${ideaId}] has been deleted.`);
+            } else {
+              await sendMessage(chatId, `Idea [ID: ${ideaId}] not found.`);
+            }
+          } else {
+            await sendMessage(chatId, "Format: /deleteidea [Idea ID]");
+          }
+        } else {
+          await sendMessage(chatId, "❌ You do not have permission to delete ideas.");
         }
       } else if (text.startsWith('/fame')) {
         const parts = text.split(' ');

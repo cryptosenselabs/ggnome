@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WELCOME TO THE CHAOS GARDEN // $GNOME</title>
+  <meta name="description" content="Chaos Garden Defender: Whack the Whales and protect the cabbages! A mini-game for the Solana meme coin $GNOME.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="./assets/gnome-idle.png">
+
+  <style>
+    /* -------------------------------------------------------------
+       1. Global Reset & Theme Styling
+       ------------------------------------------------------------- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background: #4CAF50;
+      background: radial-gradient(circle, #66bb6a 0%, #4caf50 100%);
+      color: #ffffff;
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0 60px 0;
+      overflow-x: hidden;
+      transition: background-color 0.2s ease;
+    }
+
+    /* Container alignment layout */
+    .game-wrapper {
+      width: 92%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+
+    /* High contrast chunky arcade headers with thick dark brown shadows */
+    h1, h2, h3, .scoreboard, .btn-action, .pill-btn, .modal-title {
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      text-shadow: 
+        3px 3px 0px #3E2723, 
+        -3px -3px 0px #3E2723, 
+        3px -3px 0px #3E2723, 
+        -3px 3px 0px #3E2723,
+        5px 5px 0px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Cursor Strike Hack Styling */
+    body.striking, body.striking * {
+      cursor: url('./assets/gnome-attack.png') 16 16, auto !important;
+    }
+
+    /* -------------------------------------------------------------
+       2. Wooden Container Aesthetic
+       ------------------------------------------------------------- */
+    .wooden-panel {
+      background-color: #5D4037;
+      border: 6px solid #3E2723;
+      border-radius: 16px;
+      box-shadow: 
+        inset 0 -8px 0px rgba(0, 0, 0, 0.4),
+        0 12px 24px rgba(0, 0, 0, 0.3);
+      padding: 30px;
+      width: 100%;
+      position: relative;
+    }
+
+    /* Wooden plank line details */
+    .wooden-panel::before {
+      content: "";
+      position: absolute;
+      top: 33%; left: 0; right: 0;
+      height: 4px;
+      background-color: rgba(62, 39, 35, 0.25);
+      pointer-events: none;
+    }
+
+    .wooden-panel::after {
+      content: "";
+      position: absolute;
+      top: 66%; left: 0; right: 0;
+      height: 4px;
+      background-color: rgba(62, 39, 35, 0.25);
+      pointer-events: none;
+    }
+
+    .panel-header-line {
+      font-size: 20px;
+      margin-bottom: 25px;
+      border-bottom: 4px dashed #3E2723;
+      padding-bottom: 12px;
+      text-align: center;
+    }
+
+    /* -------------------------------------------------------------
+       3. Section 1: The Garden Gate (Header & Hero)
+       ------------------------------------------------------------- */
+    .hero-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hero-logo-box {
+      margin-bottom: 15px;
+    }
+
+    /* CSS floating translateY animation for gnome-idle */
+    .floating-mascot {
+      max-width: 250px;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.3));
+      animation: float-y 3.5s ease-in-out infinite;
+    }
+
+    @keyframes float-y {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .hero-title {
+      font-size: 2.6rem;
+      line-height: 1.15;
+      margin-bottom: 25px;
+      width: 100%;
+    }
+
+    /* Pill Action Buttons */
+    .btn-group {
+      display: flex;
+      gap: 20px;
+      width: 100%;
+      max-width: 520px;
+      justify-content: center;
+    }
+
+    .pill-btn {
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: bold;
+      text-decoration: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      border: 3px solid #3E2723;
+      box-shadow: 0 6px 0px #3E2723, 0 8px 12px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      flex: 1;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+    }
+
+    .pill-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .pill-btn:active {
+      transform: scale(0.98) translateY(4px);
+      box-shadow: 0 2px 0px #3E2723, 0 4px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-blue {
+      background-color: #2196F3;
+      color: #ffffff;
+    }
+
+    .btn-blue:hover {
+      background-color: #42a5f5;
+    }
+
+    .btn-gold {
+      background-color: #FFC107;
+      color: #3E2723;
+      text-shadow: none; /* No shadow for gold button text readability */
+    }
+
+    .btn-gold:hover {
+      background-color: #ffe082;
+    }
+
+    /* -------------------------------------------------------------
+       4. Whack-a-Whale Arcade Scoreboard & Core UI
+       ------------------------------------------------------------- */
+    .scoreboard {
+      display: flex;
+      justify-content: space-around;
+      background-color: #3E2723;
+      border: 4px solid #5D4037;
+      border-radius: 12px;
+      padding: 12px 24px;
+      margin-bottom: 25px;
+    }
+
+    .score-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .score-title {
+      font-size: 12px;
+      color: #FFC107;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+      text-shadow: none;
+    }
+
+    .score-number {
+      font-size: 26px;
+      color: #ffffff;
+    }
+
+    /* -------------------------------------------------------------
+       5. 3x3 Whack-a-Mole Patch Grid
+       ------------------------------------------------------------- */
+    .grid-alignment {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    .patches-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 110px);
+      grid-template-rows: repeat(3, 110px);
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .patch {
+      width: 110px;
+      height: 110px;
+      background-color: #3E2723;
+      border: 5px solid #271510;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 
+        inset 0 8px 0px rgba(0, 0, 0, 0.6),
+        0 6px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Dirt patch front overlay trim (simulates grass mound depth) */
+    .patch::after {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 14px;
+      background-color: #4CAF50;
+      border-radius: 0 0 100px 100px;
+      pointer-events: none;
+    }
+
+    /* Target character image styling */
+    .target-image {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      left: 10px;
+      bottom: -90px; /* Hidden default state */
+      object-fit: contain;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: bottom 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.28);
+    }
+
+    .target-image.popped {
+      bottom: 12px; /* Popped up visual state */
+    }
+
+    /* CSS shake animation on target click */
+    .hit-shake {
+      animation: rapid-shake 0.22s ease-in-out;
+      pointer-events: none; /* Avoid clicking multiple times */
+    }
+
+    @keyframes rapid-shake {
+      0%, 100% { transform: translateX(0) scale(1.1); }
+      20% { transform: translateX(-6px) rotate(-4deg); }
+      40% { transform: translateX(6px) rotate(4deg); }
+      60% { transform: translateX(-4px) rotate(-2deg); }
+      80% { transform: translateX(4px) rotate(2deg); }
+    }
+
+    /* Action Trigger Button */
+    .btn-action {
+      width: 100%;
+      font-family: inherit;
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffffff;
+      background-color: #4CAF50;
+      border: 4px solid #3E2723;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 
+        0 6px 0px #3E2723,
+        0 8px 16px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      margin-top: 20px;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .btn-action:hover {
+      background-color: #66bb6a;
+    }
+
+    .btn-action:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0px #3E2723, 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Point bubbles that fly up on hits */
+    .pop-indicator {
+      position: absolute;
+      font-size: 22px;
+      font-weight: 900;
+      text-shadow: 
+        2px 2px 0px #000000,
+        -2px -2px 0px #000000;
+      pointer-events: none;
+      animation: float-bubble 0.8s ease-out forwards;
+      z-index: 99;
+    }
+
+    @keyframes float-bubble {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-75px) scale(1.25); opacity: 0; }
+    }
+
+    /* Golden flash screen trigger */
+    .gold-flash-screen {
+      animation: screen-green-flash 0.3s ease-out;
+    }
+
+    @keyframes screen-green-flash {
+      0%, 100% { background-color: transparent; }
+      50% { background-color: rgba(0, 255, 102, 0.35); }
+    }
+
+    .flash-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* -------------------------------------------------------------
+       6. Game End Results & Victory Modals
+       ------------------------------------------------------------- */
+    .modal-box {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      text-align: center;
+      animation: modal-enter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.25) forwards;
+      padding: 15px 0;
+    }
+
+    @keyframes modal-enter {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-desc {
+      font-size: 18px;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .btn-telegram {
+      width: 100%;
+      max-width: 460px;
+      display: block;
+      font-family: inherit;
+      font-size: 18px;
+      text-decoration: none;
+      color: #ffffff;
+      background-color: #2196F3;
+      border: 4px solid #3E2723;
+      border-radius: 50px;
+      padding: 16px 32px;
+      box-shadow: 0 6px 0 #3E2723, 0 10px 15px rgba(0, 0, 0, 0.25);
+      animation: pulse-button-glow 1.5s infinite alternate;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-telegram:hover {
+      background-color: #42a5f5;
+    }
+
+    @keyframes pulse-button-glow {
+      0% { box-shadow: 0 6px 0 #3E2723, 0 0px 0px rgba(33, 150, 243, 0); }
+      100% { box-shadow: 0 6px 0 #3E2723, 0 0px 20px rgba(33, 150, 243, 0.8); }
+    }
+
+    /* -------------------------------------------------------------
+       7. Footer Layout
+       ------------------------------------------------------------- */
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 13px;
+      color: #3E2723;
+      border-top: 3px dashed #3E2723;
+      padding-top: 15px;
+      width: 100%;
+    }
+
+    /* -------------------------------------------------------------
+       8. Mobile Custom Adapters
+       ------------------------------------------------------------- */
+    @media (max-width: 600px) {
+      .hero-title {
+        font-size: 1.7rem;
+      }
+
+      .floating-mascot {
+        max-width: 180px;
+      }
+
+      .btn-group {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .pill-btn {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+
+      .scoreboard {
+        padding: 8px 12px;
+      }
+
+      .score-number {
+        font-size: 22px;
+      }
+
+      .patches-grid {
+        grid-template-columns: repeat(3, 85px);
+        grid-template-rows: repeat(3, 85px);
+        gap: 15px;
+      }
+
+      .patch {
+        width: 85px;
+        height: 85px;
+      }
+
+      .target-image {
+        width: 60px;
+        height: 60px;
+        left: 8px;
+        bottom: -75px;
+      }
+
+      .target-image.popped {
+        bottom: 8px;
+      }
+
+      .btn-action {
+        font-size: 18px;
+        padding: 12px;
+      }
+
+      .modal-desc {
+        font-size: 15px;
+      }
+
+      .btn-telegram {
+        font-size: 15px;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen flash overlay on positive triggers -->
+  <div class="flash-overlay" id="flash-screen-indicator"></div>
+
+  <div class="game-wrapper">
+
+    <!-- Section 1: The Garden Gate (Header & Hero) -->
+    <header class="hero-container">
+      <div class="hero-logo-box">
+        <img class="floating-mascot" src="./assets/gnome-idle.png" alt="Chaos Gnome" />
+      </div>
+      <h1 class="hero-title">WELCOME TO THE CHAOS GARDEN</h1>
+      
+      <div class="btn-group">
+        <a href="#" class="pill-btn btn-blue">[ ENTER VILLAGE ]</a>
+        <a href="#" class="pill-btn btn-gold">[ BUY $GNOME ]</a>
+      </div>
+    </header>
+
+    <!-- Section 2: "Chaos Garden Defender" Arcade Game -->
+    <section class="wooden-panel" id="grid-container-panel">
+      <div class="panel-header-line">
+        <span class="arcade-text">CHAOS_GARDEN_DEFENDER // STAGE_01</span>
+      </div>
+
+      <!-- Wooden Scoreboard Panel -->
+      <div class="scoreboard">
+        <div class="score-block">
+          <span class="score-title">Reclaimed SOL</span>
+          <span class="score-number" id="disp-score">0</span>
+        </div>
+        <div class="score-block">
+          <span class="score-title">Time Left</span>
+          <span class="score-number" id="disp-timer">30s</span>
+        </div>
+      </div>
+
+      <!-- Patch Grid Layout -->
+      <div class="grid-alignment" id="play-grid-area">
+        <div class="patches-grid" id="game-grid-root">
+          <!-- 3x3 Grid patches -->
+          <div class="patch" id="patch-0"><img class="target-image" id="sprite-0" src="" alt="Target" /></div>
+          <div class="patch" id="patch-1"><img class="target-image" id="sprite-1" src="" alt="Target" /></div>
+          <div class="patch" id="patch-2"><img class="target-image" id="sprite-2" src="" alt="Target" /></div>
+          <div class="patch" id="patch-3"><img class="target-image" id="sprite-3" src="" alt="Target" /></div>
+          <div class="patch" id="patch-4"><img class="target-image" id="sprite-4" src="" alt="Target" /></div>
+          <div class="patch" id="patch-5"><img class="target-image" id="sprite-5" src="" alt="Target" /></div>
+          <div class="patch" id="patch-6"><img class="target-image" id="sprite-6" src="" alt="Target" /></div>
+          <div class="patch" id="patch-7"><img class="target-image" id="sprite-7" src="" alt="Target" /></div>
+          <div class="patch" id="patch-8"><img class="target-image" id="sprite-8" src="" alt="Target" /></div>
+        </div>
+      </div>
+
+      <!-- End Game Result Box View -->
+      <div class="modal-box" id="modal-screen">
+        <h2 class="arcade-text" id="modal-heading">GARDEN SECURED!</h2>
+        <p class="modal-desc" id="modal-paragraph">EXCELLENT WORK IN THE FIELD.</p>
+        <a href="#" class="btn-telegram" id="modal-cta-btn">[ JOIN TELEGRAM FOR ALPHA ]</a>
+      </div>
+
+      <!-- Game triggers -->
+      <button class="btn-action" id="start-btn">[ START HARVESTING ]</button>
+
+    </section>
+
+    <!-- Footer information -->
+    <footer>
+      * SYS.ADMIN: BAVARIAN_GNOME // CA: [DEPLOYING SOON...]
+    </footer>
+
+  </div>
+
+  <!-- -------------------------------------------------------------
+       9. Game Engine (Vanilla JS)
+       ------------------------------------------------------------- -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // Assets Mapping
+      const ASSETS = {
+        idle: './assets/gnome-idle.png',
+        attack: './assets/gnome-attack.png',
+        whale: './assets/enemy-whale.png',
+        bear: './assets/enemy-bear.png',
+        trap: './assets/trap-gnome.png',
+        bonus: './assets/bonus-gnome.png',
+        rekt: './assets/fx-rekt.png'
+      };
+
+      // Game Variables
+      const TOTAL_TIME = 30; // seconds
+      const WIN_SCORE = 20;  // SOL required to win
+
+      let score = 0;
+      let timeLeft = TOTAL_TIME;
+      let gameActive = false;
+      let spawnIntervalId = null;
+      let timerIntervalId = null;
+
+      // Track target states per patch (to prevent double click score additions)
+      const patchStates = Array(9).fill(null).map(() => ({
+        type: null, // 'whale', 'bear', 'bonus', 'trap'
+        whacked: false,
+        timeoutId: null
+      }));
+
+      // DOM Elements
+      const dispScore = document.getElementById('disp-score');
+      const dispTimer = document.getElementById('disp-timer');
+      const startBtn = document.getElementById('start-btn');
+      const playGridArea = document.getElementById('play-grid-area');
+      const modalScreen = document.getElementById('modal-screen');
+      const modalHeading = document.getElementById('modal-heading');
+      const modalParagraph = document.getElementById('modal-paragraph');
+      const modalCtaBtn = document.getElementById('modal-cta-btn');
+      const flashScreenIndicator = document.getElementById('flash-screen-indicator');
+      const gameGridRoot = document.getElementById('game-grid-root');
+
+      // Reference sprites
+      const sprites = [];
+      for (let i = 0; i < 9; i++) {
+        sprites.push(document.getElementById(`sprite-${i}`));
+      }
+
+      // Cursor strike hack toggle
+      function triggerCursorStrike() {
+        document.body.classList.add('striking');
+        setTimeout(() => {
+          document.body.classList.remove('striking');
+        }, 150);
+      }
+
+      // Bind click trigger on game grid for pitchfork cursor strike toggle
+      gameGridRoot.addEventListener('mousedown', triggerCursorStrike);
+
+      // Spawn flying score points bubbles above clicked patches
+      function spawnScorePointsBubble(index, text, color) {
+        const patchEl = document.getElementById(`patch-${index}`);
+        const rect = patchEl.getBoundingClientRect();
+        
+        const bubble = document.createElement('div');
+        bubble.className = 'pop-indicator';
+        bubble.style.color = color;
+        bubble.textContent = text;
+        
+        // Calculate document coordinates
+        bubble.style.left = `${rect.left + window.scrollX + rect.width / 2 - 15}px`;
+        bubble.style.top = `${rect.top + window.scrollY + 10}px`;
+        
+        document.body.appendChild(bubble);
+        setTimeout(() => bubble.remove(), 800);
+      }
+
+      // Target whack trigger
+      function whack(index) {
+        if (!gameActive || patchStates[index].whacked || !patchStates[index].type) return;
+
+        // Block multiple clicks on same active pop
+        patchStates[index].whacked = true;
+
+        if (patchStates[index].timeoutId) {
+          clearTimeout(patchStates[index].timeoutId);
+        }
+
+        const type = patchStates[index].type;
+        let pointDelta = 0;
+        let bubbleText = '';
+        let bubbleColor = '#FFC107';
+
+        // Evaluate target point mapping rules
+        if (type === 'whale' || type === 'bear') {
+          pointDelta = 1;
+          bubbleText = '+1 SOL';
+          bubbleColor = '#FFEB3B';
+        } else if (type === 'bonus') {
+          pointDelta = 5;
+          bubbleText = '+5 SOL';
+          bubbleColor = '#00FF66';
+          
+          // Green screen flash trigger on bonus hits
+          flashScreenIndicator.classList.remove('gold-flash-screen');
+          void flashScreenIndicator.offsetWidth; // force reflow
+          flashScreenIndicator.classList.add('gold-flash-screen');
+          setTimeout(() => flashScreenIndicator.classList.remove('gold-flash-screen'), 300);
+        } else if (type === 'trap') {
+          pointDelta = -5;
+          bubbleText = '-5 SOL';
+          bubbleColor = '#FF3D00';
+        }
+
+        // Adjust score, ensuring it does not dip below zero
+        score = Math.max(0, score + pointDelta);
+        dispScore.textContent = score;
+
+        // Visual Hit feedback logic: Swap to fx-rekt.png, play rapid CSS shake, remove after 300ms
+        sprites[index].src = ASSETS.rekt;
+        sprites[index].classList.remove('popped');
+        sprites[index].classList.add('hit-shake');
+
+        // Spawning points notification bubble
+        spawnScorePointsBubble(index, bubbleText, bubbleColor);
+
+        // Remove element/retreat after 300ms
+        setTimeout(() => {
+          hideTarget(index);
+        }, 300);
+      }
+
+      // Slide-up target pop-up spawner
+      function showTarget(index, type) {
+        if (!gameActive) return;
+
+        let src = '';
+        if (type === 'whale') src = ASSETS.whale;
+        else if (type === 'bear') src = ASSETS.bear;
+        else if (type === 'bonus') src = ASSETS.bonus;
+        else if (type === 'trap') src = ASSETS.trap;
+
+        patchStates[index].type = type;
+        patchStates[index].whacked = false;
+
+        sprites[index].src = src;
+        sprites[index].classList.remove('hit-shake');
+        sprites[index].classList.add('popped');
+
+        // Auto retreat slide-down after 1.2 seconds if not whacked
+        patchStates[index].timeoutId = setTimeout(() => {
+          hideTarget(index);
+        }, 1200);
+      }
+
+      // Hide / Slide down target
+      function hideTarget(index) {
+        sprites[index].classList.remove('popped');
+        sprites[index].classList.remove('hit-shake');
+        
+        patchStates[index].type = null;
+        patchStates[index].whacked = false;
+
+        // Reset image source after retreat slide finishes to keep layout clean
+        setTimeout(() => {
+          if (!patchStates[index].type) {
+            sprites[index].src = '';
+          }
+        }, 220);
+      }
+
+      // Choose pop-up location
+      function spawnTick() {
+        if (!gameActive) return;
+
+        // Collect current empty holes
+        const emptyPatches = [];
+        for (let i = 0; i < 9; i++) {
+          if (patchStates[i].type === null) {
+            emptyPatches.push(i);
+          }
+        }
+
+        if (emptyPatches.length > 0) {
+          const randIndex = emptyPatches[Math.floor(Math.random() * emptyPatches.length)];
+          
+          // Spawn chances:
+          // Whales: 40%, Bears: 40%, Traps (Innocent): 12%, Bonus (Golden): 8%
+          const roll = Math.random();
+          let type = 'whale';
+          if (roll < 0.40) type = 'whale';
+          else if (roll < 0.80) type = 'bear';
+          else if (roll < 0.92) type = 'trap';
+          else type = 'bonus';
+
+          showTarget(randIndex, type);
+        }
+
+        // Setup delay timing for next spawn trigger (speeds up slightly as time runs down)
+        const nextSpawnDelay = Math.max(300, 800 - (TOTAL_TIME - timeLeft) * 15);
+        spawnIntervalId = setTimeout(spawnTick, nextSpawnDelay);
+      }
+
+      // Timer countdown loop
+      function startCountdownTimer() {
+        timerIntervalId = setInterval(() => {
+          timeLeft--;
+          dispTimer.textContent = `${timeLeft}s`;
+
+          if (timeLeft <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
+
+      // Start gameplay loop
+      function startGame() {
+        if (gameActive) return;
+
+        score = 0;
+        timeLeft = TOTAL_TIME;
+        gameActive = true;
+
+        dispScore.textContent = score;
+        dispTimer.textContent = `${timeLeft}s`;
+
+        // Switch panel layout displays
+        playGridArea.style.display = 'flex';
+        modalScreen.style.display = 'none';
+        startBtn.style.display = 'none';
+
+        // Clear patch states
+        for (let i = 0; i < 9; i++) {
+          hideTarget(i);
+        }
+
+        // Initialize loops
+        spawnTick();
+        startCountdownTimer();
+      }
+
+      // Game completion handler
+      function endGame() {
+        gameActive = false;
+
+        // Clear timers
+        clearTimeout(spawnIntervalId);
+        clearInterval(timerIntervalId);
+
+        // Hide remaining targets
+        for (let i = 0; i < 9; i++) {
+          if (patchStates[i].timeoutId) clearTimeout(patchStates[i].timeoutId);
+          hideTarget(i);
+        }
+
+        // Reveal result modal shortly after last retreat concludes
+        setTimeout(() => {
+          playGridArea.style.display = 'none';
+          modalScreen.style.display = 'flex';
+          startBtn.style.display = 'block';
+          startBtn.textContent = '[ START HARVESTING ]'; // reset button text
+
+          // Win score threshold comparison (> 20)
+          if (score > WIN_SCORE) {
+            modalHeading.textContent = "GARDEN SECURED!";
+            modalParagraph.textContent = `EXCELLENT DEFENSIBILITY! YOU HARVESTED ${score} SOL AND SAVED BAVARIA'S VEGETATION from whales.`;
+            modalCtaBtn.textContent = "[ JOIN TELEGRAM FOR ALPHA ]";
+            modalCtaBtn.style.backgroundColor = "#2196F3"; // Blue
+            modalCtaBtn.href = "#"; // Target destination link
+          } else {
+            modalHeading.textContent = "GAME OVER!";
+            modalParagraph.textContent = `THE WHALES ATE YOUR CABBAGES! YOU COLLECTED ONLY ${score} SOL. (REQUIRED: > ${WIN_SCORE})`;
+            modalCtaBtn.textContent = "[ TRY AGAIN TO SECURE ]";
+            modalCtaBtn.style.backgroundColor = "#FF3D00"; // Red
+            modalCtaBtn.href = "#"; // Destination link
+          }
+        }, 400);
+      }
+
+      // Bind Whack listeners on all sprites
+      for (let i = 0; i < 9; i++) {
+        sprites[i].addEventListener('click', () => whack(i));
+        // Mobile tap touch event binding
+        sprites[i].addEventListener('touchstart', (e) => {
+          e.preventDefault(); // blocks double click triggers
+          whack(i);
+        });
+      }
+
+      // Bind play button click
+      startBtn.addEventListener('click', startGame);
+    });
+  </script>
+</body>
+</html>

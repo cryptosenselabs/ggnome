@@ -15,8 +15,17 @@ const pool = new Pool({
 async function main() {
   const client = await pool.connect();
   try {
-    await client.query(`ALTER TABLE bot_scam_reports ADD COLUMN IF NOT EXISTS upvotes INTEGER DEFAULT 0;`);
-    console.log("Successfully added upvotes column.");
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS bot_ideas (
+          id SERIAL PRIMARY KEY,
+          chat_id BIGINT,
+          author_telegram_id BIGINT,
+          author_username TEXT,
+          idea TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    console.log("Successfully created bot_ideas table.");
   } catch (err) {
     console.error("Error altering table:", err);
   } finally {

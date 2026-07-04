@@ -27,6 +27,18 @@ async function initDB() {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    
+    console.log("Creating bot_ideas table if it doesn't exist...");
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS bot_ideas (
+          id SERIAL PRIMARY KEY,
+          chat_id BIGINT,
+          author_telegram_id BIGINT,
+          author_username TEXT,
+          idea TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
     console.log("Table successfully created or verified.");
   } catch (error) {
     console.error("Error creating tables:", error);
