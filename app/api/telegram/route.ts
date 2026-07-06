@@ -211,9 +211,13 @@ export async function POST(req: Request) {
           const host = req.headers.get('host') || 'www.chaosgnome.xyz';
           const protocol = req.headers.get('x-forwarded-proto') || 'https';
           const videoUrl = `${protocol}://${host}/assets/welcome.mp4`;
+          const utilityVideoUrl = `${protocol}://${host}/assets/whalescanner.mp4`;
 
           const keyboard = {
-            inline_keyboard: [[{ text: "🎬 Click to play the Gnome Project Overview", url: videoUrl }]]
+            inline_keyboard: [
+              [{ text: "🎬 Click to play the Gnome Project Overview", url: videoUrl }],
+              [{ text: "🎬 Click to play our Utility trailer video", url: utilityVideoUrl }]
+            ]
           };
 
           await sendMessage(chatId, welcomeText, keyboard);
@@ -243,9 +247,13 @@ export async function POST(req: Request) {
         const host = req.headers.get('host') || 'www.chaosgnome.xyz';
         const protocol = req.headers.get('x-forwarded-proto') || 'https';
         const videoUrl = `${protocol}://${host}/assets/welcome.mp4`;
+        const utilityVideoUrl = `${protocol}://${host}/assets/whalescanner.mp4`;
 
         const keyboard = {
-          inline_keyboard: [[{ text: "🎬 Click to play the Gnome Project Overview", url: videoUrl }]]
+          inline_keyboard: [
+            [{ text: "🎬 Click to play the Gnome Project Overview", url: videoUrl }],
+            [{ text: "🎬 Click to play our Utility trailer video", url: utilityVideoUrl }]
+          ]
         };
 
         await sendMessage(chatId, welcomeText, keyboard);
