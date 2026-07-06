@@ -16,11 +16,15 @@ const pool = new Pool({
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}`;
 
-async function sendMessage(chatId: number, text: string) {
+async function sendMessage(chatId: number, text: string, replyMarkup?: any) {
+  const body: any = { chat_id: chatId, text: text, parse_mode: 'HTML' };
+  if (replyMarkup) {
+    body.reply_markup = replyMarkup;
+  }
   await fetch(`${TELEGRAM_API}/sendMessage`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' })
+    body: JSON.stringify(body)
   });
 }
 
@@ -29,6 +33,14 @@ async function sendPhoto(chatId: number, photoUrl: string, caption: string) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ chat_id: chatId, photo: photoUrl, caption: caption, parse_mode: 'HTML' })
+  });
+}
+
+async function sendVideo(chatId: number, videoUrl: string, caption: string) {
+  await fetch(`${TELEGRAM_API}/sendVideo`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, video: videoUrl, caption: caption, parse_mode: 'HTML' })
   });
 }
 
@@ -196,14 +208,48 @@ export async function POST(req: Request) {
             `5. Thou shalt hold the line until the garden blooms.\n\n` +
             `Reply with:\n<b>I plant</b>\n\n…and GnomeDad will give you your first official rank. <i>(You have 5 minutes before the soil forgets you)</i>`;
 
-          await sendMessage(chatId, welcomeText);
+          const host = req.headers.get('host') || 'www.chaosgnome.xyz';
+          const protocol = req.headers.get('x-forwarded-proto') || 'https';
+          const videoUrl = `${protocol}://${host}/assets/welcome.mp4`;
+
+          const keyboard = {
+            inline_keyboard: [[{ text: "🎬 Click to play the Gnome Project Overview", url: videoUrl }]]
+          };
+
+          await sendMessage(chatId, welcomeText, keyboard);
         }
       }
 
       const displaySenderName = username ? `@${username}` : firstName;
 
       // Command handling
-      if (text.startsWith('/start')) {
+      if (text.startsWith('/testwelcome')) {
+        const welcomeText = `A new Gnomad has entered the village! 🍄\n\n` +
+          `${displaySenderName}, you have been officially BLESSED by the mushroom council (+1 Village Respect).\n\n` +
+          `📜 <b>The Gnome Dictionary:</b>\n` +
+          `- <b>Gnomad</b>: A trusted member of the village.\n` +
+          `- <b>Planting</b>: Holding the line and trusting the soil.\n` +
+          `- <b>Bears</b>: The enemy. We do not fear them.\n` +
+          `- <b>Red Candles</b>: Temporary bad weather. We plant through the storm.\n` +
+          `- <b>Soil</b>: The foundation of our wealth.\n\n` +
+          `📜 <b>The 5 Commandments of a Gnomad:</b>\n` +
+          `1. Thou shalt never sell the bottom.\n` +
+          `2. Thou shalt plant thy seeds daily.\n` +
+          `3. Thou shalt respect the mushroom council.\n` +
+          `4. Thou shalt mock the bears relentlessly.\n` +
+          `5. Thou shalt hold the line until the garden blooms.\n\n` +
+          `Reply with:\n<b>I plant</b>\n\n…and GnomeDad will give you your first official rank. <i>(You have 5 minutes before the soil forgets you)</i>`;
+
+        const host = req.headers.get('host') || 'www.chaosgnome.xyz';
+        const protocol = req.headers.get('x-forwarded-proto') || 'https';
+        const videoUrl = `${protocol}://${host}/assets/welcome.mp4`;
+
+        const keyboard = {
+          inline_keyboard: [[{ text: "🎬 Click to play the Gnome Project Overview", url: videoUrl }]]
+        };
+
+        await sendMessage(chatId, welcomeText, keyboard);
+      } else if (text.startsWith('/start')) {
         await sendMessage(chatId, "GnomeDad is awake.\nAdd me to the village and I will watch over the Gnomads.");
       } else if (text.startsWith('/help')) {
         await sendMessage(chatId, "Available commands:\n/plant - Plant your seed in the garden\n/prophecy - Hear a prophecy from the elders\n/quest - See the current quest\n/rank - Check your rank\n/about - Learn about me\n/stats - View village statistics");
